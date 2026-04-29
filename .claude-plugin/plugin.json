@@ -1,0 +1,15 @@
+{
+  "name": "itero",
+  "version": "1.0.0",
+  "description": "Manage your Itero practice platform from Claude Code — build scenarios from playbooks, design scorecards from training docs, author personas from customer materials, and bulk-import users from CSV.",
+  "author": {
+    "name": "Itero",
+    "email": "support@iteroapp.ai",
+    "url": "https://iteroapp.ai"
+  },
+  "homepage": "https://iteroapp.ai",
+  "repository": "https://github.com/Itero-AI/skills",
+  "license": "MIT",
+  "keywords": ["itero", "sales-training", "practice", "roleplay", "scorecards", "personas"],
+  "skills": "./skills/"
+}
