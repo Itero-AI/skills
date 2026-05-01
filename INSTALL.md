@@ -172,7 +172,7 @@ You can close Window A.
 
 ## Step 4 — Save your Itero API key
 
-The skills need your Itero API key to talk to your account. Save it in a small text file called `.env`.
+The skills need your Itero API key to talk to your account. You'll put it in a small text file called `.env` inside the project folder you'll use the AI assistant from.
 
 ### Get the key
 
@@ -182,41 +182,54 @@ If you don't have one yet:
 2. Go to **Settings → API Keys**.
 3. Click **Create new key** and copy the long string of letters and numbers.
 
-### Create the `.env` file
+### Create the `.env` file in your IDE (recommended)
+
+If you're using Cursor, VS Code, or Antigravity (any IDE built on VS Code), this is the easiest way:
+
+1. In your IDE, open the project folder where you'll be using the AI assistant.
+2. In the file explorer panel on the left, right-click in the empty space and choose **New File**.
+3. Name the file exactly `.env` — with the leading dot, no extension. The file will appear at the top of the file list (dotfiles are visible by default in modern IDEs).
+4. The file will open in the editor. Type:
+
+   ```
+   ITERO_API_KEY=
+   ```
+
+5. Click immediately after the equals sign. Paste your Itero API key. Save with **Cmd + S** (Mac) or **Ctrl + S** (Windows).
+
+> *Screenshot: VS Code / Cursor file explorer with `.env` open in the editor, `ITERO_API_KEY=` typed, and the cursor positioned right after the equals sign ready for the customer to paste their key.*
+
+It should look like this when saved:
+
+```
+ITERO_API_KEY=k_abcdef123456…your-actual-key-here
+```
+
+No spaces around `=`. No quotes around the key. Just the key, directly after the equals sign.
+
+### Alternative: TextEdit (Mac) or Notepad (Windows)
+
+Only use this if you're not in an IDE for some reason.
 
 #### On a Mac
 
-1. Open the **TextEdit** app.
-2. Click **Format → Make Plain Text** (this is important — `.env` has to be plain text, not rich text).
-3. Type this line, replacing `paste-your-key-here` with your actual key:
+1. Open **TextEdit**.
+2. Click **Format → Make Plain Text** (`.env` has to be plain text, not rich text).
+3. Type `ITERO_API_KEY=` followed by your key.
+4. Save (**Cmd + S**) → name it `.env` (with the leading dot) → save in your project folder.
+   - When TextEdit warns about names starting with a dot, click **Use "."**.
+   - When it asks about appending `.txt`, click **Don't append**.
 
-   ```
-   ITERO_API_KEY=paste-your-key-here
-   ```
-
-4. Save the file (**Cmd + S**). When the save dialog opens:
-   - In the **Save As** field, type exactly: `.env` (yes, with the dot at the start, and no other extension).
-   - Save it in the folder where you'll be using your AI assistant — usually a folder for whatever project you're working on.
-   - When TextEdit warns you that names starting with a dot are reserved, click **Use "."**.
-   - When TextEdit asks about adding `.txt` to the filename, click **Don't append**.
-
-> *Screenshot: macOS TextEdit save dialog showing the `.env` filename and the "Use '.'" prompt.*
+> *Screenshot: macOS TextEdit save dialog with "Use '.'" prompt.*
 
 #### On a Windows PC
 
 1. Open **Notepad**.
-2. Type this line, replacing `paste-your-key-here` with your actual key:
+2. Type `ITERO_API_KEY=` followed by your key.
+3. **File → Save As** → name `.env` → in the **Save as type** dropdown, choose **All Files (\*.\*)** (otherwise Windows saves it as `.env.txt`, which won't work).
+4. Save in your project folder.
 
-   ```
-   ITERO_API_KEY=paste-your-key-here
-   ```
-
-3. Click **File → Save As**.
-4. In the **File name** field, type: `.env` (with the dot at the start).
-5. In the **Save as type** dropdown, choose **All Files (*.*)**. (If you skip this step, Windows will save the file as `.env.txt`, which won't work.)
-6. Save it in the folder where you'll be using your AI assistant.
-
-> *Screenshot: Windows Notepad save dialog with "All Files" selected and `.env` as the filename.*
+> *Screenshot: Windows Notepad save dialog with "All Files" selected.*
 
 ### Multiple Itero accounts (optional)
 

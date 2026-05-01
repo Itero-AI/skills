@@ -24,7 +24,7 @@ Every skill walks you through the steps, previews changes before saving, and onl
 
 ## Install in 30 seconds (automatic)
 
-The fastest way: copy the prompt below, paste it into your AI assistant (Claude Code, Cursor, OpenAI Codex, or Google Antigravity), and press Enter. The assistant does the install for you and asks for your Itero API key when it needs it.
+The fastest way: copy the prompt below, paste it into your AI assistant (Claude Code, Cursor, OpenAI Codex, or Google Antigravity), and press Enter. The assistant does the install for you. **You'll add your API key yourself in a text file at the end — your key never gets typed into chat.**
 
 ````
 Please install the Itero skills for me. Do these steps in order, asking me to confirm before any step that needs my input:
@@ -40,12 +40,32 @@ Please install the Itero skills for me. Do these steps in order, asking me to co
 
 4. Run `pip3 install requests python-dotenv` and confirm both installed successfully. If `pip3` isn't installed, tell me to install Python from https://python.org first and pause.
 
-5. Ask me for my Itero API key, then save it as a `.env` file in my current working directory containing the single line `ITERO_API_KEY=<my-key>` (no quotes, no spaces around the equals sign).
+5. Create a file called `.env` in my current working directory containing exactly this single line — leave the value blank, do NOT ask me for my API key in chat:
 
-6. List the contents of the destination skills folder to confirm all four folders are there. Then tell me to fully restart you and try the message: list my scorecards.
+   ```
+   ITERO_API_KEY=
+   ```
+
+   Then tell me the full path to the `.env` file you just created and instruct me to (a) open that file in my IDE's file explorer, (b) click after the equals sign, (c) paste my Itero API key, and (d) save the file.
+
+6. After I confirm I've added my key, list the contents of the destination skills folder to verify all four skill folders are there. Then tell me to fully restart you and try the message: list my scorecards.
 ````
 
 That's it. If the assistant asks anything along the way, answer in plain English.
+
+### Adding your API key in your IDE
+
+After step 5, your AI assistant will tell you it created a `.env` file. Open it in the file explorer panel of your IDE (Cursor, VS Code, Antigravity all show dotfiles by default), click after the equals sign, paste your key, save.
+
+> *Screenshot: VS Code / Cursor file explorer showing the `.env` file open with `ITERO_API_KEY=` and the cursor positioned right after the equals sign, ready for the customer to paste.*
+
+It should look like this when you're done:
+
+```
+ITERO_API_KEY=k_abcdef123456…your-actual-key-here
+```
+
+No spaces, no quotes — just your key directly after the equals sign.
 
 ## Install manually (if the automatic path didn't work)
 
@@ -59,6 +79,32 @@ If the auto-install hits an error or you'd rather do it yourself, follow the pai
 | **Google Antigravity** | [INSTALL.md → Google Antigravity](INSTALL.md#google-antigravity) |
 
 The manual path is: download a folder, drag it into the right spot on your computer, paste your Itero API key into a small text file. No coding, no terminal commands required.
+
+## Developer install (terminal, no hand-holding)
+
+If you're comfortable with a shell, here's the whole install in five commands. Replace the destination path with the one for your agent (see the path matrix in [INSTALL.md](INSTALL.md)).
+
+```bash
+# 1. Clone (or download + unzip the tarball if you don't want a working tree)
+git clone https://github.com/Itero-AI/skills.git /tmp/itero-skills
+
+# 2. Copy the four skill folders to your agent's global skills directory
+mkdir -p ~/.claude/skills          # Claude Code
+# OR: mkdir -p ~/.agents/skills    # Cursor or Codex
+# OR: mkdir -p ~/.gemini/antigravity/skills  # Antigravity
+cp -r /tmp/itero-skills/skills/* ~/.claude/skills/
+
+# 3. Install Python deps
+pip3 install requests python-dotenv
+
+# 4. Drop your API key into a project .env (use your secret manager of choice)
+echo "ITERO_API_KEY=$ITERO_API_KEY" > .env   # if it's already in your shell env
+# or just edit .env directly with your editor
+
+# 5. Restart your agent and try: list my scorecards
+```
+
+For multi-tenant setups, add `ITERO_API_KEY_<NAME>=...` lines to `.env` and pass `--tenant <NAME>` to the skills.
 
 ## Before you install — get your API key
 
