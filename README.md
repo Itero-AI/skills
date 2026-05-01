@@ -22,18 +22,43 @@ Four skills, each triggered by everyday language:
 
 Every skill walks you through the steps, previews changes before saving, and only writes to your Itero account after you say yes.
 
-## Install in 5 minutes
+## Install in 30 seconds (automatic)
 
-Pick your AI assistant and click through to the step-by-step guide.
+The fastest way: copy the prompt below, paste it into your AI assistant (Claude Code, Cursor, OpenAI Codex, or Google Antigravity), and press Enter. The assistant does the install for you and asks for your Itero API key when it needs it.
 
-| AI assistant | Install guide |
+````
+Please install the Itero skills for me. Do these steps in order, asking me to confirm before any step that needs my input:
+
+1. Tell me which AI assistant you are (Claude Code, Cursor, OpenAI Codex, or Google Antigravity) and which OS I'm on (Mac or Windows). Confirm with me before continuing.
+
+2. Download https://github.com/Itero-AI/skills/archive/refs/heads/main.zip and unzip it to a temporary location.
+
+3. Copy the four folders inside the unzipped `skills/` directory (`scenarios`, `scorecards`, `personas`, `upload-users`) into the correct global skills folder for your agent on my OS, creating the destination folder if it doesn't exist:
+   - Claude Code: `~/.claude/skills/` on Mac, `%USERPROFILE%\.claude\skills\` on Windows
+   - Cursor or Codex: `~/.agents/skills/` on Mac, `%USERPROFILE%\.agents\skills\` on Windows
+   - Antigravity: `~/.gemini/antigravity/skills/` on Mac, `%USERPROFILE%\.gemini\antigravity\skills\` on Windows
+
+4. Run `pip3 install requests python-dotenv` and confirm both installed successfully. If `pip3` isn't installed, tell me to install Python from https://python.org first and pause.
+
+5. Ask me for my Itero API key, then save it as a `.env` file in my current working directory containing the single line `ITERO_API_KEY=<my-key>` (no quotes, no spaces around the equals sign).
+
+6. List the contents of the destination skills folder to confirm all four folders are there. Then tell me to fully restart you and try the message: list my scorecards.
+````
+
+That's it. If the assistant asks anything along the way, answer in plain English.
+
+## Install manually (if the automatic path didn't work)
+
+If the auto-install hits an error or you'd rather do it yourself, follow the painfully-detailed step-by-step guide below for your agent:
+
+| AI assistant | Manual install guide |
 |---|---|
 | **Claude Code** | [INSTALL.md → Claude Code](INSTALL.md#claude-code) |
 | **OpenAI Codex** | [INSTALL.md → OpenAI Codex and Cursor](INSTALL.md#openai-codex-and-cursor) |
 | **Cursor** | [INSTALL.md → OpenAI Codex and Cursor](INSTALL.md#openai-codex-and-cursor) |
 | **Google Antigravity** | [INSTALL.md → Google Antigravity](INSTALL.md#google-antigravity) |
 
-The install is the same idea for everyone: download a folder, drag it into the right spot on your computer, paste your Itero API key into a small text file. No coding, no terminal commands required.
+The manual path is: download a folder, drag it into the right spot on your computer, paste your Itero API key into a small text file. No coding, no terminal commands required.
 
 ## Before you install — get your API key
 

@@ -1,6 +1,8 @@
-# Installing the Itero Skills — Step by Step
+# Manually Installing the Itero Skills — Step by Step
 
-This guide walks you through installing the Itero skills into your AI assistant. It's written for people who have never opened a terminal and have no idea what a "hidden folder" is. If that's you, you're in the right place.
+> **Most people don't need this guide.** The fastest way to install is the [auto-install prompt in the README](README.md#install-in-30-seconds-automatic) — copy one block of text, paste it into your AI assistant, answer one question. This manual guide is for anyone who hits a problem with the auto-install or who'd rather do it themselves.
+
+This guide walks you through installing the Itero skills into your AI assistant by hand. It's written for people who have never opened a terminal and have no idea what a "hidden folder" is. If that's you, you're in the right place.
 
 There are 6 steps. Plan for 5–10 minutes the first time.
 
