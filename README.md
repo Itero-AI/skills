@@ -12,8 +12,6 @@ A collection of skills for AI coding agents that lets you manage your Itero prac
 - [API key](#api-key)
 - [Sanity check](#sanity-check)
 - [Plugin manifests](#plugin-manifests)
-- [Multi-tenant](#multi-tenant)
-- [Support](#support)
 
 ## Skills
 
@@ -110,22 +108,6 @@ This repo serves as a plugin for multiple agents:
 - **Google Antigravity** — no Antigravity-specific marketplace command exists; manual or developer install only
 
 All marketplace manifests use `"source": "./"`. Skills live at `skills/<name>/SKILL.md`.
-
-## Multi-tenant
-
-Add per-tenant keys to `.env`:
-
-```
-ITERO_API_KEY_PROD=...
-ITERO_API_KEY_STAGING=...
-```
-
-Then invoke skills with `--tenant PROD` or `--tenant STAGING`. Without the flag, skills use bare `ITERO_API_KEY`.
-
-## Support
-
-- Issues: https://github.com/Itero-AI/skills/issues
-- Email: support@iteroapp.ai
 
 ## License
 
