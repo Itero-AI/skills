@@ -1,0 +1,15 @@
+{
+  "name": "itero",
+  "displayName": "Itero",
+  "description": "Manage your Itero practice platform from OpenAI Codex CLI — scenarios, scorecards, personas, and bulk user imports.",
+  "version": "1.1.0",
+  "skills": "./skills/",
+  "author": {
+    "name": "Itero",
+    "url": "https://iteroapp.ai"
+  },
+  "homepage": "https://iteroapp.ai",
+  "repository": "https://github.com/Itero-AI/skills",
+  "license": "MIT",
+  "keywords": ["itero", "sales-training", "practice", "roleplay", "scorecards", "personas"]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "itero-skills",
+  "owner": {
+    "name": "Itero",
+    "email": "support@iteroapp.ai"
+  },
+  "plugins": [
+    {
+      "name": "itero",
+      "source": "./"
+    }
+  ]
+}

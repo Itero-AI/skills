@@ -1,74 +1,82 @@
-# Itero Skills for Claude Code
+# Itero Skills
 
-Official Itero plugin for Claude Code. Manage your practice platform from any Claude Code session — build scenarios from sales playbooks, design scorecards from training docs, author personas from customer materials, and bulk-import users from CSV.
+Talk to your AI assistant about your Itero account — and have it do the work.
 
-## What's in the box
+Once installed, you can chat with Claude Code, Cursor, OpenAI Codex, or Google Antigravity in plain English to build practice scenarios, design scorecards, create personas, or import a CSV of users — without opening the Itero app.
 
-| Skill | What it does |
+## What's included
+
+Four skills, each triggered by everyday language:
+
+- **Scenarios** — Create roleplay scenarios from a playbook, transcript, or just a description.
+  *Try saying:* "Build me three cold-call scenarios from this playbook."
+
+- **Scorecards** — Design evaluation rubrics from training materials or a methodology doc.
+  *Try saying:* "Build a scorecard for our discovery calls based on this guide."
+
+- **Personas** — Create the AI counterparties (CFOs, members, prospects) used in practice calls.
+  *Try saying:* "Create a SaaS CFO persona from our buyer profile doc."
+
+- **Upload Users** — Bulk-import a CSV of new users into your Itero tenant.
+  *Try saying:* "Upload these users from this spreadsheet."
+
+Every skill walks you through the steps, previews changes before saving, and only writes to your Itero account after you say yes.
+
+## Install in 5 minutes
+
+Pick your AI assistant and click through to the step-by-step guide.
+
+| AI assistant | Install guide |
 |---|---|
-| **`/scenarios`** | Create, edit, delete practice scenarios. Build from a customer roleplay doc, sales playbook, or call transcript. Batch-create multiple scenarios from one source. |
-| **`/scorecards`** | Build and edit scorecard templates, categories, criteria, and rubrics. Author from training materials or methodology docs. |
-| **`/personas`** | Create and manage AI personas — the counterparties used in practice calls. Supports both Enterprise/B2B archetypes (CFO, VP Finance, Procurement) and Consumer/B2C archetypes (Medicare members, patients, individual buyers). |
-| **`/upload-users`** | Bulk-import users into your tenant from a CSV. Walks through validation fixes, user-group decisions, duplicate detection, and a seat-count check before submitting. |
+| **Claude Code** | [INSTALL.md → Claude Code](INSTALL.md#claude-code) |
+| **OpenAI Codex** | [INSTALL.md → OpenAI Codex and Cursor](INSTALL.md#openai-codex-and-cursor) |
+| **Cursor** | [INSTALL.md → OpenAI Codex and Cursor](INSTALL.md#openai-codex-and-cursor) |
+| **Google Antigravity** | [INSTALL.md → Google Antigravity](INSTALL.md#google-antigravity) |
 
-Every skill walks you through the workflow interactively, dry-runs every change, and only writes after explicit confirmation.
+The install is the same idea for everyone: download a folder, drag it into the right spot on your computer, paste your Itero API key into a small text file. No coding, no terminal commands required.
 
-## Install
+## Before you install — get your API key
 
-In Claude Code:
+You'll need an Itero API key. To get one:
 
-```
-/plugin marketplace add Itero-AI/skills
-/plugin install itero@itero-plugins
-```
+1. Sign in to [your Itero account](https://app.iteroapp.ai).
+2. Go to **Settings → API Keys**.
+3. Click **Create new key** and copy the long string of letters and numbers.
+4. Keep it in a safe place — you'll paste it in during step 4 of the install.
 
-Then install the two Python dependencies the skills use:
+The key for the **Upload Users** skill needs to belong to a Manager-role user. The other three skills work with any role.
 
-```bash
-pip3 install -r ${CLAUDE_PLUGIN_ROOT}/requirements.txt
-```
+## First thing to try
 
-If `${CLAUDE_PLUGIN_ROOT}` doesn't expand in your shell, run this instead:
+Once installed, open your AI assistant and type:
 
-```bash
-pip3 install requests python-dotenv
-```
+> *list my scorecards*
 
-## Setup
+If you see your scorecards (or a polite "no scorecards yet"), the install worked. If something else happens, jump to [INSTALL.md → Troubleshooting](INSTALL.md#troubleshooting).
 
-Create a `.env` file in your project's root directory and add your Itero API key:
+## Common questions
 
-```
-ITERO_API_KEY=<your-api-key>
-```
+**Do I need to know how to code?**
+No. The install is dragging folders and pasting one line of text. The skills themselves work entirely through conversation.
 
-Optional — if you want the `upload-users` skill to pre-flight check your seat cap before importing, also add:
+**Will this change anything in my Itero account?**
+Only when you tell it to. Every skill shows you exactly what it's about to do and waits for your confirmation before saving anything.
 
-```
-ITERO_TENANT_SEATS=<your-seat-count>
-```
+**Can I use this with a free Itero account?**
+You need an API key, which is available on paid Itero plans. Talk to your Itero account manager if you're not sure.
 
-That's it. Run any `/itero:*` command in Claude Code and the skills will pick up the key automatically.
+**My company uses Cursor *and* Codex.**
+Lucky you — one install covers both, since they share the same skills folder. See [INSTALL.md → OpenAI Codex and Cursor](INSTALL.md#openai-codex-and-cursor).
 
-## Multiple tenants
+## Help
 
-If you manage more than one Itero tenant from the same project, use the `--tenant <NAME>` flag and add per-tenant keys to `.env`:
+Stuck? Email **support@iteroapp.ai** with:
+- Which AI assistant you're using
+- Which step of [INSTALL.md](INSTALL.md) you're on
+- What happened (or didn't)
 
-```
-ITERO_API_KEY_PROD=<production-key>
-ITERO_API_KEY_STAGING=<staging-key>
-```
-
-Then invoke skills with `--tenant PROD` or `--tenant STAGING`. Without the flag, the skills use bare `ITERO_API_KEY`.
-
-## Where to get an API key
-
-API keys are managed in the Itero web app under **Settings → API Keys**. The key needs to belong to a user with the **Manager** role for `upload-users` to work; the other three skills work with any role.
-
-## Support
-
-Questions, bugs, feature requests: **support@iteroapp.ai**
+We'll get back to you the same business day.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE). You're free to use, modify, and redistribute these skills.
