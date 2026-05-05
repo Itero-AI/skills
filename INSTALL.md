@@ -8,7 +8,7 @@ There are 6 steps. Plan for 5–10 minutes the first time.
 
 > **Step 1** — Download the skills folder
 > **Step 2** — Open your AI assistant's skills folder
-> **Step 3** — Drag the four skills into place
+> **Step 3** — Drag the six skills into place
 > **Step 4** — Save your Itero API key
 > **Step 5** — Install Python (one time only)
 > **Step 6** — Restart your AI assistant and test
@@ -17,7 +17,7 @@ There are 6 steps. Plan for 5–10 minutes the first time.
 
 ## Step 1 — Download the skills folder
 
-You're going to download all four Itero skills as a single zipped folder.
+You're going to download all six Itero skills as a single zipped folder.
 
 1. Go to **https://github.com/Itero-AI/skills** in your web browser.
 2. Click the green **Code** button (it's near the top-right of the file list).
@@ -36,14 +36,16 @@ A file called `skills-main.zip` will land in your **Downloads** folder.
 
 Open `skills-main`. Inside, you'll see a folder called `skills`. Open that too.
 
-You should now see four folders side by side:
+You should now see six folders side by side:
 
+- `doc-consolidator`
+- `doc-optimizer`
 - `personas`
 - `scenarios`
 - `scorecards`
 - `upload-users`
 
-> *Screenshot: Finder/File Explorer showing the four skill folders side by side.*
+> *Screenshot: Finder/File Explorer showing the six skill folders side by side.*
 
 **Leave this window open** — you'll come back to it in Step 3.
 
@@ -51,7 +53,7 @@ You should now see four folders side by side:
 
 ## Step 2 — Open your AI assistant's skills folder
 
-Your AI assistant looks for skills in a specific folder on your computer. You need to open that folder so you can drop the four skill folders into it.
+Your AI assistant looks for skills in a specific folder on your computer. You need to open that folder so you can drop the six skill folders into it.
 
 The folder path depends on which assistant you use. Find your assistant below.
 
@@ -149,22 +151,22 @@ If missing, create the path: `%USERPROFILE%` → create `.gemini` → create `an
 
 ---
 
-## Step 3 — Drag the four skills into place
+## Step 3 — Drag the six skills into place
 
 You should now have **two windows open**:
 
-- **Window A:** the unzipped `skills` folder from Step 1, showing `personas`, `scenarios`, `scorecards`, `upload-users`.
+- **Window A:** the unzipped `skills` folder from Step 1, showing `doc-consolidator`, `doc-optimizer`, `personas`, `scenarios`, `scorecards`, `upload-users`.
 - **Window B:** your AI assistant's empty (or near-empty) `skills` folder from Step 2.
 
 Now:
 
-1. In Window A, click `personas`, hold the Shift key, and click `upload-users`. All four folders should now be highlighted.
+1. In Window A, click `doc-consolidator`, hold the Shift key, and click `upload-users`. All six folders should now be highlighted.
 2. Drag them from Window A into Window B.
 3. If your computer asks "Copy or Move?", choose **Copy**.
 
-> *Screenshot: dragging the four skill folders from one window to another.*
+> *Screenshot: dragging the six skill folders from one window to another.*
 
-When the copy finishes, Window B should now contain four folders: `personas`, `scenarios`, `scorecards`, `upload-users`.
+When the copy finishes, Window B should now contain six folders: `doc-consolidator`, `doc-optimizer`, `personas`, `scenarios`, `scorecards`, `upload-users`.
 
 You can close Window A.
 
@@ -254,17 +256,17 @@ The skills are written in Python. You probably don't have to think about this on
 #### On a Mac
 
 1. Open the **Terminal** app (you can find it via Spotlight: Cmd + Space, type "Terminal", press Enter).
-2. Type: `pip3 install requests python-dotenv`
+2. Type: `pip3 install requests python-dotenv pymupdf pdfplumber python-docx`
 3. Press Enter.
 
 If it succeeds (you'll see "Successfully installed…"), you're done. Skip to Step 6.
 
-If it says **"command not found: pip3"**, you need to install Python first. Go to https://python.org → **Downloads** → click the big yellow button to download the macOS installer → run it → accept the defaults. Then come back and try `pip3 install requests python-dotenv` again.
+If it says **"command not found: pip3"**, you need to install Python first. Go to https://python.org → **Downloads** → click the big yellow button to download the macOS installer → run it → accept the defaults. Then come back and try `pip3 install requests python-dotenv pymupdf pdfplumber python-docx` again.
 
 #### On a Windows PC
 
 1. Open **PowerShell** (Start menu → type "PowerShell" → press Enter).
-2. Type: `pip3 install requests python-dotenv`
+2. Type: `pip3 install requests python-dotenv pymupdf pdfplumber python-docx`
 3. Press Enter.
 
 If it succeeds, skip to Step 6.
@@ -273,7 +275,7 @@ If it says `pip3` is not recognized, install Python first. Go to https://python.
 
 > **Important on Windows:** during install, check the box that says **"Add Python to PATH"** at the bottom of the first installer screen. Without this, the next steps won't work.
 
-After Python is installed, open a fresh PowerShell window and try `pip3 install requests python-dotenv` again.
+After Python is installed, open a fresh PowerShell window and try `pip3 install requests python-dotenv pymupdf pdfplumber python-docx` again.
 
 ---
 
@@ -325,14 +327,14 @@ You can also press **Cmd + Shift + .** (period) in any Finder window to temporar
 
 Confirm the folders are in `~/.agents/skills/` (or `~/.cursor/skills/` if you used that one). On Windows: `%USERPROFILE%\.agents\skills\`.
 
-If you'd rather scope skills to a single project (so only that project sees them), create `<project-folder>/.cursor/skills/` and put the four folders there instead. Cursor reads from both global and project locations.
+If you'd rather scope skills to a single project (so only that project sees them), create `<project-folder>/.cursor/skills/` and put the six folders there instead. Cursor reads from both global and project locations.
 
 ### "I get an error mentioning `requests` or `dotenv`"
 
 You missed Step 5. Open Terminal (Mac) or PowerShell (Windows) and run:
 
 ```
-pip3 install requests python-dotenv
+pip3 install requests python-dotenv pymupdf pdfplumber python-docx
 ```
 
 ### Still stuck?
