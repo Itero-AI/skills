@@ -44,7 +44,7 @@ Reads `ITERO_API_KEY` from `.env`. For multi-tenant repos, pass `--tenant <NAME>
 to use `ITERO_API_KEY_<NAME>` instead.
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py list [--tenant NAME]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py list [--tenant NAME]
 ```
 
 ---
@@ -52,7 +52,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py list [--tenant
 ## Flow 1: List the personas on a tenant
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py list [--tenant NAME]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py list [--tenant NAME]
 ```
 
 Output: id, type (Enterprise / Consumer), name, botName, title, company.
@@ -221,7 +221,7 @@ an existing one. New archetypes should be rare.
 ### Step 2 — Pick a voice
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py voices [--tenant NAME]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py voices [--tenant NAME]
 ```
 
 Show the list, ask the user to pick (or pick the first matching voice for the
@@ -263,9 +263,9 @@ Show the user a preview of the full payload — type, name, botName, voiceId, ge
 ### Step 6 — Dry-run, then live
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py create .tmp/persona-plan.json [--tenant NAME]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py create .tmp/persona-plan.json [--tenant NAME]
 # review output, then:
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py create .tmp/persona-plan.json [--tenant NAME] --live
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py create .tmp/persona-plan.json [--tenant NAME] --live
 ```
 
 Report the new persona id.
@@ -278,7 +278,7 @@ Report the new persona id.
 Fetch first:
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py fetch <id> [--tenant NAME]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py fetch <id> [--tenant NAME]
 ```
 
 (Note: Itero returns 405 on `GET /persona/{id}`. The `fetch` subcommand lists
@@ -287,7 +287,7 @@ all personas and filters client-side — it works around the API limitation.)
 Modify the JSON, then update:
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py update <id> '<complete json payload>' [--tenant NAME] --live
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py update <id> '<complete json payload>' [--tenant NAME] --live
 ```
 
 ---
@@ -298,7 +298,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py update <id> '<
 in active learning paths or certifications, stop and ask the user to confirm.
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py delete <id> [--tenant NAME] --live
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py delete <id> [--tenant NAME] --live
 ```
 
 ---

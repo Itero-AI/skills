@@ -8,7 +8,7 @@ There are 6 steps. Plan for 5–10 minutes the first time.
 
 > **Step 1** — Download the skills folder
 > **Step 2** — Open your AI assistant's skills folder
-> **Step 3** — Drag the four skills into place
+> **Step 3** — Drag the six skills into place
 > **Step 4** — Save your Itero API key
 > **Step 5** — Install Python (one time only)
 > **Step 6** — Restart your AI assistant and test
@@ -17,7 +17,7 @@ There are 6 steps. Plan for 5–10 minutes the first time.
 
 ## Step 1 — Download the skills folder
 
-You're going to download all four Itero skills as a single zipped folder.
+You're going to download all six Itero skills as a single zipped folder.
 
 1. Go to **https://github.com/Itero-AI/skills** in your web browser.
 2. Click the green **Code** button (it's near the top-right of the file list).
@@ -36,14 +36,16 @@ A file called `skills-main.zip` will land in your **Downloads** folder.
 
 Open `skills-main`. Inside, you'll see a folder called `skills`. Open that too.
 
-You should now see four folders side by side:
+You should now see six folders side by side:
 
+- `doc-consolidator`
+- `doc-optimizer`
 - `personas`
 - `scenarios`
 - `scorecards`
 - `upload-users`
 
-> *Screenshot: Finder/File Explorer showing the four skill folders side by side.*
+> *Screenshot: Finder/File Explorer showing the six skill folders side by side.*
 
 **Leave this window open** — you'll come back to it in Step 3.
 
@@ -51,7 +53,7 @@ You should now see four folders side by side:
 
 ## Step 2 — Open your AI assistant's skills folder
 
-Your AI assistant looks for skills in a specific folder on your computer. You need to open that folder so you can drop the four skill folders into it.
+Your AI assistant looks for skills in a specific folder on your computer. You need to open that folder so you can drop the six skill folders into it.
 
 The folder path depends on which assistant you use. Find your assistant below.
 
@@ -149,22 +151,22 @@ If missing, create the path: `%USERPROFILE%` → create `.gemini` → create `an
 
 ---
 
-## Step 3 — Drag the four skills into place
+## Step 3 — Drag the six skills into place
 
 You should now have **two windows open**:
 
-- **Window A:** the unzipped `skills` folder from Step 1, showing `personas`, `scenarios`, `scorecards`, `upload-users`.
+- **Window A:** the unzipped `skills` folder from Step 1, showing `doc-consolidator`, `doc-optimizer`, `personas`, `scenarios`, `scorecards`, `upload-users`.
 - **Window B:** your AI assistant's empty (or near-empty) `skills` folder from Step 2.
 
 Now:
 
-1. In Window A, click `personas`, hold the Shift key, and click `upload-users`. All four folders should now be highlighted.
+1. In Window A, click `doc-consolidator`, hold the Shift key, and click `upload-users`. All six folders should now be highlighted.
 2. Drag them from Window A into Window B.
 3. If your computer asks "Copy or Move?", choose **Copy**.
 
-> *Screenshot: dragging the four skill folders from one window to another.*
+> *Screenshot: dragging the six skill folders from one window to another.*
 
-When the copy finishes, Window B should now contain four folders: `personas`, `scenarios`, `scorecards`, `upload-users`.
+When the copy finishes, Window B should now contain six folders: `doc-consolidator`, `doc-optimizer`, `personas`, `scenarios`, `scorecards`, `upload-users`.
 
 You can close Window A.
 
@@ -245,35 +247,41 @@ Then in your AI assistant you can say things like *"list scorecards on the stagi
 
 ---
 
-## Step 5 — Install Python (one time only)
+## Step 5 — Install uv (one time only)
 
-The skills are written in Python. You probably don't have to think about this once it's set up — but you do need it installed.
+The skills are written in Python, but you don't have to install Python or any Python packages yourself. The skills use a tool called **uv** that handles all of that automatically — including installing the right Python version if you don't have one. You only install uv once per machine.
 
-### Check if you already have it
-
-#### On a Mac
+### On a Mac
 
 1. Open the **Terminal** app (you can find it via Spotlight: Cmd + Space, type "Terminal", press Enter).
-2. Type: `pip3 install requests python-dotenv`
+2. Type: `brew install uv`
 3. Press Enter.
 
-If it succeeds (you'll see "Successfully installed…"), you're done. Skip to Step 6.
+If it succeeds (you'll see something like "Pouring uv…"), skip to Step 6.
 
-If it says **"command not found: pip3"**, you need to install Python first. Go to https://python.org → **Downloads** → click the big yellow button to download the macOS installer → run it → accept the defaults. Then come back and try `pip3 install requests python-dotenv` again.
+If it says **"command not found: brew"**, you don't have Homebrew installed. The simplest fix: go to https://brew.sh and copy the install command shown on that page into your Terminal, run it, then come back and run `brew install uv`.
 
-#### On a Windows PC
+> Don't want Homebrew? Astral (the team behind uv) provides a [direct installer](https://docs.astral.sh/uv/getting-started/installation/) you can use instead.
+
+### On a Windows PC
 
 1. Open **PowerShell** (Start menu → type "PowerShell" → press Enter).
-2. Type: `pip3 install requests python-dotenv`
+2. Type: `winget install --id=astral-sh.uv -e`
 3. Press Enter.
 
-If it succeeds, skip to Step 6.
+If it succeeds, close PowerShell, open a fresh PowerShell window, and skip to Step 6.
 
-If it says `pip3` is not recognized, install Python first. Go to https://python.org → **Downloads** → click the big yellow button → run the installer.
+If `winget` isn't recognized, follow Astral's [Windows installer instructions](https://docs.astral.sh/uv/getting-started/installation/) (one PowerShell command).
 
-> **Important on Windows:** during install, check the box that says **"Add Python to PATH"** at the bottom of the first installer screen. Without this, the next steps won't work.
+### Verify it works
 
-After Python is installed, open a fresh PowerShell window and try `pip3 install requests python-dotenv` again.
+In a fresh Terminal/PowerShell window, type:
+
+```
+uv --version
+```
+
+You should see something like `uv 0.11.x`. If you do, Step 5 is complete — uv will fetch the right Python version and the right Python packages the first time each skill runs, automatically.
 
 ---
 
@@ -309,11 +317,9 @@ Three things to check:
 2. The file is literally named `.env` — not `.env.txt`, not `env`, not `.env.rtf`. Hidden files in Finder: press Cmd + Shift + . (period) to toggle visibility. In Windows File Explorer: View → Show → File name extensions.
 3. The line in the file is exactly `ITERO_API_KEY=yourkey` with no spaces around the `=` and no quotation marks.
 
-### "It says `pip3 not found` or `python not found`"
+### "It says `uv: command not found` or `uv` is not recognized"
 
-Install Python from https://python.org. On Windows, during install, check the box that says **"Add Python to PATH"**.
-
-After installing, fully close any open Terminal/PowerShell windows and open a fresh one before retrying.
+You missed Step 5. On Mac: `brew install uv`. On Windows: `winget install --id=astral-sh.uv -e`. After installing, fully close any open Terminal/PowerShell windows and open a fresh one before retrying.
 
 ### "Hidden folders don't show up in Finder"
 
@@ -325,15 +331,15 @@ You can also press **Cmd + Shift + .** (period) in any Finder window to temporar
 
 Confirm the folders are in `~/.agents/skills/` (or `~/.cursor/skills/` if you used that one). On Windows: `%USERPROFILE%\.agents\skills\`.
 
-If you'd rather scope skills to a single project (so only that project sees them), create `<project-folder>/.cursor/skills/` and put the four folders there instead. Cursor reads from both global and project locations.
+If you'd rather scope skills to a single project (so only that project sees them), create `<project-folder>/.cursor/skills/` and put the six folders there instead. Cursor reads from both global and project locations.
 
-### "I get an error mentioning `requests` or `dotenv`"
+### "I get an error mentioning a missing Python package (`requests`, `dotenv`, `fitz`, etc.)"
 
-You missed Step 5. Open Terminal (Mac) or PowerShell (Windows) and run:
+This means the script is being run with plain `python3` instead of `uv run`. The skills are designed to invoke each script with `uv run`, which auto-installs the right packages. Make sure your AI assistant restarted after Step 3 picked up the new SKILL.md files. If the error persists, check that `uv --version` works in your Terminal/PowerShell — if it doesn't, redo Step 5.
 
-```
-pip3 install requests python-dotenv
-```
+### "I prefer not to use uv — can I install the dependencies with pip?"
+
+Not in a supported way. The skills are designed to be invoked via `uv run` from each `SKILL.md` — that's what your AI assistant reads and executes. To opt out of uv, you'd need to edit every `SKILL.md` to call `python3` instead of `uv run`, install all deps globally with `pip3 install -r requirements.txt` (the repo's `requirements.txt` is kept up to date as a reference for advanced setups), and ensure your global Python version is ≥3.11. We don't recommend this; uv handles all of it for you, including installing Python itself if missing.
 
 ### Still stuck?
 

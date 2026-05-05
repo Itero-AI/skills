@@ -65,7 +65,7 @@ step in plain English; the script handles the deterministic work.
   delimited). Then re-run."*
 - Run:
   ```bash
-  python3 ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+  uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
     inspect <csv-path> [--tenant TENANT]
   ```
 - The script prints a row count, all detected issues grouped by category,
@@ -96,7 +96,7 @@ The original CSV is **never modified**.
 Always render the "Why user groups matter" paragraph above. Then run:
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
   list-groups [--tenant TENANT]
 ```
 
@@ -109,7 +109,7 @@ proceeding.
 Run:
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
   suggest-groups [--tenant TENANT]
 ```
 
@@ -136,7 +136,7 @@ After this step every distinct group in the plan is tagged `existing` or
 Run:
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
   check-duplicates [--tenant TENANT]
 ```
 
@@ -152,7 +152,7 @@ user:
 If (a), exit. If (b), run:
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
   drop-duplicates [--tenant TENANT]
 ```
 
@@ -161,7 +161,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
 Run:
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
   check-seats [--tenant TENANT]
 ```
 
@@ -187,7 +187,7 @@ If (a), ask the user which rows to deactivate, edit the plan, then re-run
 Run:
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py preview
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py preview
 ```
 
 The script prints role mix, status mix, group mix, and the first 5 lines of
@@ -202,7 +202,7 @@ Show this to the user, then ask:
 Only after explicit `yes`, run:
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
   import [--tenant TENANT] --live
 ```
 
@@ -227,7 +227,7 @@ If you manage multiple Itero tenants from one repo, add the optional
 `.env` instead. Example:
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
   inspect ~/Downloads/users.csv --tenant ACME
 ```
 

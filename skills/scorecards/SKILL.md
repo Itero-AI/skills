@@ -199,13 +199,13 @@ if it should apply to all call types.
 ### Step 5 — Dry-run, then live
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py create .tmp/scorecard-plan.json [--tenant TENANT]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py create .tmp/scorecard-plan.json [--tenant TENANT]
 ```
 
 Review the dry-run output. If it looks correct, run with `--live`:
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py create .tmp/scorecard-plan.json [--tenant TENANT] --live
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py create .tmp/scorecard-plan.json [--tenant TENANT] --live
 ```
 
 Report the created template ID, category count, and criterion count.
@@ -217,7 +217,7 @@ Report the created template ID, category count, and criterion count.
 ### Step 1 — Find the template
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py list [--tenant TENANT]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py list [--tenant TENANT]
 ```
 
 Match by name. If ambiguous, show the list and ask the user to confirm.
@@ -225,7 +225,7 @@ Match by name. If ambiguous, show the list and ask the user to confirm.
 ### Step 2 — Load the full hierarchy
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py fetch <template_id> [--tenant TENANT]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py fetch <template_id> [--tenant TENANT]
 ```
 
 Parse the JSON to locate the target entity (category, criterion, or rubric) by name.
@@ -238,14 +238,14 @@ Show a minimal preview with the operation label. Wait for user approval.
 
 **Add a category:**
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py add-category \
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py add-category \
   '{"name":"<name>","scorecardTemplateId":<template_id>,"scorecardType":<0 or 1>}' \
   [--tenant TENANT] --live
 ```
 
 **Add a criterion:**
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py add-criteria \
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py add-criteria \
   '{"title":"<title>","criteria":"<text>","scorecardTemplateCategoryId":<category_id>}' \
   [--tenant TENANT] --live
 ```
@@ -258,13 +258,13 @@ plus `id`). Required fields per entity:
 - `criteria`: `id`, `title`, `criteria`, `scorecardTemplateCategoryId`
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py update <template|category|criteria> <id> \
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py update <template|category|criteria> <id> \
   '<complete json payload>' [--tenant TENANT] --live
 ```
 
 **Update a rubric description:**
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py update-rubric <rubric_id> \
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py update-rubric <rubric_id> \
   "<description text>" [--tenant TENANT] --live
 ```
 
@@ -282,9 +282,9 @@ Each rubric has a `rubrikScale` (0=Poor, 1=NeedsImprovement, 2=Neutral, 3=Good, 
 ### Step 1 — Load and describe what will be destroyed
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py list [--tenant TENANT]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py list [--tenant TENANT]
 # If deleting a category or criteria:
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py fetch <template_id> [--tenant TENANT]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py fetch <template_id> [--tenant TENANT]
 ```
 
 Show the user the exact scope:
@@ -299,7 +299,7 @@ Show the user the exact scope:
 ### Step 2 — Execute only after explicit `yes`
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py delete <criteria|category|template> <id> \
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py delete <criteria|category|template> <id> \
   [--tenant TENANT] --live
 ```
 
@@ -315,8 +315,8 @@ Default: the skill reads `ITERO_API_KEY` from your `.env` file. That's the only 
 If you manage multiple Itero tenants from one repo, add the optional `--tenant <NAME>` flag; the skill will resolve `ITERO_API_KEY_<NAME>` from `.env` instead. Example:
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py list --tenant <NAME>
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py create .tmp/plan.json --tenant <NAME> --live
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py list --tenant <NAME>
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py create .tmp/plan.json --tenant <NAME> --live
 ```
 
 Omit `--tenant` for the common single-key case.
