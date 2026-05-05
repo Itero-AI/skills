@@ -1,29 +1,26 @@
-#!/usr/bin/env python3
-# Last Edited: 2026-04-15
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#     "pymupdf>=1.24",
+#     "pdfplumber>=0.11",
+#     "python-docx>=1.1",
+# ]
+# ///
 """Extract text and tables from PDF, DOCX, or TXT files for LLM processing.
 
 Exit codes:
   0  success
   1  extraction failure (unsupported format, scanned PDF with no text layer, etc.)
-  2  missing Python dependency — message on stderr describes install command
 """
 
 import argparse
 import sys
 from pathlib import Path
 
-try:
-    import fitz  # pymupdf
-    import pdfplumber
-    from docx import Document
-except ImportError as e:
-    sys.stderr.write(
-        f"Missing dependency: {e.name}\n"
-        f"Install with:\n"
-        f"  pip install pymupdf pdfplumber python-docx\n"
-        f"  # or: uv pip install pymupdf pdfplumber python-docx\n"
-    )
-    sys.exit(2)
+import fitz  # pymupdf
+import pdfplumber
+from docx import Document
 
 
 def _rows_to_markdown(rows):

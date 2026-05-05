@@ -1,7 +1,7 @@
 ---
 name: doc-optimizer
 description: Use when preparing a single document (PDF, DOCX, TXT) for RAG pipelines, vector store ingestion, OpenAI file search, Pinecone/Weaviate/Chroma, or any LLM retrieval context. Triggers include "optimize for RAG", "prepare for vector store", "clean up docs for AI", "extract and reformat", "process this SOP/training doc". Produces chunk-independent Markdown. Single file in, single optimized Markdown out — for multi-file batch consolidation, use doc-consolidator instead.
-last_edited: 2026-05-05
+user-invocable: true
 ---
 
 # Document Optimizer for LLM Retrieval
@@ -14,14 +14,7 @@ Turns one PDF, DOCX, or TXT into a clean, chunk-independent Markdown file ready 
 
 ## Prerequisites
 
-The bundled script at `${CLAUDE_PLUGIN_ROOT}/skills/doc-optimizer/scripts/extract.py` needs Python 3.11+ and three libraries:
-
-```bash
-pip3 install pymupdf pdfplumber python-docx
-# or: uv pip install pymupdf pdfplumber python-docx
-```
-
-If `extract.py` exits with code `2`, the deps are missing — show the user the install command, ask if they want to run it, and stop if they decline. Don't work around it.
+The bundled script at `${CLAUDE_PLUGIN_ROOT}/skills/doc-optimizer/scripts/extract.py` runs under [uv](https://docs.astral.sh/uv/). uv reads the script's inline dependency declaration and creates an isolated venv on first run — no separate `pip install` step. If `uv` is missing, the user installs it once per machine (see the repo's INSTALL.md). After that, every `uv run …` invocation is self-contained.
 
 ## Core Principles
 
@@ -41,7 +34,7 @@ If `extract.py` exits with code `2`, the deps are missing — show the user the 
 ### Step 1: Extract text
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/doc-optimizer/scripts/extract.py <input-file> --output /tmp/raw.txt
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/doc-optimizer/scripts/extract.py <input-file> --output /tmp/raw.txt
 ```
 
 Handles PDF (pymupdf + pdfplumber for tables), DOCX (python-docx), TXT. Tables are emitted as GitHub-flavored Markdown.
@@ -49,7 +42,6 @@ Handles PDF (pymupdf + pdfplumber for tables), DOCX (python-docx), TXT. Tables a
 Exit codes:
 - `0` — success
 - `1` — extraction failure (unsupported format, scanned PDF with no text layer, etc.) — message on stderr
-- `2` — missing deps (see Prerequisites)
 
 If exit `1` on a PDF, the doc is likely scanned. Tell the user to OCR first (e.g., `ocrmypdf in.pdf out.pdf`) and retry.
 

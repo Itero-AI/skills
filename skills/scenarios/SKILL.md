@@ -95,7 +95,7 @@ If the user explicitly accepts the stub, proceed and flag in the post-create sum
 ### Step 3 — Call type
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py call-types [--tenant NAME]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py call-types [--tenant NAME]
 ```
 
 Show the catalog. Ask the user which one fits.
@@ -103,7 +103,7 @@ Show the catalog. Ask the user which one fits.
 ### Step 4 — Communication style
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py communication-styles [--tenant NAME]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py communication-styles [--tenant NAME]
 ```
 
 **Warn the user** before they pick one of the negative styles (hostile,
@@ -231,9 +231,9 @@ it's what the user is sanity-checking.
 ### Step 11 — Dry-run, then `--live`
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py create .tmp/<topic>-scenarios.json [--tenant NAME]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py create .tmp/<topic>-scenarios.json [--tenant NAME]
 # dry-run output shows resolved IDs and the POST payload
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py create .tmp/<topic>-scenarios.json [--tenant NAME] --live
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py create .tmp/<topic>-scenarios.json [--tenant NAME] --live
 ```
 
 Report the new scenario IDs.
@@ -261,13 +261,13 @@ Tell the user verbatim, or close to it:
 ### List scenarios
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py list [--tenant NAME]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py list [--tenant NAME]
 ```
 
 ### Fetch one
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py fetch <id> [--tenant NAME]
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py fetch <id> [--tenant NAME]
 ```
 
 ### Update a scenario
@@ -276,7 +276,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py fetch <id> [
 JSON, then:
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py update <id> '<complete json>' [--tenant NAME] --live
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py update <id> '<complete json>' [--tenant NAME] --live
 ```
 
 GET responses on older scenarios may return `practiceScenarioCommunicationStyleId: 0`.
@@ -286,13 +286,13 @@ the zero.
 ### Attach a scorecard to an existing scenario
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py attach-scorecard <scenario_id> <template_id> [--tenant NAME] --live
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py attach-scorecard <scenario_id> <template_id> [--tenant NAME] --live
 ```
 
 ### Delete a scenario
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py delete <id> [--tenant NAME] --live
+uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py delete <id> [--tenant NAME] --live
 ```
 
 ---

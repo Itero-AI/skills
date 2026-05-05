@@ -46,7 +46,7 @@ Please install the Itero skills for me. Do these steps in order, asking me to co
    - Cursor or Codex: `~/.agents/skills/` on Mac, `%USERPROFILE%\.agents\skills\` on Windows
    - Antigravity: `~/.gemini/antigravity/skills/` on Mac, `%USERPROFILE%\.gemini\antigravity\skills\` on Windows
 
-4. Run `pip3 install -r requirements.txt` from the unzipped repo root and confirm everything installed successfully. If `pip3` isn't installed, tell me to install Python from https://python.org first and pause.
+4. Check whether `uv` is installed by running `uv --version`. If it's missing, install it: on Mac/Linux run `brew install uv` (or follow the [official instructions](https://docs.astral.sh/uv/getting-started/installation/)); on Windows run `winget install --id=astral-sh.uv -e` in PowerShell. Confirm `uv --version` prints a version number before continuing. (uv reads each script's inline dependency declaration and creates an isolated environment automatically — there is no separate dependency-install step, and uv will install Python itself if it's missing.)
 
 5. Create a file called `.env` in my current working directory containing exactly this single line — leave the value blank, do NOT ask me for my API key in chat:
 
@@ -67,9 +67,9 @@ After step 5, open the `.env` the agent created in your IDE's file explorer (Cur
 
 Non-technical, IDE-only, no terminal required. See [INSTALL.md](INSTALL.md) for the painfully-detailed step-by-step (Mac + Windows × four agents, with screenshots).
 
-> Note: the `doc-optimizer` and `doc-consolidator` skills only need the Itero API key if you also use the Itero skills — but they DO need the extra Python packages in `requirements.txt` (`pymupdf`, `pdfplumber`, `python-docx`).
+> Note: the `doc-optimizer` and `doc-consolidator` skills don't need an API key — they run locally. They DO need `uv` installed (one-time, per machine) so the bundled scripts can fetch their own dependencies.
 
-### Developer — five shell commands
+### Developer — four shell commands
 
 ```bash
 git clone https://github.com/Itero-AI/skills.git /tmp/itero-skills
@@ -80,11 +80,11 @@ DEST=~/.claude/skills                   # Claude Code
 # DEST=~/.gemini/antigravity/skills     # Antigravity
 
 mkdir -p "$DEST" && cp -r /tmp/itero-skills/skills/* "$DEST/"
-pip3 install -r /tmp/itero-skills/requirements.txt
+brew install uv 2>/dev/null || true     # install uv if you don't have it
 echo "ITERO_API_KEY=$YOUR_KEY" > .env
 ```
 
-Restart your agent. Done.
+Restart your agent. Done. Each script declares its own Python dependencies inline (PEP 723) and uv resolves them on first run — no global pip pollution, no `requirements.txt` to keep in sync.
 
 Alternative for Claude Code: `/plugin marketplace add Itero-AI/skills` then `/plugin install itero@itero-plugins`.
 

@@ -247,35 +247,41 @@ Then in your AI assistant you can say things like *"list scorecards on the stagi
 
 ---
 
-## Step 5 — Install Python (one time only)
+## Step 5 — Install uv (one time only)
 
-The skills are written in Python. You probably don't have to think about this once it's set up — but you do need it installed.
+The skills are written in Python, but you don't have to install Python or any Python packages yourself. The skills use a tool called **uv** that handles all of that automatically — including installing the right Python version if you don't have one. You only install uv once per machine.
 
-### Check if you already have it
-
-#### On a Mac
+### On a Mac
 
 1. Open the **Terminal** app (you can find it via Spotlight: Cmd + Space, type "Terminal", press Enter).
-2. Type: `pip3 install requests python-dotenv pymupdf pdfplumber python-docx`
+2. Type: `brew install uv`
 3. Press Enter.
 
-If it succeeds (you'll see "Successfully installed…"), you're done. Skip to Step 6.
+If it succeeds (you'll see something like "Pouring uv…"), skip to Step 6.
 
-If it says **"command not found: pip3"**, you need to install Python first. Go to https://python.org → **Downloads** → click the big yellow button to download the macOS installer → run it → accept the defaults. Then come back and try `pip3 install requests python-dotenv pymupdf pdfplumber python-docx` again.
+If it says **"command not found: brew"**, you don't have Homebrew installed. The simplest fix: go to https://brew.sh and copy the install command shown on that page into your Terminal, run it, then come back and run `brew install uv`.
 
-#### On a Windows PC
+> Don't want Homebrew? Astral (the team behind uv) provides a [direct installer](https://docs.astral.sh/uv/getting-started/installation/) you can use instead.
+
+### On a Windows PC
 
 1. Open **PowerShell** (Start menu → type "PowerShell" → press Enter).
-2. Type: `pip3 install requests python-dotenv pymupdf pdfplumber python-docx`
+2. Type: `winget install --id=astral-sh.uv -e`
 3. Press Enter.
 
-If it succeeds, skip to Step 6.
+If it succeeds, close PowerShell, open a fresh PowerShell window, and skip to Step 6.
 
-If it says `pip3` is not recognized, install Python first. Go to https://python.org → **Downloads** → click the big yellow button → run the installer.
+If `winget` isn't recognized, follow Astral's [Windows installer instructions](https://docs.astral.sh/uv/getting-started/installation/) (one PowerShell command).
 
-> **Important on Windows:** during install, check the box that says **"Add Python to PATH"** at the bottom of the first installer screen. Without this, the next steps won't work.
+### Verify it works
 
-After Python is installed, open a fresh PowerShell window and try `pip3 install requests python-dotenv pymupdf pdfplumber python-docx` again.
+In a fresh Terminal/PowerShell window, type:
+
+```
+uv --version
+```
+
+You should see something like `uv 0.11.x`. If you do, Step 5 is complete — uv will fetch the right Python version and the right Python packages the first time each skill runs, automatically.
 
 ---
 
@@ -311,11 +317,9 @@ Three things to check:
 2. The file is literally named `.env` — not `.env.txt`, not `env`, not `.env.rtf`. Hidden files in Finder: press Cmd + Shift + . (period) to toggle visibility. In Windows File Explorer: View → Show → File name extensions.
 3. The line in the file is exactly `ITERO_API_KEY=yourkey` with no spaces around the `=` and no quotation marks.
 
-### "It says `pip3 not found` or `python not found`"
+### "It says `uv: command not found` or `uv` is not recognized"
 
-Install Python from https://python.org. On Windows, during install, check the box that says **"Add Python to PATH"**.
-
-After installing, fully close any open Terminal/PowerShell windows and open a fresh one before retrying.
+You missed Step 5. On Mac: `brew install uv`. On Windows: `winget install --id=astral-sh.uv -e`. After installing, fully close any open Terminal/PowerShell windows and open a fresh one before retrying.
 
 ### "Hidden folders don't show up in Finder"
 
@@ -329,13 +333,13 @@ Confirm the folders are in `~/.agents/skills/` (or `~/.cursor/skills/` if you us
 
 If you'd rather scope skills to a single project (so only that project sees them), create `<project-folder>/.cursor/skills/` and put the six folders there instead. Cursor reads from both global and project locations.
 
-### "I get an error mentioning `requests` or `dotenv`"
+### "I get an error mentioning a missing Python package (`requests`, `dotenv`, `fitz`, etc.)"
 
-You missed Step 5. Open Terminal (Mac) or PowerShell (Windows) and run:
+This means the script is being run with plain `python3` instead of `uv run`. The skills are designed to invoke each script with `uv run`, which auto-installs the right packages. Make sure your AI assistant restarted after Step 3 picked up the new SKILL.md files. If the error persists, check that `uv --version` works in your Terminal/PowerShell — if it doesn't, redo Step 5.
 
-```
-pip3 install requests python-dotenv pymupdf pdfplumber python-docx
-```
+### "I prefer not to use uv — can I install the dependencies with pip?"
+
+Yes. Run `pip3 install requests python-dotenv pymupdf pdfplumber python-docx` once and the skills will work — but you'll need to manually edit each script's first line to remove the `uv run --script` shebang and replace it with `python3`. We don't recommend this path; uv handles deps cleanly across Python versions and avoids `pip3` install conflicts on modern macOS.
 
 ### Still stuck?
 
