@@ -339,7 +339,7 @@ This means the script is being run with plain `python3` instead of `uv run`. The
 
 ### "I prefer not to use uv — can I install the dependencies with pip?"
 
-Yes. Run `pip3 install requests python-dotenv pymupdf pdfplumber python-docx` once and the skills will work — but you'll need to manually edit each script's first line to remove the `uv run --script` shebang and replace it with `python3`. We don't recommend this path; uv handles deps cleanly across Python versions and avoids `pip3` install conflicts on modern macOS.
+Not in a supported way. The skills are designed to be invoked via `uv run` from each `SKILL.md` — that's what your AI assistant reads and executes. To opt out of uv, you'd need to edit every `SKILL.md` to call `python3` instead of `uv run`, install all deps globally with `pip3 install -r requirements.txt` (the repo's `requirements.txt` is kept up to date as a reference for advanced setups), and ensure your global Python version is ≥3.11. We don't recommend this; uv handles all of it for you, including installing Python itself if missing.
 
 ### Still stuck?
 
