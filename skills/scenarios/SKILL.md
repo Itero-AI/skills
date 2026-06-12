@@ -12,6 +12,8 @@ description: |
   types", "list communication styles", or any request to configure Itero's
   practice scenarios.
 user-invocable: true
+references:
+    - practice-scenario-api.md
 ---
 
 # Scenarios Skill
@@ -23,6 +25,27 @@ Manage Itero practice scenarios via the public API — list, fetch, create
 API-created scenarios show up in the Scenario Studio in **draft state** until
 the user clicks "Enable testing" in the UI. The skill seeds the bots; the
 Scenario Studio is where the bot behavior gets refined through testing.
+
+---
+
+## Running the scripts
+
+`<skill-dir>` below means the folder containing this SKILL.md (announced when the
+skill loads). Under a Claude Code plugin install this is the `skills/scenarios`
+subfolder of the plugin root; under a manual install it is the skill folder
+inside your agent's skills directory. All scripts run via `uv run` —
+dependencies resolve automatically (PEP 723).
+
+---
+
+## API reference
+
+| Need | Where |
+|---|---|
+| Full field tables, enums, hosts, auth | [practice-scenario-api.md](references/practice-scenario-api.md) |
+| `internalSystems` schema + merge semantics | [practice-scenario-api.md](references/practice-scenario-api.md) — "internalSystems" |
+| Persona override auto-defaulting on fetch+PUT | [practice-scenario-api.md](references/practice-scenario-api.md) — "Persona Override Fields and Auto-Defaulting" |
+| Unexpected 400/500 | [practice-scenario-api.md](references/practice-scenario-api.md) — "Errors" |
 
 ---
 
@@ -53,6 +76,15 @@ not first-person ("I am Fred…"), not imperative ("Be skeptical…").
 **Test:** if a line starts with "The rep should…" or "Your job is to explain…",
 it's in the wrong field — that's rep-side guidance, not bot behavior. Rewrite
 from the bot's perspective or delete it.
+
+### Calibration rules for keyBehaviorsOpinions
+
+- **Tendencies, not absolutes.** Phrase behavioral rules as tendencies the bot leans into ("You tend to push back on anything that sounds like a pitch before the rep earns it.") not hard constraints. Say "you ease up if the rep…" where appropriate so the scenario is winnable.
+- **Hostile/skeptical styles get a "winnable, not impossible" softener.** When the communication style is hostile, dismissive, aggressive, or similar, add an explicit rule stating what moves the bot: "You respond to calm, direct acknowledgment of your concern. You are difficult — not impossible."
+- **One concern at a time.** The bot raises one concern, waits, and does not pile on more objections until the rep has a chance to respond. It does not re-raise a concern the rep has already addressed.
+- **Factual grounding.** Add a rule: "Stay within the facts above; say you're not sure rather than inventing details." This keeps the bot from confabulating specifics not in the Context block.
+- **4,000-character check before every write.** Verify `keyBehaviorsOpinions` is under 4,000 characters before submitting the payload. The API enforces this hard limit.
+- **Gender-match the named individual.** When the Context block names a specific person, ensure the persona's `gender` field and the pronoun conventions in the behavioral rules match. Name and identity stay at the scenario level (in `keyBehaviorsOpinions`); the persona's gender field sets the voice filter.
 
 ---
 
@@ -95,7 +127,7 @@ If the user explicitly accepts the stub, proceed and flag in the post-create sum
 ### Step 3 — Call type
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py call-types [--tenant NAME]
+uv run "<skill-dir>/scripts/scenarios.py" call-types [--tenant NAME]
 ```
 
 Show the catalog. Ask the user which one fits.
@@ -103,7 +135,7 @@ Show the catalog. Ask the user which one fits.
 ### Step 4 — Communication style
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py communication-styles [--tenant NAME]
+uv run "<skill-dir>/scripts/scenarios.py" communication-styles [--tenant NAME]
 ```
 
 **Warn the user** before they pick one of the negative styles (hostile,
@@ -205,6 +237,14 @@ Names resolve via API: `personaName` → `personaId`, `callType` →
 `scorecardTemplateId`. Raw IDs (`personaId`, `practiceScenarioCallTypeId`,
 etc.) pass through unchanged.
 
+**`internalSystems` — when and how to populate.**
+
+Default `systemName` to `"CRM"`. Scale attribute density by customer type:
+- **New lead (sparse):** include lead source, product interest, `"Existing Policies: None"`, quote status — no policy number.
+- **Existing customer (rich):** include policy numbers, coverage/limits, premium, `"Customer Since"` date, open opportunity.
+
+Instance facts (what the rep would see in their CRM for this specific contact) live in `internalSystems`, not on the persona. The persona carries the archetype; `internalSystems` carries the per-scenario contact record. For standard persona-driven practice where the Context block already covers this, `internalSystems` can be omitted or left as an empty array.
+
 **Prefer raw IDs in batch flows.** The catalog endpoints on the Itero
 talk-track API can return inconsistent / cross-tenant data across
 consecutive calls against the same API key (observed in a customer session:
@@ -247,9 +287,9 @@ it's what the user is sanity-checking.
 ### Step 11 — Dry-run, then `--live`
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py create .tmp/<topic>-scenarios.json [--tenant NAME]
+uv run "<skill-dir>/scripts/scenarios.py" create .tmp/<topic>-scenarios.json [--tenant NAME]
 # dry-run output shows resolved IDs and the POST payload
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py create .tmp/<topic>-scenarios.json [--tenant NAME] --live
+uv run "<skill-dir>/scripts/scenarios.py" create .tmp/<topic>-scenarios.json [--tenant NAME] --live
 ```
 
 Report the new scenario IDs.
@@ -277,13 +317,13 @@ Tell the user verbatim, or close to it:
 ### List scenarios
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py list [--tenant NAME]
+uv run "<skill-dir>/scripts/scenarios.py" list [--tenant NAME]
 ```
 
 ### Fetch one
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py fetch <id> [--tenant NAME]
+uv run "<skill-dir>/scripts/scenarios.py" fetch <id> [--tenant NAME]
 ```
 
 ### Update a scenario
@@ -292,7 +332,7 @@ uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py fetch <id> [-
 JSON, then:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py update <id> '<complete json>' [--tenant NAME] --live
+uv run "<skill-dir>/scripts/scenarios.py" update <id> '<complete json>' [--tenant NAME] --live
 ```
 
 GET responses on older scenarios may return `practiceScenarioCommunicationStyleId: 0`.
@@ -315,13 +355,13 @@ When a scenario has `null` for any of these persona override fields, the backend
 ### Attach a scorecard to an existing scenario
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py attach-scorecard <scenario_id> <template_id> [--tenant NAME] --live
+uv run "<skill-dir>/scripts/scenarios.py" attach-scorecard <scenario_id> <template_id> [--tenant NAME] --live
 ```
 
 ### Delete a scenario
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py delete <id> [--tenant NAME] --live
+uv run "<skill-dir>/scripts/scenarios.py" delete <id> [--tenant NAME] --live
 ```
 
 ---

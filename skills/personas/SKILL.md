@@ -9,12 +9,37 @@ description: |
   archetype", "update the persona", "delete a persona", "list voices",
   "show available voices", or any request to configure Itero personas.
 user-invocable: true
+references:
+    - persona-api.md
 ---
 
 # Personas Skill
 
 Manage Itero personas via the public API — list, fetch, create, update, delete.
 Backed by `scripts/personas.py`.
+
+---
+
+## Running the scripts
+
+`<skill-dir>` below means the folder containing this SKILL.md (announced when the
+skill loads). Under a Claude Code plugin install this is the `skills/personas`
+subfolder of the plugin root; under a manual install it is the skill folder
+inside your agent's skills directory. All scripts run via `uv run` —
+dependencies resolve automatically (PEP 723).
+
+---
+
+## API reference
+
+| Need | Where |
+|---|---|
+| Full field tables, Enterprise vs Consumer | [persona-api.md](references/persona-api.md) — "Create and Update Payload" |
+| Voices endpoint + `voiceId` vs `id` naming | [persona-api.md](references/persona-api.md) — "Voices Endpoint" |
+| Communication styles for Consumer personas | [persona-api.md](references/persona-api.md) — "Communication Styles (Consumer)" |
+| 405 workaround for `GET /persona/{id}` | [persona-api.md](references/persona-api.md) — "Endpoints" |
+| Auto-spawned scenarios + DELETE no-cascade | [persona-api.md](references/persona-api.md) — "Side Effects of Persona CRUD" |
+| Unexpected 400/405 | [persona-api.md](references/persona-api.md) — "Errors" |
 
 ---
 
@@ -44,7 +69,7 @@ Reads `ITERO_API_KEY` from `.env`. For multi-tenant repos, pass `--tenant <NAME>
 to use `ITERO_API_KEY_<NAME>` instead.
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py list [--tenant NAME]
+uv run "<skill-dir>/scripts/personas.py" list [--tenant NAME]
 ```
 
 ---
@@ -52,7 +77,7 @@ uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py list [--tenant 
 ## Flow 1: List the personas on a tenant
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py list [--tenant NAME]
+uv run "<skill-dir>/scripts/personas.py" list [--tenant NAME]
 ```
 
 Output: id, type (Enterprise / Consumer), name, botName, title, company.
@@ -221,7 +246,7 @@ an existing one. New archetypes should be rare.
 ### Step 2 — Pick a voice
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py voices [--tenant NAME]
+uv run "<skill-dir>/scripts/personas.py" voices [--tenant NAME]
 ```
 
 Show the list, ask the user to pick (or pick the first matching voice for the
@@ -263,9 +288,9 @@ Show the user a preview of the full payload — type, name, botName, voiceId, ge
 ### Step 6 — Dry-run, then live
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py create .tmp/persona-plan.json [--tenant NAME]
+uv run "<skill-dir>/scripts/personas.py" create .tmp/persona-plan.json [--tenant NAME]
 # review output, then:
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py create .tmp/persona-plan.json [--tenant NAME] --live
+uv run "<skill-dir>/scripts/personas.py" create .tmp/persona-plan.json [--tenant NAME] --live
 ```
 
 Report the new persona id.
@@ -274,11 +299,11 @@ Report the new persona id.
 
 ## Flow 3: Update a persona
 
-`PUT /api/public/v1/persona/{id}` requires the **complete** payload, not a partial.
+`PUT /api/public/v1/persona` (id in the body, not the path) requires the **complete** payload, not a partial.
 Fetch first:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py fetch <id> [--tenant NAME]
+uv run "<skill-dir>/scripts/personas.py" fetch <id> [--tenant NAME]
 ```
 
 (Note: Itero returns 405 on `GET /persona/{id}`. The `fetch` subcommand lists
@@ -287,7 +312,7 @@ all personas and filters client-side — it works around the API limitation.)
 Modify the JSON, then update:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py update <id> '<complete json payload>' [--tenant NAME] --live
+uv run "<skill-dir>/scripts/personas.py" update <id> '<complete json payload>' [--tenant NAME] --live
 ```
 
 ---
@@ -298,7 +323,7 @@ uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py update <id> '<c
 in active learning paths or certifications, stop and ask the user to confirm.
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/personas/scripts/personas.py delete <id> [--tenant NAME] --live
+uv run "<skill-dir>/scripts/personas.py" delete <id> [--tenant NAME] --live
 ```
 
 ---
