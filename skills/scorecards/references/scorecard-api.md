@@ -191,7 +191,7 @@ Binary true/false evaluation — the UI surfaces these as yes/no items. **Phrase
 
 Templates created via the API land in **draft state**. The following lifecycle facts govern when scoring activates:
 
-- **Publish is Studio-only** — there is no API endpoint to publish a template. The user must open the template in the Itero web Studio and publish it there. Confirmed by the platform team as of 2026-06; no publish endpoint is planned.
+- **Publish is Studio-only** — there is no API endpoint to publish a template. The user must open the template in the Itero web Studio and publish it there. Confirmed by Itero as of 2026-06; no publish endpoint is planned.
 - **The template DTO carries no status field** — publish state is not verifiable via the API. An API client cannot determine whether a template is draft or published from any `GET /scorecard` response field.
 - **Attaching a template to a scenario succeeds while draft** — `POST /practice-scenario` or `PUT /practice-scenario` with a `scorecardTemplateId` referencing a draft template does not fail. The link is created; scoring is just inactive until publish.
 - **Scoring activates on publish** — calls against a scenario that references a draft template will not be scored until the template is published in Studio.

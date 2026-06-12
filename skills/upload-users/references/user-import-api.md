@@ -23,7 +23,7 @@ Single-user create/update/deactivate/delete: see the `manage-users` skill.
 
 Path-case quirk: the read endpoints use `/api/Public/v1/...` (capital P); the import endpoint uses `/api/public/v1/...` (lowercase). Routing is case-insensitive on the host, but match the documented case so logs and traces stay clean.
 
-A cross-tenant admin variant of the import endpoint exists for internal Itero use (requires `AdminAccess`); it is not supported by this skill.
+Imports apply only to your own tenant (the one the API key belongs to); cross-tenant imports are not available through this surface.
 
 ---
 
@@ -167,7 +167,7 @@ The controller's documentation says "Existing users will not be duplicated; the 
 | `seat_check.ok is False` (script message, on import) | Seat overflow not resolved | Re-run `check-seats` after deactivating rows or increasing seats. |
 | `400 NotEnoughSeats` | Tenant seat count changed between check and import | Re-run `check-seats`. |
 | `400 CSVFileValidation` | Row count or CSV shape changed after inspect | Re-run `inspect` to see the current issues. |
-| `403 Forbidden` | API key does not have the Manager role | Have an Itero admin promote the key's user. |
+| `403 Forbidden` | API key does not have the Manager role | Generate a key from a Manager-role user in your Itero account. |
 
 ---
 
