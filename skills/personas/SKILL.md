@@ -299,7 +299,7 @@ Report the new persona id.
 
 ## Flow 3: Update a persona
 
-`PUT /api/public/v1/persona/{id}` requires the **complete** payload, not a partial.
+`PUT /api/public/v1/persona` (id in the body, not the path) requires the **complete** payload, not a partial.
 Fetch first:
 
 ```bash
