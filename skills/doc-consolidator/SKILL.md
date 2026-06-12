@@ -6,6 +6,16 @@ user-invocable: true
 
 # Document Consolidator for LLM Retrieval
 
+## Running the scripts
+
+`<skill-dir>` below means the folder containing this SKILL.md (announced when the
+skill loads). Under a Claude Code plugin install this is the `skills/doc-consolidator`
+subfolder of the plugin root; under a manual install it is the skill folder
+inside your agent's skills directory. All scripts run via `uv run` —
+dependencies resolve automatically (PEP 723).
+
+---
+
 ## Overview
 
 Takes N related documents and produces M < N consolidated Markdown files for vector-store ingestion. Every piece of informational content from every source survives, but cross-document boilerplate is deduped and topical overlap is collapsed.
@@ -24,7 +34,7 @@ Takes N related documents and produces M < N consolidated Markdown files for vec
 
 ## Prerequisites
 
-The bundled script at `${CLAUDE_PLUGIN_ROOT}/skills/doc-consolidator/scripts/extract.py` runs under [uv](https://docs.astral.sh/uv/). uv reads the script's inline dependency declaration and creates an isolated venv on first run — no separate `pip install` step. If `uv` is missing, the user installs it once per machine (see the repo's INSTALL.md). After that, every `uv run …` invocation is self-contained.
+The bundled script at `<skill-dir>/scripts/extract.py` runs under [uv](https://docs.astral.sh/uv/). uv reads the script's inline dependency declaration and creates an isolated venv on first run — no separate `pip install` step. If `uv` is missing, the user installs it once per machine (see the repo's INSTALL.md). After that, every `uv run …` invocation is self-contained.
 
 ## Workflow
 
@@ -39,7 +49,7 @@ For every input file, perform three named substeps in order. Do not move to the 
 **(a) Extract** — run the extractor:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/doc-consolidator/scripts/extract.py <file> --output ./optimized/.intermediates/<name>-extracted.txt
+uv run "<skill-dir>/scripts/extract.py" <file> --output ./optimized/.intermediates/<name>-extracted.txt
 ```
 
 The extractor handles PDF (pymupdf + pdfplumber for tables), DOCX, TXT, and MD. Tables are emitted as GitHub-flavored Markdown.
