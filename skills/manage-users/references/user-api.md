@@ -53,7 +53,7 @@ Returned by `GET`, `POST`, and `PUT`.
 Every user object exposes two integer identifiers:
 
 - `id` — the global user record identifier. Use it to find users in `GET` output (it is the id the bundled CLI accepts everywhere).
-- `tenantUserId` — the tenant-scoped identifier. This is what BOTH write surfaces actually consume: `PUT /api/public/v1/user` requires it in the `id` body field (**verified live 2026-06-12** — sending the DTO `id` returns `404` "user not found"; the wiki's example data is misleading on this), and learning-path assignment requires it as `tenantUserId`. The bundled CLI hides the trap: you pass the DTO `id`, the script resolves `tenantUserId` before any `PUT`.
+- `tenantUserId` — the tenant-scoped identifier. This is what BOTH write surfaces actually consume: `PUT /api/public/v1/user` requires it in the `id` body field (**verified live 2026-06-12** — sending the DTO `id` returns `404` "user not found"; Itero's endpoint docs are misleading on this in their example data), and learning-path assignment requires it as `tenantUserId`. The bundled CLI hides the trap: you pass the DTO `id`, the script resolves `tenantUserId` before any `PUT`.
 
 ---
 
@@ -122,7 +122,7 @@ Updates an existing user. The target user is identified by the `id` field in the
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
-| `id` | integer | **Required** | The `tenantUserId` value from `UserPublicDto` — NOT the DTO `id` (verified live 2026-06-12; the DTO `id` returns `404` "user not found"). The wiki labels this field "Tenant-user identifier", which is literally correct even though its example data suggests otherwise. |
+| `id` | integer | **Required** | The `tenantUserId` value from `UserPublicDto` — NOT the DTO `id` (verified live 2026-06-12; the DTO `id` returns `404` "user not found"). Itero's endpoint docs label this field "Tenant-user identifier", which is literally correct even though their example data suggests otherwise. |
 | `name` | string | **Required** | Updated full name. |
 | `role` | string | **Required** | Updated role. One of the four `Role` enum values. |
 | `isActive` | boolean | Optional | Whether the user should be active. Defaults to `true`. |
@@ -130,7 +130,7 @@ Updates an existing user. The target user is identified by the `id` field in the
 
 ### PUT requires the complete object
 
-`PUT` replaces the user's fields with what you send. Omitting `isActive` defaults it to `true` (documented behavior) — so if the user is currently deactivated and you omit `isActive`, they will be reactivated. Always carry the current `isActive` forward explicitly. Similarly for `groups`: the wiki documents auto-create on miss but does not explicitly state what happens when the field is omitted entirely. Out of caution, always send the current groups list to avoid unintended changes — fetch the user first with `GET` and carry existing values forward.
+`PUT` replaces the user's fields with what you send. Omitting `isActive` defaults it to `true` (documented behavior) — so if the user is currently deactivated and you omit `isActive`, they will be reactivated. Always carry the current `isActive` forward explicitly. Similarly for `groups`: auto-create-on-miss is documented, but what happens when the field is omitted entirely is not. Out of caution, always send the current groups list to avoid unintended changes — fetch the user first with `GET` and carry existing values forward.
 
 To deactivate or reactivate a user without touching other fields, use the `activate`/`deactivate` subcommands in the bundled script (they fetch-then-write automatically).
 
@@ -142,9 +142,9 @@ Deletes a user from the caller's tenant.
 
 > **Pending confirmation — do not use in production without verifying these three points:**
 >
-> 1. **Which `id` does the path take?** The wiki's path-parameter description says `{id}` is the "Tenant-user identifier of the user to delete," which corresponds to the DTO's `tenantUserId` field. However, the wiki's own request example shows `DELETE /api/public/v1/user/25` — and `25` matches the `tenantUserId` in the wiki's sample response (where `id` = 1). `PUT`'s body `id` was verified live (2026-06-12) to take `tenantUserId`, which strengthens the `tenantUserId` reading here — but `DELETE` itself remains unverified; passing the wrong value could silently target the wrong user.
+> 1. **Which `id` does the path take?** Itero's endpoint docs describe `{id}` as the "Tenant-user identifier of the user to delete," which corresponds to the DTO's `tenantUserId` field — but their example data is ambiguous about which of the two identifiers is meant. `PUT`'s body `id` was verified live (2026-06-12) to take `tenantUserId`, which strengthens the `tenantUserId` reading here — but `DELETE` itself remains unverified; passing the wrong value could silently target the wrong user.
 >
-> 2. **Hard delete or soft delete?** The wiki does not document whether the record is permanently removed or merely deactivated at the data layer. This is unverified.
+> 2. **Hard delete or soft delete?** It is not documented whether the record is permanently removed or merely deactivated at the data layer. This is unverified.
 >
 > 3. **Immediate seat release?** Whether a deleted Representative or Manager immediately frees a billable seat is undocumented.
 >
@@ -154,7 +154,7 @@ Deletes a user from the caller's tenant.
 
 | Parameter | Type | Required | Notes |
 |---|---|---|---|
-| `{id}` | integer | **Required** | Documented as "Tenant-user identifier" (i.e., `tenantUserId` per wiki description), but the example value and PUT behavior suggest possible ambiguity. Pending confirmation — see warning above. |
+| `{id}` | integer | **Required** | Documented as "Tenant-user identifier" (i.e., `tenantUserId`), but the identifier semantics are pending confirmation — see warning above. |
 
 ---
 

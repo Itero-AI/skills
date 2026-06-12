@@ -136,7 +136,7 @@ def cmd_activate(client: Client, args: argparse.Namespace) -> None:
 
 
 def cmd_delete(client: Client, args: argparse.Namespace) -> None:
-    # Wiki leaves three things unconfirmed for live DELETE:
+    # Itero's endpoint docs leave three things unconfirmed for live DELETE:
     #   1. Whether the path id is the DTO `id` or `tenantUserId`. PUT's body id
     #      was verified live (2026-06-12) to be tenantUserId, which strengthens
     #      the tenantUserId reading — but DELETE itself remains unverified.
