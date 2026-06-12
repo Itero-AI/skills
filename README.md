@@ -1,6 +1,6 @@
 # Itero Skills
 
-A collection of skills for AI coding agents — manage your Itero practice platform (scenarios, scorecards, personas, bulk user imports) AND prep documents for RAG / vector-store ingestion, directly from chat. Installable as a Claude Code plugin; manifest files for Cursor and Codex are included for when those tools support marketplace installs; manual install works everywhere today.
+A collection of skills for AI coding agents — manage your Itero practice platform (scenarios, scorecards, personas, user management, bulk user imports, learning-path assignment) AND prep documents for RAG / vector-store ingestion, directly from chat. Installable as a Claude Code plugin; manifest files for Cursor and Codex are included for when those tools support marketplace installs; manual install works everywhere today.
 
 ## Contents
 
@@ -92,7 +92,7 @@ Alternative for Claude Code: `/plugin marketplace add Itero-AI/skills` then `/pl
 
 Get one at **Settings → API Keys** inside [your Itero account](https://app.iteroapp.ai).
 
-**The key must belong to a user with the Manager role.** The Itero skills (`learning-paths`, `personas`, `scenarios`, `scorecards`, `upload-users`) require Manager-level access against the public API. The doc-prep skills (`doc-optimizer`, `doc-consolidator`) don't need an API key — they run locally. User create/update/delete (the `manage-users` skill) requires an Owner-role key — see that skill's reference.
+**The key must belong to a user with the Manager role.** The Itero skills (`personas`, `scenarios`, `scorecards`, `upload-users`) require Manager-level access against the public API. The doc-prep skills (`doc-optimizer`, `doc-consolidator`) don't need an API key — they run locally. User create/update/delete (the `manage-users` skill) requires an Owner-role key — see that skill's reference. The `learning-paths` skill needs Manager for its own endpoints, but its user-lookup step (resolving who to assign) calls an Owner-documented endpoint — use an Owner key for assignment workflows.
 
 ## Sanity check
 
