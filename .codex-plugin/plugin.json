@@ -1,8 +1,8 @@
 {
   "name": "itero",
   "displayName": "Itero",
-  "description": "Manage your Itero practice platform from OpenAI Codex CLI — scenarios, scorecards, personas, bulk user imports — plus prep documents for RAG / vector-store ingestion.",
-  "version": "1.3.0",
+  "description": "Manage your Itero practice platform from OpenAI Codex CLI — scenarios, scorecards, personas, bulk user imports, learning-path assignment, user management — plus prep documents for RAG / vector-store ingestion.",
+  "version": "1.4.0",
   "skills": "./skills/",
   "author": {
     "name": "Itero",
@@ -11,5 +11,15 @@
   "homepage": "https://iteroapp.ai",
   "repository": "https://github.com/Itero-AI/skills",
   "license": "MIT",
-  "keywords": ["itero", "sales-training", "practice", "roleplay", "scorecards", "personas", "doc-prep", "rag", "vector-store"]
+  "keywords": [
+    "itero",
+    "sales-training",
+    "practice",
+    "roleplay",
+    "scorecards",
+    "personas",
+    "doc-prep",
+    "rag",
+    "vector-store"
+  ]
 }
