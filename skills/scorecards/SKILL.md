@@ -360,7 +360,6 @@ The skill caches `qualitiveAgentId` / `qaAgentId` per tenant in `.scorecard-conf
 |---|---|
 | `missing env var ITERO_API_KEY` | Add `ITERO_API_KEY=<key>` to `.env` |
 | `template id=X not found` | Run `list` to see available templates; pick the right ID |
-| `No existing templates found` | Create any template in the Itero web app first, then retry |
 | `No existing template with agent IDs found` | The script falls back to the tenant agent catalog; pick the qual + QA agents from the printed list (purpose-built agents like an 'Insurance' qual agent may exist). IDs are cached per-tenant in `.scorecard-config.json`. |
 | API 400 error | The response body contains per-field validation errors — fix the payload |
 | `plan file not found` | Check the path to your `.tmp/scorecard-plan.json` |

@@ -59,12 +59,14 @@ Returns a bare JSON array of group objects (`[]` on tenants with no groups).
 [
   {
     "id": 12,
-    "name": "Sales Team"
+    "title": "Sales Team",
+    "description": "…",
+    "tenantId": 3
   }
 ]
 ```
 
-> **Field-name casing note:** this is a legacy endpoint with inconsistent casing. The script reads both `id`/`Id` and `name`/`Name` defensively — consumers should do the same.
+> **Field-name note:** this legacy endpoint returns the group name in `title` (verified against the live API), not `name`. Bundled scripts read `title`/`name` and both casings defensively — consumers should do the same.
 
 Use this to discover existing group titles before authoring an import CSV — the import auto-creates a group on miss, and you usually do not want that side-effect. Group name matching on import is **case-sensitive**.
 

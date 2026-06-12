@@ -39,7 +39,7 @@ Update requests include the fields below plus a required `id`. The `id` is in th
 | `practiceScenarioCallTypeId` | int | Yes | Obtain IDs from `GET /practice-scenario/call-types`. Always fetch at runtime; do not hardcode. |
 | `practiceScenarioCommunicationStyleId` | int | Yes | Must be `> 0`. Obtain IDs from `GET /practice-scenario/communication-styles`. GET responses on older scenarios may return `0` — PUT validators reject `0`, so any update flow must supply a valid ID (never echo back the zero). |
 | `endCallFunctionExpression` | string | No | Expression defining when the call ends. |
-| `practiceScenarioType` | int | Yes | See [`PracticeScenarioType`](#practicescenarotype) enum. Cannot be changed after the scenario is saved. |
+| `practiceScenarioType` | int | Yes | See [`PracticeScenarioType`](#practicescenariotype) enum. Cannot be changed after the scenario is saved. |
 | `keyBehaviorsOpinions` | string | Required when `practiceScenarioType` is `0`, `1`, or `3` | Hard limit: **4,000 characters** — check length before every write. Describes the **bot** (the customer/prospect counterparty), not the rep. See [Authoring `keyBehaviorsOpinions`](#authoring-keybehaviorsopinions). Must be `null` when type is `2` (LiveCallSimulation). |
 | `transcript` | string | Required when `practiceScenarioType` is `2` | Required for LiveCallSimulation; leave `null` otherwise. |
 | `omitFromScoring` | bool | Yes | Default `false`. |
