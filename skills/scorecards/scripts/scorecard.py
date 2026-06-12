@@ -21,6 +21,7 @@ from pathlib import Path
 
 from scorecard_client import Client, PRACTICE_BASE, unwrap, pick_id
 
+TENANT_BASE = "https://iterotenantapi.azurewebsites.net"
 CONFIG_PATH = Path(os.environ.get("CLAUDE_PLUGIN_DATA", str(Path(__file__).parent.parent))) / ".scorecard-config.json"
 
 
@@ -94,55 +95,103 @@ def cmd_fetch(client: Client, args: argparse.Namespace) -> None:
 
 # ---------------------------------------------------------------------------
 # Agent ID resolution
+#
+# Config is tenant-keyed: top-level keys are tenant names (upper-case),
+# 'DEFAULT' for the no-tenant case. Each tenant entry has its own
+# {qaAgentId, qualitiveAgentIds} since agent IDs are tenant-scoped on the
+# Itero practice API — sharing one cache across tenants causes 500s.
+#
+# Legacy flat format (top-level qaAgentId/qualitiveAgentIds) is auto-migrated
+# into the 'DEFAULT' entry on first read.
 # ---------------------------------------------------------------------------
 
+def _tenant_key(tenant: str | None) -> str:
+    return (tenant or "DEFAULT").upper()
+
+
 def load_config() -> dict:
-    if CONFIG_PATH.exists():
-        return json.loads(CONFIG_PATH.read_text())
-    return {"qaAgentId": None, "qualitiveAgentIds": {}}
+    """Return tenant-keyed config dict. Migrates legacy flat format into DEFAULT."""
+    if not CONFIG_PATH.exists():
+        return {}
+    cfg = json.loads(CONFIG_PATH.read_text())
+    if "qaAgentId" in cfg or "qualitiveAgentIds" in cfg:
+        legacy = {
+            "qaAgentId": cfg.get("qaAgentId"),
+            "qualitiveAgentIds": cfg.get("qualitiveAgentIds") or {},
+        }
+        migrated = {k: v for k, v in cfg.items()
+                    if k not in ("qaAgentId", "qualitiveAgentIds")}
+        migrated["DEFAULT"] = legacy
+        return migrated
+    return cfg
 
 
 def save_config(config: dict) -> None:
     CONFIG_PATH.write_text(json.dumps(config, indent=2))
 
 
-def resolve_agent_ids(client: Client, agent_type: str) -> tuple[int, int]:
-    """Return (qualitiveAgentId, qaAgentId). Config file first; donor scan fallback."""
+def resolve_agent_ids(client: Client, agent_type: str, tenant: str | None) -> tuple[int, int]:
+    """Return (qualitiveAgentId, qaAgentId) for the given tenant. Config first; donor scan fallback; agent-catalog fallback."""
     config = load_config()
-    qa_id = config.get("qaAgentId")
-    qual_id = (config.get("qualitiveAgentIds") or {}).get(agent_type)
+    tkey = _tenant_key(tenant)
+    tcfg = config.get(tkey, {})
+    qa_id = tcfg.get("qaAgentId")
+    qual_id = (tcfg.get("qualitiveAgentIds") or {}).get(agent_type)
     if not qual_id:
-        qual_id = (config.get("qualitiveAgentIds") or {}).get("other")
+        qual_id = (tcfg.get("qualitiveAgentIds") or {}).get("other")
 
     if qa_id and qual_id:
         return int(qual_id), int(qa_id)
 
-    # Donor scan — borrow IDs from an existing template
+    # Donor scan — borrow IDs from an existing template in THIS tenant
     templates = unwrap(client.get(f"{PRACTICE_BASE}/api/public/v1/scorecard"))
-    if not templates:
-        raise SystemExit(
-            "\nNo existing templates found on this tenant.\n"
-            "Create any template in the Itero web app first — it seeds the agent\n"
-            "IDs the API requires. Come back after that."
-        )
     for t in templates:
         q = t.get("qualitiveAgentId") or t.get("QualitiveAgentId") or 0
         a = t.get("qaAgentId") or t.get("QaAgentId") or 0
         if q and a:
-            print(f"  donor template id={pick_id(t)}  name={t.get('name')!r}")
+            print(f"  donor template id={pick_id(t)}  name={t.get('name')!r}  (tenant={tkey})")
             qual_id, qa_id = int(q), int(a)
-            # Persist so we don't scan next time
             cfg = load_config()
-            cfg.setdefault("qualitiveAgentIds", {})[agent_type] = qual_id
-            cfg["qaAgentId"] = qa_id
+            tcfg = cfg.setdefault(tkey, {})
+            tcfg.setdefault("qualitiveAgentIds", {})[agent_type] = qual_id
+            tcfg["qaAgentId"] = qa_id
             save_config(cfg)
-            print(f"  saved agent IDs to {CONFIG_PATH.name}")
+            print(f"  saved agent IDs to {CONFIG_PATH.name} under tenant={tkey}")
             return qual_id, qa_id
 
-    raise SystemExit(
-        "No template with both agent IDs populated found.\n"
-        "Ask an Itero admin for qualitiveAgentId and qaAgentId."
+    # Agent-catalog fallback — for fresh tenants where no donor template exists
+    print(
+        f"\nNo existing template with agent IDs found on tenant={tkey}.\n"
+        "Fetching the tenant agent catalog to help you pick qual + QA agents...\n"
     )
+    try:
+        agents = unwrap(client.get(f"{TENANT_BASE}/api/public/v1/agent"))
+    except SystemExit:
+        agents = []
+    if agents:
+        print(f"Agent catalog ({len(agents)} agents):")
+        for a in agents:
+            aid = a.get("id") or a.get("Id") or "?"
+            name = a.get("name") or a.get("Name") or "<unnamed>"
+            atype = a.get("agentType") or a.get("type") or a.get("Type") or ""
+            print(f"  id={aid:<6}  name={name!r}  type={atype!r}")
+        print(
+            "\nAdd the chosen IDs to .scorecard-config.json under the "
+            f'"{tkey}" key, e.g.:\n'
+            "  {\n"
+            f'    "{tkey}": {{\n'
+            '      "qaAgentId": <QA agent id>,\n'
+            '      "qualitiveAgentIds": {"other": <qual agent id>}\n'
+            "    }\n"
+            "  }\n"
+            "Then re-run the create command."
+        )
+    else:
+        print(
+            "Could not fetch agent catalog — check your API key and network.\n"
+            "Provide qualitiveAgentId and qaAgentId manually in .scorecard-config.json."
+        )
+    raise SystemExit(1)
 
 
 # ---------------------------------------------------------------------------
@@ -156,7 +205,7 @@ def cmd_create(client: Client, args: argparse.Namespace) -> None:
     plan = json.loads(plan_path.read_text())
 
     agent_type = plan.get("agentType", "other")
-    qual_agent_id, qa_agent_id = resolve_agent_ids(client, agent_type)
+    qual_agent_id, qa_agent_id = resolve_agent_ids(client, agent_type, args.tenant)
 
     # Build template payload
     template_payload: dict = {

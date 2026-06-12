@@ -139,7 +139,7 @@ If the user picks `1`, ask for the exact `starterLine` text (max 500 chars).
 
 Ask which scorecard template to attach (or none). Resolve by name in the plan
 file via `scorecardName`. The skill cross-resolves to `scorecardTemplateId` by
-calling the Scorecard API.
+calling the Scorecard API. For single-scenario flows you can use `scorecardName`; for batch flows, resolve the ID at this step and write `scorecardTemplateId` into the plan directly (see "Prefer raw IDs in batch flows").
 
 ### Step 8 — Tell the user what the skill is auto-generating
 
@@ -174,15 +174,15 @@ object; multi-scenario plans use the `defaults` + `scenarios` shape.
 }
 ```
 
-**Batch with shared defaults:**
+**Batch with shared defaults (use raw IDs — see "Prefer raw IDs in batch flows" below):**
 
 ```json
 {
   "defaults": {
-    "personaName": "SaaS CFO Archetype",
-    "scorecardName": "Enhanced Cold Call Scorecard",
-    "callType": "Cold Call",
-    "communicationStyle": "Professional",
+    "personaId": 541,
+    "scorecardTemplateId": 169,
+    "practiceScenarioCallTypeId": 1,
+    "practiceScenarioCommunicationStyleId": 7,
     "practiceScenarioType": 0,
     "dialogueStartSetting": 0
   },
@@ -197,11 +197,27 @@ object; multi-scenario plans use the `defaults` + `scenarios` shape.
 }
 ```
 
+(Resolve the IDs once via `personas list`, `scorecards list`, `call-types`, and `communication-styles` before writing the plan.)
+
 Names resolve via API: `personaName` → `personaId`, `callType` →
 `practiceScenarioCallTypeId`, `communicationStyle` →
 `practiceScenarioCommunicationStyleId`, `scorecardName` →
 `scorecardTemplateId`. Raw IDs (`personaId`, `practiceScenarioCallTypeId`,
 etc.) pass through unchanged.
+
+**Prefer raw IDs in batch flows.** The catalog endpoints on the Itero
+talk-track API can return inconsistent / cross-tenant data across
+consecutive calls against the same API key (observed in a customer session:
+same key, same `/api/public/v1/persona` endpoint, 2 personas on one call
+and 15 on the next; scorecard lookup returning another tenant's 47 templates
+instead of the expected set). The script now memoizes catalog responses per
+`(tenant, endpoint)` within a single invocation so all scenarios in one plan
+see the same snapshot, but the only fully reliable path is to skip name
+resolution entirely: put raw `personaId`, `scorecardTemplateId`,
+`practiceScenarioCallTypeId`, and `practiceScenarioCommunicationStyleId` in
+`defaults` (or per-scenario). One-off scenarios where the user is
+interactively confirming the resolved names can still use names — but for
+any batch ≥ 2 scenarios, use IDs.
 
 ### Step 10 — Preview
 
@@ -283,6 +299,19 @@ GET responses on older scenarios may return `practiceScenarioCommunicationStyleI
 PUT validators reject `0`, so you must supply a valid ID — don't echo back
 the zero.
 
+**`internalSystems` quirks on PUT** (discovered 2026-05-25):
+
+- The `attributes[].id` field is a **server-managed database PK**. For new attributes, send `id: 0` and the server assigns one. For an existing attribute, supply its live PK from a recent fetch to overwrite name/value in place.
+- A PUT with `internalSystems: []` does NOT clear existing attributes — array writes are MERGE, not REPLACE. Single attributes can be deleted in the Scenario Studio; there is no public-API path.
+- Sending an `id > 0` that doesn't exist on the scenario returns 500 `InternalServerError` with no detail. If you mix existing and new attributes in one PUT, use the live IDs for existing slots and `id: 0` for new ones.
+- For a full attribute overhaul on a polluted scenario, prefer `delete` + `create` over PUT — merge semantics will otherwise leave orphan attributes behind.
+
+**`personaBotName` / `personaCompany` / `personaTitle` auto-defaulting** (discovered 2026-05-25):
+
+When a scenario has `null` for any of these persona override fields, the backend auto-populates them on fetch — `personaBotName` gets the linked persona's `botName`, and `personaCompany` / `personaTitle` get AI-generated fake values ("NovaTech Solutions", "Nexora Technologies", etc.). A naive fetch + modify + PUT round-trip persists those auto-defaults as real scenario data, clobbering whatever you originally set at create time.
+
+**Mitigation in any fetch+modify+PUT workflow:** before the PUT, explicitly re-set `personaBotName` to the intended value and explicitly null `personaCompany` and `personaTitle` (unless the scenario is genuinely B2B and you want company/title populated).
+
 ### Attach a scorecard to an existing scenario
 
 ```bash
@@ -299,8 +328,8 @@ uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py delete <id> [
 
 ## Common Failure Modes
 
-These mirror what good roleplay scenarios punish (from the Brex SDR guide and
-others). When authoring `keyBehaviorsOpinions`, encode rules that punish:
+These mirror what good roleplay scenarios punish (drawn from real SDR guides
+and real-world sales calls). When authoring `keyBehaviorsOpinions`, encode rules that punish:
 
 - Asking multiple closed-ended yes/no questions back-to-back
 - Pitch-slapping (hearing one piece of pain and immediately pitching)
