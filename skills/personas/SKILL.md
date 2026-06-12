@@ -229,7 +229,7 @@ specified gender/language and confirm).
 
 ### Step 3 — Draft rich-context fields from source material
 
-Per [Authoring rich-context fields](#authoring-rich-context-fields-mandatory-for-enterprise), write the three fields drawing from the customer docs gathered in Step 0. Cite source-doc + section per major fact in your scratch draft. Voice: persona's first-person, not Brex/product perspective. HTML format mirrors `personas fetch 105 --tenant <NAME>` (or 106) on a tenant that already has rich personas.
+Per [Authoring rich-context fields](#authoring-rich-context-fields-mandatory-for-enterprise), write the three fields drawing from the customer docs gathered in Step 0. Cite source-doc + section per major fact in your scratch draft. Voice: persona's first-person, not the company's/product perspective. HTML format mirrors `personas fetch 105 --tenant <NAME>` (or 106) on a tenant that already has rich personas.
 
 ### Step 4 — Build plan.json
 

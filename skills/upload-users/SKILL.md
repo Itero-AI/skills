@@ -237,8 +237,10 @@ Omit `--tenant` for the common single-key case.
 
 ## Out of scope (v1)
 
-- The Admin endpoint `POST /api/public/v1/admin/user/import-csv?tenantId=...`
-  — this skill only uses the Manager endpoint for the caller's own tenant.
+- Cross-tenant imports (`POST /api/public/v1/admin/user/import-csv?tenantId=...`).
+  This admin endpoint requires AdminAccess scope and an explicit `tenantId`.
+  The `/upload-users` skill only writes to the caller's own tenant via the
+  Manager endpoint.
 - `.xlsx` auto-conversion — reject with a clear "save as CSV" message.
 - Updating existing users — there is no public PUT endpoint for users.
 
