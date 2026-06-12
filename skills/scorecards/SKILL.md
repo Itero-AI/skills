@@ -12,6 +12,8 @@ description: |
   "build a scorecard from this playbook", or any request to configure Itero's evaluation
   criteria or scoring system.
 user-invocable: true
+references:
+    - scorecard-api.md
 ---
 
 # Scorecards Skill
@@ -21,13 +23,25 @@ Manage Itero scorecard templates via the public API — create, edit, and delete
 
 ---
 
-## Getting Started (Customer Setup — One Time)
+## Running the scripts
 
-1. Drop the `scorecards/` folder into `.claude/skills/`
-2. Add `ITERO_API_KEY=<your-api-key>` to your `.env` file
-3. Run any `/scorecards` command — agent IDs are discovered automatically on first create
+`<skill-dir>` below means the folder containing this SKILL.md (announced when the
+skill loads). Under a Claude Code plugin install this is the `skills/scorecards`
+subfolder of the plugin root; under a manual install it is the skill folder
+inside your agent's skills directory. All scripts run via `uv run` —
+dependencies resolve automatically (PEP 723).
 
-That's it. No other configuration needed.
+---
+
+## API reference
+
+| Need | Where |
+|---|---|
+| Full payload tables, enums, hosts, auth | [scorecard-api.md](references/scorecard-api.md) |
+| Lifecycle: draft → publish (Studio-only) | [scorecard-api.md](references/scorecard-api.md) — "Lifecycle: Draft → Published" |
+| Agent IDs / config seeding (tenant-scoped) | [scorecard-api.md](references/scorecard-api.md) — "Agent IDs" |
+| Soft-delete read lag after DELETE | [scorecard-api.md](references/scorecard-api.md) — "Soft-Delete Read Lag" |
+| Unexpected 400/500 | [scorecard-api.md](references/scorecard-api.md) — "Errors" |
 
 ---
 
@@ -70,6 +84,15 @@ Graded on a 5-level rubric — start with "How effectively..." or "How well...":
 
 Can two reasonable reviewers disagree on the answer? → Qualitative.
 Can you answer yes/no just by watching the call? → QA.
+
+### One concept per binary QA criterion
+
+A QA criterion must check exactly one observable behavior — never bundle two checks into a single criterion. If you catch yourself writing "and" in a QA criterion, stop and split it.
+
+- **Bad:** `"Did the rep deliver the recording disclosure and confirm the prospect's name before proceeding?"` — two checks; either can fail independently.
+- **Good (split):** `"Did the rep deliver the required call-recording disclosure before any substantive question?"` AND `"Did the rep confirm the prospect's name at the start of the call?"`
+
+Bundled QA criteria produce ambiguous scores (true if both? true if either?) and make coaching conversations harder because you cannot tell which behavior the rep failed.
 
 ### Categories must be distinct concepts — one concept per category
 
@@ -199,16 +222,20 @@ if it should apply to all call types.
 ### Step 5 — Dry-run, then live
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py create .tmp/scorecard-plan.json [--tenant TENANT]
+uv run "<skill-dir>/scripts/scorecard.py" create .tmp/scorecard-plan.json [--tenant TENANT]
 ```
 
 Review the dry-run output. If it looks correct, run with `--live`:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py create .tmp/scorecard-plan.json [--tenant TENANT] --live
+uv run "<skill-dir>/scripts/scorecard.py" create .tmp/scorecard-plan.json [--tenant TENANT] --live
 ```
 
 Report the created template ID, category count, and criterion count.
+
+Tell the user verbatim, or close to it:
+
+> The template is now in **draft state**. To activate scoring, open the template in the Itero Studio and publish it there — there is no API endpoint to publish. The skill cannot do this step for you.
 
 ---
 
@@ -217,7 +244,7 @@ Report the created template ID, category count, and criterion count.
 ### Step 1 — Find the template
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py list [--tenant TENANT]
+uv run "<skill-dir>/scripts/scorecard.py" list [--tenant TENANT]
 ```
 
 Match by name. If ambiguous, show the list and ask the user to confirm.
@@ -225,7 +252,7 @@ Match by name. If ambiguous, show the list and ask the user to confirm.
 ### Step 2 — Load the full hierarchy
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py fetch <template_id> [--tenant TENANT]
+uv run "<skill-dir>/scripts/scorecard.py" fetch <template_id> [--tenant TENANT]
 ```
 
 Parse the JSON to locate the target entity (category, criterion, or rubric) by name.
@@ -238,14 +265,14 @@ Show a minimal preview with the operation label. Wait for user approval.
 
 **Add a category:**
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py add-category \
+uv run "<skill-dir>/scripts/scorecard.py" add-category \
   '{"name":"<name>","scorecardTemplateId":<template_id>,"scorecardType":<0 or 1>}' \
   [--tenant TENANT] --live
 ```
 
 **Add a criterion:**
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py add-criteria \
+uv run "<skill-dir>/scripts/scorecard.py" add-criteria \
   '{"title":"<title>","criteria":"<text>","scorecardTemplateCategoryId":<category_id>}' \
   [--tenant TENANT] --live
 ```
@@ -258,13 +285,13 @@ plus `id`). Required fields per entity:
 - `criteria`: `id`, `title`, `criteria`, `scorecardTemplateCategoryId`
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py update <template|category|criteria> <id> \
+uv run "<skill-dir>/scripts/scorecard.py" update <template|category|criteria> <id> \
   '<complete json payload>' [--tenant TENANT] --live
 ```
 
 **Update a rubric description:**
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py update-rubric <rubric_id> \
+uv run "<skill-dir>/scripts/scorecard.py" update-rubric <rubric_id> \
   "<description text>" [--tenant TENANT] --live
 ```
 
@@ -282,9 +309,9 @@ Each rubric has a `rubrikScale` (0=Poor, 1=NeedsImprovement, 2=Neutral, 3=Good, 
 ### Step 1 — Load and describe what will be destroyed
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py list [--tenant TENANT]
+uv run "<skill-dir>/scripts/scorecard.py" list [--tenant TENANT]
 # If deleting a category or criteria:
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py fetch <template_id> [--tenant TENANT]
+uv run "<skill-dir>/scripts/scorecard.py" fetch <template_id> [--tenant TENANT]
 ```
 
 Show the user the exact scope:
@@ -299,7 +326,7 @@ Show the user the exact scope:
 ### Step 2 — Execute only after explicit `yes`
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py delete <criteria|category|template> <id> \
+uv run "<skill-dir>/scripts/scorecard.py" delete <criteria|category|template> <id> \
   [--tenant TENANT] --live
 ```
 
@@ -315,8 +342,8 @@ Default: the skill reads `ITERO_API_KEY` from your `.env` file. That's the only 
 If you manage multiple Itero tenants from one repo, add the optional `--tenant <NAME>` flag; the skill will resolve `ITERO_API_KEY_<NAME>` from `.env` instead. Example:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py list --tenant <NAME>
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py create .tmp/plan.json --tenant <NAME> --live
+uv run "<skill-dir>/scripts/scorecard.py" list --tenant <NAME>
+uv run "<skill-dir>/scripts/scorecard.py" create .tmp/plan.json --tenant <NAME> --live
 ```
 
 Omit `--tenant` for the common single-key case.
@@ -336,5 +363,4 @@ The skill caches `qualitiveAgentId` / `qaAgentId` per tenant in `.scorecard-conf
 | `No existing templates found` | Create any template in the Itero web app first, then retry |
 | `No existing template with agent IDs found` | The script falls back to the tenant agent catalog; pick the qual + QA agents from the printed list (purpose-built agents like an 'Insurance' qual agent may exist). IDs are cached per-tenant in `.scorecard-config.json`. |
 | API 400 error | The response body contains per-field validation errors — fix the payload |
-| `No module named 'scorecard_client'` | Run the script from the workspace root, or `cd` to the scripts folder first |
 | `plan file not found` | Check the path to your `.tmp/scorecard-plan.json` |
