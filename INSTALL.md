@@ -1,6 +1,6 @@
 # Manually Installing the Itero Skills — Step by Step
 
-> **Most people don't need this guide.** The fastest way to install is the [auto-install prompt in the README](README.md#install-in-30-seconds-automatic) — copy one block of text, paste it into your AI assistant, answer one question. This manual guide is for anyone who hits a problem with the auto-install or who'd rather do it themselves.
+> **Most people don't need this guide.** The fastest way to install is the [auto-install prompt in the README](README.md#automatic--paste-a-prompt-into-your-agent) — copy one block of text, paste it into your AI assistant, answer one question. This manual guide is for anyone who hits a problem with the auto-install or who'd rather do it themselves.
 
 This guide walks you through installing the Itero skills into your AI assistant by hand. It's written for people who have never opened a terminal and have no idea what a "hidden folder" is. If that's you, you're in the right place.
 
@@ -8,22 +8,20 @@ There are 6 steps. Plan for 5–10 minutes the first time.
 
 > **Step 1** — Download the skills folder
 > **Step 2** — Open your AI assistant's skills folder
-> **Step 3** — Drag the six skills into place
+> **Step 3** — Drag the eight skills into place
 > **Step 4** — Save your Itero API key
-> **Step 5** — Install Python (one time only)
+> **Step 5** — Install uv (one time only)
 > **Step 6** — Restart your AI assistant and test
 
 ---
 
 ## Step 1 — Download the skills folder
 
-You're going to download all six Itero skills as a single zipped folder.
+You're going to download all eight Itero skills as a single zipped folder.
 
 1. Go to **https://github.com/Itero-AI/skills** in your web browser.
 2. Click the green **Code** button (it's near the top-right of the file list).
 3. In the menu that opens, click **Download ZIP**.
-
-> *Screenshot: GitHub "Code → Download ZIP" button.*
 
 A file called `skills-main.zip` will land in your **Downloads** folder.
 
@@ -36,16 +34,16 @@ A file called `skills-main.zip` will land in your **Downloads** folder.
 
 Open `skills-main`. Inside, you'll see a folder called `skills`. Open that too.
 
-You should now see six folders side by side:
+You should now see eight folders side by side:
 
 - `doc-consolidator`
 - `doc-optimizer`
+- `learning-paths`
+- `manage-users`
 - `personas`
 - `scenarios`
 - `scorecards`
 - `upload-users`
-
-> *Screenshot: Finder/File Explorer showing the six skill folders side by side.*
 
 **Leave this window open** — you'll come back to it in Step 3.
 
@@ -53,7 +51,7 @@ You should now see six folders side by side:
 
 ## Step 2 — Open your AI assistant's skills folder
 
-Your AI assistant looks for skills in a specific folder on your computer. You need to open that folder so you can drop the six skill folders into it.
+Your AI assistant looks for skills in a specific folder on your computer. You need to open that folder so you can drop the eight skill folders into it.
 
 The folder path depends on which assistant you use. Find your assistant below.
 
@@ -68,8 +66,6 @@ The folder path depends on which assistant you use. Find your assistant below.
 2. Press **Cmd + Shift + G** on your keyboard. A small window will pop up that says "Go to Folder."
 3. Type (or paste) this exact path: `~/.claude/skills`
 4. Press **Enter**.
-
-> *Screenshot: macOS "Go to Folder" dialog with `~/.claude/skills` typed in.*
 
 If a window opens showing an empty (or near-empty) folder, you're done with Step 2 — leave it open and skip to Step 3.
 
@@ -87,8 +83,6 @@ If Finder says **"The folder can't be found"** — that's fine, the folder doesn
 2. Click in the address bar at the top (where the path is shown).
 3. Type (or paste) this exact path: `%USERPROFILE%\.claude\skills`
 4. Press **Enter**.
-
-> *Screenshot: Windows File Explorer with `%USERPROFILE%\.claude\skills` in the address bar.*
 
 If a window opens showing an empty (or near-empty) folder, you're done with Step 2 — skip to Step 3.
 
@@ -151,22 +145,20 @@ If missing, create the path: `%USERPROFILE%` → create `.gemini` → create `an
 
 ---
 
-## Step 3 — Drag the six skills into place
+## Step 3 — Drag the eight skills into place
 
 You should now have **two windows open**:
 
-- **Window A:** the unzipped `skills` folder from Step 1, showing `doc-consolidator`, `doc-optimizer`, `personas`, `scenarios`, `scorecards`, `upload-users`.
+- **Window A:** the unzipped `skills` folder from Step 1, showing `doc-consolidator`, `doc-optimizer`, `learning-paths`, `manage-users`, `personas`, `scenarios`, `scorecards`, `upload-users`.
 - **Window B:** your AI assistant's empty (or near-empty) `skills` folder from Step 2.
 
 Now:
 
-1. In Window A, click `doc-consolidator`, hold the Shift key, and click `upload-users`. All six folders should now be highlighted.
+1. In Window A, click `doc-consolidator`, hold the Shift key, and click `upload-users`. All eight folders should now be highlighted.
 2. Drag them from Window A into Window B.
 3. If your computer asks "Copy or Move?", choose **Copy**.
 
-> *Screenshot: dragging the six skill folders from one window to another.*
-
-When the copy finishes, Window B should now contain six folders: `doc-consolidator`, `doc-optimizer`, `personas`, `scenarios`, `scorecards`, `upload-users`.
+When the copy finishes, Window B should now contain eight folders: `doc-consolidator`, `doc-optimizer`, `learning-paths`, `manage-users`, `personas`, `scenarios`, `scorecards`, `upload-users`.
 
 You can close Window A.
 
@@ -199,8 +191,6 @@ If you're using Cursor, VS Code, or Antigravity (any IDE built on VS Code), this
 
 5. Click immediately after the equals sign. Paste your Itero API key. Save with **Cmd + S** (Mac) or **Ctrl + S** (Windows).
 
-> *Screenshot: VS Code / Cursor file explorer with `.env` open in the editor, `ITERO_API_KEY=` typed, and the cursor positioned right after the equals sign ready for the customer to paste their key.*
-
 It should look like this when saved:
 
 ```
@@ -222,16 +212,12 @@ Only use this if you're not in an IDE for some reason.
    - When TextEdit warns about names starting with a dot, click **Use "."**.
    - When it asks about appending `.txt`, click **Don't append**.
 
-> *Screenshot: macOS TextEdit save dialog with "Use '.'" prompt.*
-
 #### On a Windows PC
 
 1. Open **Notepad**.
 2. Type `ITERO_API_KEY=` followed by your key.
 3. **File → Save As** → name `.env` → in the **Save as type** dropdown, choose **All Files (\*.\*)** (otherwise Windows saves it as `.env.txt`, which won't work).
 4. Save in your project folder.
-
-> *Screenshot: Windows Notepad save dialog with "All Files" selected.*
 
 ### Multiple Itero accounts (optional)
 
@@ -331,7 +317,7 @@ You can also press **Cmd + Shift + .** (period) in any Finder window to temporar
 
 Confirm the folders are in `~/.agents/skills/` (or `~/.cursor/skills/` if you used that one). On Windows: `%USERPROFILE%\.agents\skills\`.
 
-If you'd rather scope skills to a single project (so only that project sees them), create `<project-folder>/.cursor/skills/` and put the six folders there instead. Cursor reads from both global and project locations.
+If you'd rather scope skills to a single project (so only that project sees them), create `<project-folder>/.cursor/skills/` and put the eight folders there instead. Cursor reads from both global and project locations.
 
 ### "I get an error mentioning a missing Python package (`requests`, `dotenv`, `fitz`, etc.)"
 
@@ -360,7 +346,7 @@ If you're comfortable typing slash commands inside your AI assistant, Claude Cod
 
 1. Open Claude Code.
 2. In the chat, type: `/plugin marketplace add Itero-AI/skills` and press Enter.
-3. Then type: `/plugin install itero@itero-skills` and press Enter.
-4. Continue with **Step 4** (the API key) and **Step 5** (Python) above. The plugin install handles the rest.
+3. Then type: `/plugin install itero@itero-plugins` and press Enter.
+4. Continue with **Step 4** (the API key) and **Step 5** (uv) above. The plugin install handles the rest.
 
 This path doesn't yet exist for Cursor, Codex, or Antigravity — those still use the manual download in Steps 1–3.

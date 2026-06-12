@@ -1,14 +1,14 @@
 # Itero Skills
 
-A collection of skills for AI coding agents — manage your Itero practice platform (scenarios, scorecards, personas, bulk user imports) AND prep documents for RAG / vector-store ingestion, directly from chat. Available as a plugin for Claude Code, Cursor, and OpenAI Codex; manual install for Google Antigravity.
+A collection of skills for AI coding agents — manage your Itero practice platform (scenarios, scorecards, personas, user management, bulk user imports, learning-path assignment) AND prep documents for RAG / vector-store ingestion, directly from chat. Installable as a Claude Code plugin; manifest files for Cursor and Codex are included for when those tools support marketplace installs; manual install works everywhere today.
 
 ## Contents
 
 - [Skills](#skills)
 - [Install](#install)
-  - [Automatic — paste a prompt into your agent](#automatic-paste-a-prompt-into-your-agent)
-  - [Manual — drag folders](#manual-drag-folders)
-  - [Developer — five shell commands](#developer-five-shell-commands)
+  - [Automatic — paste a prompt into your agent](#automatic--paste-a-prompt-into-your-agent)
+  - [Manual — drag folders](#manual--drag-folders)
+  - [Developer — five shell commands](#developer--five-shell-commands)
 - [API key](#api-key)
 - [Sanity check](#sanity-check)
 - [Plugin manifests](#plugin-manifests)
@@ -17,14 +17,16 @@ A collection of skills for AI coding agents — manage your Itero practice platf
 
 | Skill | What it does |
 |---|---|
+| `learning-paths` | Assign and reassign learning paths and certifications. |
+| `manage-users` | Create, update, deactivate, and delete individual users. |
+| `personas` | Author Enterprise/B2B and Consumer/B2C personas for practice calls. |
 | `scenarios` | Create practice scenarios from playbooks, transcripts, or descriptions. |
 | `scorecards` | Build evaluation rubrics from training docs or methodology guides. |
-| `personas` | Author Enterprise/B2B and Consumer/B2C personas for practice calls. |
 | `upload-users` | Bulk-import a CSV of users into your tenant. |
 | `doc-optimizer` | Turn a single PDF / DOCX / TXT into chunk-independent Markdown for RAG. |
 | `doc-consolidator` | Collapse many related docs into fewer topic-grouped Markdown files for RAG. |
 
-The Itero skills (`scenarios`, `scorecards`, `personas`, `upload-users`) dry-run changes and wait for your confirmation before writing. The doc-prep skills (`doc-optimizer`, `doc-consolidator`) pause for confirmation before merging or destructive cleanup.
+The Itero skills (`learning-paths`, `manage-users`, `personas`, `scenarios`, `scorecards`, `upload-users`) dry-run changes and wait for your confirmation before writing. The doc-prep skills (`doc-optimizer`, `doc-consolidator`) pause for confirmation before merging or destructive cleanup.
 
 ## Install
 
@@ -56,20 +58,18 @@ Please install the Itero skills for me. Do these steps in order, asking me to co
 
    Then tell me the full path to the `.env` file you just created and instruct me to (a) open that file in my IDE's file explorer, (b) click after the equals sign, (c) paste my Itero API key, and (d) save the file.
 
-6. After I confirm I've added my key, list the contents of the destination skills folder to verify all six skill folders are there. Then tell me to fully restart you and try the message: list my scorecards.
+6. After I confirm I've added my key, list the contents of the destination skills folder to verify all eight skill folders are there. Then tell me to fully restart you and try the message: list my scorecards.
 ````
 
 After step 5, open the `.env` the agent created in your IDE's file explorer (Cursor / VS Code / Antigravity all show dotfiles by default), paste your key after the `=`, save.
 
-> *Screenshot: VS Code / Cursor with `.env` open, `ITERO_API_KEY=` and cursor positioned right after the equals sign.*
-
 ### Manual — drag folders
 
-Non-technical, IDE-only, no terminal required. See [INSTALL.md](INSTALL.md) for the painfully-detailed step-by-step (Mac + Windows × four agents, with screenshots).
+Non-technical, IDE-only, no terminal required. See [INSTALL.md](INSTALL.md) for the painfully-detailed step-by-step (Mac + Windows × four agents).
 
 > Note: the `doc-optimizer` and `doc-consolidator` skills don't need an API key — they run locally. They DO need `uv` installed (one-time, per machine) so the bundled scripts can fetch their own dependencies.
 
-### Developer — four shell commands
+### Developer — five shell commands
 
 ```bash
 git clone https://github.com/Itero-AI/skills.git /tmp/itero-skills
@@ -92,7 +92,7 @@ Alternative for Claude Code: `/plugin marketplace add Itero-AI/skills` then `/pl
 
 Get one at **Settings → API Keys** inside [your Itero account](https://app.iteroapp.ai).
 
-**The key must belong to a user with the Manager role.** The four Itero skills (`scenarios`, `scorecards`, `personas`, `upload-users`) require Manager-level access against the public API. The doc-prep skills (`doc-optimizer`, `doc-consolidator`) don't need an API key — they run locally.
+**The key must belong to a user with the Manager role.** The Itero skills (`personas`, `scenarios`, `scorecards`, `upload-users`) require Manager-level access against the public API. The doc-prep skills (`doc-optimizer`, `doc-consolidator`) don't need an API key — they run locally. User create/update/delete (the `manage-users` skill) requires an Owner-role key — see that skill's reference. The `learning-paths` skill needs Manager for its own endpoints, but its user-lookup step (resolving who to assign) calls an Owner-documented endpoint — use an Owner key for assignment workflows.
 
 ## Sanity check
 
@@ -104,11 +104,11 @@ If you see your scorecards (or "no scorecards yet"), you're done.
 
 ## Plugin manifests
 
-This repo serves as a plugin for multiple agents:
+This repo is installable as a Claude Code plugin today. Manifest files for Cursor and Codex are included for when those tools support marketplace installs; manual install works everywhere today.
 
-- **Claude Code** — `.claude-plugin/marketplace.json` + `plugin.json`
-- **Cursor** — `.cursor-plugin/marketplace.json` + `plugin.json`
-- **OpenAI Codex** — `.codex-plugin/plugin.json` (no marketplace.json — Codex doesn't use one)
+- **Claude Code** — `.claude-plugin/marketplace.json` + `plugin.json` (marketplace install works now)
+- **Cursor** — `.cursor-plugin/marketplace.json` + `plugin.json` (manifest included; marketplace install not yet supported by Cursor)
+- **OpenAI Codex** — `.codex-plugin/plugin.json` (manifest included; no marketplace.json — Codex doesn't use one yet)
 - **Google Antigravity** — no Antigravity-specific marketplace command exists; manual or developer install only
 
 All marketplace manifests use `"source": "./"`. Skills live at `skills/<name>/SKILL.md`.
