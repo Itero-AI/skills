@@ -115,7 +115,7 @@ Both `POST /{id}/assign` and `POST /{id}/reassign` accept the same body shape.
 
 ### `tenantUserId` — not `id`
 
-The value for `tenantUserId` comes from the **tenant API user list's `tenantUserId` field**, not its `id` field. The tenant user object exposes two integer identifiers: `id` (the global user record ID) and `tenantUserId` (the tenant-scoped assignment identifier). Passing the `id` value instead of `tenantUserId` will silently target the wrong user or produce a `400`. Use `GET /api/public/v1/user` on `iterotenantapi.azurewebsites.net` to look up users; the `tenantUserId` column is the one to pass here.
+The value for `tenantUserId` comes from the **tenant API user list's `tenantUserId` field**, not its `id` field. The tenant user object exposes two integer identifiers: `id` (the global user record ID) and `tenantUserId` (the tenant-scoped assignment identifier). Passing the `id` value instead of `tenantUserId` will silently target the wrong user or produce a `400`. Use `GET /api/public/v1/user` on `iterotenantapi.azurewebsites.net` to look up users; the `tenantUserId` column is the one to pass here. (Note: that tenant-API lookup endpoint is documented as requiring an Owner-role key, unlike the learning-path endpoints themselves, which need Manager.)
 
 ### `dueDate` format
 
