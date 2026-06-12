@@ -1,6 +1,6 @@
 # User Import API Reference
 
-The User resource covers tenant-user listing and bulk-create via CSV upload. Reading users and user groups is supported alongside bulk import. There is no endpoint to create or update an individual user one-at-a-time via the public API — onboarding is bulk-import driven.
+This reference covers tenant-user listing and bulk-create via CSV upload — the surface the `upload-users` skill uses. Single-user endpoints (`POST`/`PUT`/`DELETE /api/public/v1/user`) exist on the same host but belong to a different workflow.
 
 Single-user create/update/deactivate/delete: see the `manage-users` skill.
 
