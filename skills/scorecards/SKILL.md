@@ -321,6 +321,10 @@ uv run ${CLAUDE_PLUGIN_ROOT}/skills/scorecards/scripts/scorecard.py create .tmp/
 
 Omit `--tenant` for the common single-key case.
 
+### Agent-ID cache is tenant-keyed
+
+The skill caches `qualitiveAgentId` / `qaAgentId` per tenant in `.scorecard-config.json` (tenant names upper-cased, `DEFAULT` for the no-tenant case). Agent IDs are tenant-scoped on the Itero practice API, so sharing one cache across tenants causes 500s on create. Legacy flat-format configs (without tenant keys at the top level) auto-migrate into the `DEFAULT` entry on first read; no manual intervention needed.
+
 ---
 
 ## Error Handling
@@ -330,7 +334,7 @@ Omit `--tenant` for the common single-key case.
 | `missing env var ITERO_API_KEY` | Add `ITERO_API_KEY=<key>` to `.env` |
 | `template id=X not found` | Run `list` to see available templates; pick the right ID |
 | `No existing templates found` | Create any template in the Itero web app first, then retry |
-| `No template with both agent IDs populated` | Ask an Itero admin for `qualitiveAgentId` and `qaAgentId` |
+| `No existing template with agent IDs found` | The script falls back to the tenant agent catalog; pick the qual + QA agents from the printed list (purpose-built agents like an 'Insurance' qual agent may exist). IDs are cached per-tenant in `.scorecard-config.json`. |
 | API 400 error | The response body contains per-field validation errors — fix the payload |
 | `No module named 'scorecard_client'` | Run the script from the workspace root, or `cd` to the scripts folder first |
 | `plan file not found` | Check the path to your `.tmp/scorecard-plan.json` |
