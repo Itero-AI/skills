@@ -183,5 +183,5 @@ The same `tenantUserId` rules and `--due` format from Flow 3 apply here.
 | `missing env var ITERO_API_KEY…` | Add `ITERO_API_KEY=<key>` to `.env` (or `ITERO_API_KEY_<NAME>` for `--tenant NAME`) |
 | `404` on path id | Run `list` to confirm the id exists on this tenant |
 | `400` validation error | Check that all `--user-ids` values are `tenantUserId` integers from the `users` output (not `id`), and that `--due` is a future date |
-| `403` Forbidden | The API key lacks the Manager role — use a Manager-role key |
+| `403` Forbidden | Learning-path endpoints need a Manager-role key; the `users` subcommand hits an Owner-documented tenant endpoint — if only `users` 403s, the key lacks Owner |
 | `401` Unauthorized | Missing or invalid `X-API-Key` — verify the value in `.env` |

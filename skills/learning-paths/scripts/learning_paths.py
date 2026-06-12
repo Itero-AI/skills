@@ -34,7 +34,7 @@ def _normalize_due(due: str) -> str:
 
 
 def cmd_list(client: Client, args: argparse.Namespace) -> None:
-    params = {"Type": args.type} if args.type is not None else None
+    params = {"type": args.type} if args.type is not None else None
     paths = unwrap(client.get(LP_PATH, params=params))
     if not paths:
         print("No learning paths found on this tenant.")
