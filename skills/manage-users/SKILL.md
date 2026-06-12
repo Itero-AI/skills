@@ -192,7 +192,10 @@ uv run "<skill-dir>/scripts/manage_users.py" update <id> '{"name":"Jane Smith","
 ```
 
 The `id` argument is the integer from the `list` or `fetch` output (not
-`tenantUserId`).
+`tenantUserId`). The script resolves it to `tenantUserId` before sending —
+the raw API's `PUT` body `id` field actually takes `tenantUserId` (verified
+live; see the reference). Don't hand-craft a `PUT` with the DTO `id` — it
+returns `404`.
 
 ---
 

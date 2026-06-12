@@ -56,10 +56,7 @@ def cmd_list(client: Client, args: argparse.Namespace) -> None:
 
 
 def cmd_fetch(client: Client, args: argparse.Namespace) -> None:
-    users = _list_users(client)
-    target = next((u for u in users if str(u.get("id")) == str(args.id)), None)
-    if not target:
-        raise SystemExit(f"user id={args.id} not found (run `list` to see ids)")
+    target = _resolve_target(client, args.id)
     print(json.dumps(target, indent=2, ensure_ascii=False))
 
 
@@ -91,9 +88,24 @@ def cmd_create(client: Client, args: argparse.Namespace) -> None:
           else "(dry-run — pass --live to execute)")
 
 
+def _resolve_target(client: Client, user_id: str) -> dict:
+    """Look up a user by the DTO `id` shown in `list` output.
+
+    PUT /user's body `id` field actually takes the tenantUserId, not the DTO
+    id (verified live 2026-06-12: tenantUserId -> 200, DTO id -> 404). The CLI
+    keeps accepting the DTO id and resolves it here.
+    """
+    users = _list_users(client)
+    target = next((u for u in users if str(u.get("id")) == str(user_id)), None)
+    if not target:
+        raise SystemExit(f"user id={user_id} not found (run `list` to see ids)")
+    return target
+
+
 def cmd_update(client: Client, args: argparse.Namespace) -> None:
     payload = json.loads(args.payload)
-    payload["id"] = int(args.id)
+    target = _resolve_target(client, args.id)
+    payload["id"] = target["tenantUserId"]
     for field in ("name", "role"):
         if not payload.get(field):
             raise SystemExit(f"missing required field: {field} (PUT needs the complete object)")
@@ -102,12 +114,9 @@ def cmd_update(client: Client, args: argparse.Namespace) -> None:
 
 
 def _toggle_active(client: Client, user_id: str, active: bool) -> None:
-    users = _list_users(client)
-    target = next((u for u in users if str(u.get("id")) == str(user_id)), None)
-    if not target:
-        raise SystemExit(f"user id={user_id} not found")
+    target = _resolve_target(client, user_id)
     payload = {
-        "id": target["id"],
+        "id": target["tenantUserId"],
         "name": target.get("name"),
         "role": target.get("role"),
         "isActive": active,
@@ -128,8 +137,9 @@ def cmd_activate(client: Client, args: argparse.Namespace) -> None:
 
 def cmd_delete(client: Client, args: argparse.Namespace) -> None:
     # Wiki leaves three things unconfirmed for live DELETE:
-    #   1. Whether the path id is the DTO `id` or `tenantUserId`
-    #      (the wiki example suggests tenantUserId while PUT uses DTO id).
+    #   1. Whether the path id is the DTO `id` or `tenantUserId`. PUT's body id
+    #      was verified live (2026-06-12) to be tenantUserId, which strengthens
+    #      the tenantUserId reading — but DELETE itself remains unverified.
     #   2. Whether delete is hard or soft.
     #   3. Whether it frees the seat immediately.
     # Live deletes are therefore refused entirely until platform confirms these semantics.

@@ -32,7 +32,7 @@ Returned by `GET`, `POST`, and `PUT`.
 
 | Field | Type | Notes |
 |---|---|---|
-| `id` | integer | The key this API uses for **update** (`PUT` requires this value in the `id` body field). For `DELETE`, see the warning below — which value the path takes is unconfirmed. |
+| `id` | integer | The listing identifier (what the bundled CLI accepts on every subcommand). **Not** what `PUT` takes in its `id` body field — that is `tenantUserId` (verified live 2026-06-12). For `DELETE`, see the warning below — which value the path takes is unconfirmed. |
 | `tenantUserId` | integer | The tenant-scoped user identifier. This is the value consumed by the learning-paths skill (`POST /api/public/v1/learning-path/{id}/assign`). Do not confuse it with `id`. |
 | `createdDate` | string (ISO 8601 UTC) | Date the user record was created. May appear as `0001-01-01T00:00:00` for older records where the field was never populated — treat that value as unknown. |
 | `name` | string | Full name of the user. |
@@ -52,8 +52,8 @@ Returned by `GET`, `POST`, and `PUT`.
 
 Every user object exposes two integer identifiers:
 
-- `id` — the global user record identifier. This is what `PUT /api/public/v1/user` requires in its `id` body field.
-- `tenantUserId` — the tenant-scoped identifier. This is what the learning-paths skill's `tenantUserId` field must receive. Passing `id` instead of `tenantUserId` to a learning-path assignment will silently target the wrong user or return a `400`.
+- `id` — the global user record identifier. Use it to find users in `GET` output (it is the id the bundled CLI accepts everywhere).
+- `tenantUserId` — the tenant-scoped identifier. This is what BOTH write surfaces actually consume: `PUT /api/public/v1/user` requires it in the `id` body field (**verified live 2026-06-12** — sending the DTO `id` returns `404` "user not found"; the wiki's example data is misleading on this), and learning-path assignment requires it as `tenantUserId`. The bundled CLI hides the trap: you pass the DTO `id`, the script resolves `tenantUserId` before any `PUT`.
 
 ---
 
@@ -122,7 +122,7 @@ Updates an existing user. The target user is identified by the `id` field in the
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
-| `id` | integer | **Required** | The `id` value from `UserPublicDto` — identifies the user to update. |
+| `id` | integer | **Required** | The `tenantUserId` value from `UserPublicDto` — NOT the DTO `id` (verified live 2026-06-12; the DTO `id` returns `404` "user not found"). The wiki labels this field "Tenant-user identifier", which is literally correct even though its example data suggests otherwise. |
 | `name` | string | **Required** | Updated full name. |
 | `role` | string | **Required** | Updated role. One of the four `Role` enum values. |
 | `isActive` | boolean | Optional | Whether the user should be active. Defaults to `true`. |
@@ -142,7 +142,7 @@ Deletes a user from the caller's tenant.
 
 > **Pending confirmation — do not use in production without verifying these three points:**
 >
-> 1. **Which `id` does the path take?** The wiki's path-parameter description says `{id}` is the "Tenant-user identifier of the user to delete," which corresponds to the DTO's `tenantUserId` field. However, the wiki's own request example shows `DELETE /api/public/v1/user/25` — and `25` matches the `tenantUserId` in the wiki's sample response (where `id` = 1). This directly conflicts with the `PUT` pattern, which uses the DTO `id` field. The correct value is unconfirmed; passing the wrong one will silently target the wrong user or return a `400`.
+> 1. **Which `id` does the path take?** The wiki's path-parameter description says `{id}` is the "Tenant-user identifier of the user to delete," which corresponds to the DTO's `tenantUserId` field. However, the wiki's own request example shows `DELETE /api/public/v1/user/25` — and `25` matches the `tenantUserId` in the wiki's sample response (where `id` = 1). `PUT`'s body `id` was verified live (2026-06-12) to take `tenantUserId`, which strengthens the `tenantUserId` reading here — but `DELETE` itself remains unverified; passing the wrong value could silently target the wrong user.
 >
 > 2. **Hard delete or soft delete?** The wiki does not document whether the record is permanently removed or merely deactivated at the data layer. This is unverified.
 >
