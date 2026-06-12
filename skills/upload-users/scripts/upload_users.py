@@ -281,7 +281,7 @@ def cmd_list_groups(client: Client, args: argparse.Namespace) -> None:
     print(f"\nUser groups on {client.tenant or '<default tenant>'} ({len(groups)}):")
     for g in groups:
         gid = g.get("id") or g.get("Id")
-        name = g.get("name") or g.get("Name") or "<unnamed>"
+        name = g.get("title") or g.get("Title") or g.get("name") or g.get("Name") or "<unnamed>"
         print(f"  id={gid:<6}  name={name!r}")
 
 
@@ -300,7 +300,7 @@ def cmd_list_users(client: Client, args: argparse.Namespace) -> None:
 
 def _fetch_existing_groups(client: Client) -> set[str]:
     body = client.get(f"{TENANT_BASE}/api/Public/v1/get-user-groups")
-    return {(g.get("name") or g.get("Name") or "") for g in unwrap(body)} - {""}
+    return {(g.get("title") or g.get("Title") or g.get("name") or g.get("Name") or "") for g in unwrap(body)} - {""}
 
 
 def cmd_suggest_groups(client: Client, args: argparse.Namespace) -> None:
