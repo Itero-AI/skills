@@ -6,7 +6,7 @@
 #     "python-dotenv>=1.0",
 # ]
 # ///
-# Last Edited: 2026-04-27
+# Last Edited: 2026-06-11
 """Itero practice-scenarios skill — CLI.
 
 All write subcommands are dry-run by default. Pass --live to execute.
@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 import requests
@@ -33,40 +34,70 @@ SCORECARD_PATH = "/api/public/v1/scorecard"
 
 
 # ---------------------------------------------------------------------------
-# Catalogs (cached per process, not persisted)
+# Catalogs (cached per script invocation, not persisted)
+#
+# Catalog calls (personas, scorecards, call types, comm styles) can return
+# inconsistent data across consecutive calls against the same API key — likely
+# an Itero-side caching/routing quirk. Caching here ensures every scenario in
+# a batch sees the same catalog snapshot, so name resolution is at least
+# internally consistent within one invocation. If you don't trust name
+# resolution, use raw IDs in the plan (personaId, scorecardTemplateId,
+# practiceScenarioCallTypeId, practiceScenarioCommunicationStyleId) — they
+# pass through without any catalog fetch.
 # ---------------------------------------------------------------------------
 
+_CATALOG_CACHE: dict[str, list[dict]] = {}
+
+
+def _cached(client: Client, path: str, cache_key: str, host: str | None = None) -> list[dict]:
+    full_key = f"{client.tenant or 'DEFAULT'}::{cache_key}"
+    if full_key in _CATALOG_CACHE:
+        return _CATALOG_CACHE[full_key]
+    if host:
+        api_key = client.headers["X-API-Key"]
+        r = requests.get(
+            f"{host}{path}",
+            headers={"X-API-Key": api_key, "Accept": "application/json"},
+            timeout=30,
+        )
+        # Failed or non-JSON responses are NOT cached — a transient error
+        # memoized as [] would blank the catalog for every later name
+        # resolution in the same batch.
+        if not r.ok:
+            print(f"  body: {r.text[:800]}", file=sys.stderr)
+            raise SystemExit(f"GET {host}{path} failed with status {r.status_code}")
+        if not r.text:
+            return []
+        try:
+            items = unwrap(r.json())
+        except ValueError:
+            return []
+    else:
+        items = unwrap(client.get(path))
+    _CATALOG_CACHE[full_key] = items
+    return items
+
+
 def _list_personas(client: Client) -> list[dict]:
-    return unwrap(client.get(PERSONA_PATH))
+    return _cached(client, PERSONA_PATH, "personas")
 
 
 def _list_call_types(client: Client) -> list[dict]:
-    return unwrap(client.get(CALL_TYPES_PATH))
+    return _cached(client, CALL_TYPES_PATH, "call_types")
 
 
 def _list_comm_styles(client: Client) -> list[dict]:
-    return unwrap(client.get(COMM_STYLES_PATH))
+    return _cached(client, COMM_STYLES_PATH, "comm_styles")
 
 
 def _list_scenarios(client: Client) -> list[dict]:
+    # Not cached — scenarios change during a script run (create / delete).
     return unwrap(client.get(SCENARIO_PATH))
 
 
 def _list_scorecards(client: Client) -> list[dict]:
     """Scorecards live on the Practice API host, not the talk-track host."""
-    import os
-    api_key = client.headers.get("X-API-Key")
-    r = requests.get(
-        f"{PRACTICE_BASE}{SCORECARD_PATH}",
-        headers={"X-API-Key": api_key, "Accept": "application/json"},
-        timeout=30,
-    )
-    if not r.ok:
-        return []
-    try:
-        return unwrap(r.json())
-    except ValueError:
-        return []
+    return _cached(client, SCORECARD_PATH, "scorecards", host=PRACTICE_BASE)
 
 
 def _name_match(items: list[dict], wanted: str, name_keys=("name", "Name")) -> dict | None:
@@ -84,6 +115,13 @@ def _name_match(items: list[dict], wanted: str, name_keys=("name", "Name")) -> d
 # Resolution: turn names into IDs (with raw-ID passthrough)
 # ---------------------------------------------------------------------------
 
+_ID_HINT = (
+    "If catalog lookups feel unreliable on this tenant, pass raw IDs in the plan "
+    "instead — personaId, scorecardTemplateId, practiceScenarioCallTypeId, "
+    "practiceScenarioCommunicationStyleId all pass through without a catalog fetch."
+)
+
+
 def _resolve_persona(client: Client, scenario: dict) -> int:
     if "personaId" in scenario:
         return int(scenario["personaId"])
@@ -94,7 +132,10 @@ def _resolve_persona(client: Client, scenario: dict) -> int:
     match = _name_match(personas, name)
     if not match:
         names = ", ".join(repr(p.get("name")) for p in personas)
-        raise SystemExit(f"persona name {name!r} not found. Available: {names or 'none'}")
+        raise SystemExit(
+            f"persona name {name!r} not found in {len(personas)} catalog item(s). "
+            f"Available: {names or 'none'}\n\n{_ID_HINT}"
+        )
     return int(pick_id(match))
 
 
@@ -108,7 +149,10 @@ def _resolve_call_type(client: Client, scenario: dict) -> int:
     match = _name_match(cats, name)
     if not match:
         names = ", ".join(repr(c.get("name")) for c in cats)
-        raise SystemExit(f"callType {name!r} not found. Available: {names or 'none'}")
+        raise SystemExit(
+            f"callType {name!r} not found in {len(cats)} catalog item(s). "
+            f"Available: {names or 'none'}\n\n{_ID_HINT}"
+        )
     return int(pick_id(match))
 
 
@@ -122,7 +166,10 @@ def _resolve_comm_style(client: Client, scenario: dict) -> int:
     match = _name_match(styles, name)
     if not match:
         names = ", ".join(repr(s.get("name")) for s in styles)
-        raise SystemExit(f"communicationStyle {name!r} not found. Available: {names or 'none'}")
+        raise SystemExit(
+            f"communicationStyle {name!r} not found in {len(styles)} catalog item(s). "
+            f"Available: {names or 'none'}\n\n{_ID_HINT}"
+        )
     return int(pick_id(match))
 
 
@@ -136,7 +183,10 @@ def _resolve_scorecard(client: Client, scenario: dict) -> int | None:
     match = _name_match(cards, name)
     if not match:
         names = ", ".join(repr(c.get("name")) for c in cards)
-        raise SystemExit(f"scorecardName {name!r} not found. Available: {names or 'none'}")
+        raise SystemExit(
+            f"scorecardName {name!r} not found in {len(cards)} catalog item(s). "
+            f"Available: {names or 'none'}\n\n{_ID_HINT}"
+        )
     return int(pick_id(match))
 
 
