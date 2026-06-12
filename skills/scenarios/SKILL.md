@@ -328,8 +328,8 @@ uv run ${CLAUDE_PLUGIN_ROOT}/skills/scenarios/scripts/scenarios.py delete <id> [
 
 ## Common Failure Modes
 
-These mirror what good roleplay scenarios punish (from real SDR guides and
-field session observations). When authoring `keyBehaviorsOpinions`, encode rules that punish:
+These mirror what good roleplay scenarios punish (drawn from real SDR guides
+and real-world sales calls). When authoring `keyBehaviorsOpinions`, encode rules that punish:
 
 - Asking multiple closed-ended yes/no questions back-to-back
 - Pitch-slapping (hearing one piece of pain and immediately pitching)

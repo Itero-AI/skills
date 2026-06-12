@@ -237,10 +237,8 @@ Omit `--tenant` for the common single-key case.
 
 ## Out of scope (v1)
 
-- Cross-tenant imports (`POST /api/public/v1/admin/user/import-csv?tenantId=...`).
-  This admin endpoint requires AdminAccess scope and an explicit `tenantId`.
-  The `/upload-users` skill only writes to the caller's own tenant via the
-  Manager endpoint.
+- Cross-tenant imports. This skill only writes to your own tenant (the one
+  your API key belongs to).
 - `.xlsx` auto-conversion — reject with a clear "save as CSV" message.
 - Updating existing users — there is no public PUT endpoint for users.
 
@@ -257,4 +255,4 @@ Omit `--tenant` for the common single-key case.
 | `seat_check.ok is False` (on import) | Re-run `check-seats` after deactivating rows or increasing seats. |
 | `400 NotEnoughSeats` (from server) | Tenant seat count changed between check and import. Re-run `check-seats`. |
 | `400 CSVFileValidation` (from server) | Re-run `inspect` to see what's wrong; the row count or shape changed. |
-| `403 Forbidden` | API key does not have Manager role. Have an Itero admin promote the key's user. |
+| `403 Forbidden` | API key does not have Manager role. Generate a key from a Manager-role user in your Itero account. |
