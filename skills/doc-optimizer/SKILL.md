@@ -6,6 +6,16 @@ user-invocable: true
 
 # Document Optimizer for LLM Retrieval
 
+## Running the scripts
+
+`<skill-dir>` below means the folder containing this SKILL.md (announced when the
+skill loads). Under a Claude Code plugin install this is the `skills/doc-optimizer`
+subfolder of the plugin root; under a manual install it is the skill folder
+inside your agent's skills directory. All scripts run via `uv run` —
+dependencies resolve automatically (PEP 723).
+
+---
+
 ## Overview
 
 Turns one PDF, DOCX, or TXT into a clean, chunk-independent Markdown file ready for vector-store ingestion. The goal: when a chunker splits the output automatically, each chunk should be self-contained and immediately useful to an LLM without needing surrounding context.
@@ -14,7 +24,7 @@ Turns one PDF, DOCX, or TXT into a clean, chunk-independent Markdown file ready 
 
 ## Prerequisites
 
-The bundled script at `${CLAUDE_PLUGIN_ROOT}/skills/doc-optimizer/scripts/extract.py` runs under [uv](https://docs.astral.sh/uv/). uv reads the script's inline dependency declaration and creates an isolated venv on first run — no separate `pip install` step. If `uv` is missing, the user installs it once per machine (see the repo's INSTALL.md). After that, every `uv run …` invocation is self-contained.
+The bundled script at `<skill-dir>/scripts/extract.py` runs under [uv](https://docs.astral.sh/uv/). uv reads the script's inline dependency declaration and creates an isolated venv on first run — no separate `pip install` step. If `uv` is missing, the user installs it once per machine (see the repo's INSTALL.md). After that, every `uv run …` invocation is self-contained.
 
 ## Core Principles
 
@@ -34,7 +44,7 @@ The bundled script at `${CLAUDE_PLUGIN_ROOT}/skills/doc-optimizer/scripts/extrac
 ### Step 1: Extract text
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/doc-optimizer/scripts/extract.py <input-file> --output /tmp/raw.txt
+uv run "<skill-dir>/scripts/extract.py" <input-file> --output /tmp/raw.txt
 ```
 
 Handles PDF (pymupdf + pdfplumber for tables), DOCX (python-docx), TXT. Tables are emitted as GitHub-flavored Markdown.
@@ -104,12 +114,12 @@ This procedure covers the monthly calibration of temperature sensors in the X200
 
 Write to `./optimized/<descriptive-slug>.md` (create the `optimized/` subfolder alongside the input if missing).
 
-**The filename matters for retrieval.** It ends up as vector-store metadata. When a retrieval agent surfaces a chunk, the filename alone needs to disambiguate it from sibling docs in the index. A name like `EasyHealth_Day1_Training-optimized.md` adds nothing — it just echoes the input. A name like `easyhealth-new-hire-training-day-1-role-kpis-hipaa-tools.md` tells the agent what the chunk is about before it reads a word of content.
+**The filename matters for retrieval.** It ends up as vector-store metadata. When a retrieval agent surfaces a chunk, the filename alone needs to disambiguate it from sibling docs in the index. A name like `Acme_Day1_Training-optimized.md` adds nothing — it just echoes the input. A name like `acme-new-hire-training-day-1-role-kpis-hipaa-tools.md` tells the agent what the chunk is about before it reads a word of content.
 
 **Slug rules:**
 
 - Lowercase, hyphenated, 4–10 meaningful words.
-- Lead with the source/owner if it disambiguates (`easyhealth-`, `acme-`).
+- Lead with the source/owner if it disambiguates (`acme-`, `globex-`).
 - Then the doc type (`training-deck`, `call-transcript`, `coaching-reference`, `agent-guide`, `sop`, `script`, `playbook`).
 - Then the specific topic/scope (`day-1-onboarding`, `awv-decline-recovery`, `objection-handling`, `mock-call-exercises`).
 - For call transcripts, include speakers and outcome: `call-transcript-villa-adams-elevance-declined`.
