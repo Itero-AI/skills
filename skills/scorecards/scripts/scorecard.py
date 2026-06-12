@@ -173,7 +173,7 @@ def resolve_agent_ids(client: Client, agent_type: str, tenant: str | None) -> tu
         for a in agents:
             aid = a.get("id") or a.get("Id") or "?"
             name = a.get("name") or a.get("Name") or "<unnamed>"
-            atype = a.get("type") or a.get("Type") or ""
+            atype = a.get("agentType") or a.get("type") or a.get("Type") or ""
             print(f"  id={aid:<6}  name={name!r}  type={atype!r}")
         print(
             "\nAdd the chosen IDs to .scorecard-config.json under the "
