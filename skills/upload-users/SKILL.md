@@ -9,6 +9,8 @@ description: |
   "import users from a spreadsheet", or any request to load a list of new
   Itero users (Managers or Representatives) from a CSV.
 user-invocable: true
+references:
+    - user-import-api.md
 ---
 
 # Upload Users Skill
@@ -23,16 +25,25 @@ hit `--live` after explicit `yes`.
 
 ---
 
-## Getting Started (Customer Setup — One Time)
+## Running the scripts
 
-1. Drop the `upload-users/` folder into `.claude/skills/`.
-2. Add `ITERO_API_KEY=<your-tenant-api-key>` to your `.env` file. The key must
-   belong to a user with the **Manager** role.
-3. (Optional) Add `ITERO_TENANT_SEATS=<number>` to your `.env` if you know
-   your tenant's seat cap — enables the pre-flight seat check. Skip if
-   unknown; the skill will run without it.
+`<skill-dir>` below means the folder containing this SKILL.md (announced when the
+skill loads). Under a Claude Code plugin install this is the `skills/upload-users`
+subfolder of the plugin root; under a manual install it is the skill folder
+inside your agent's skills directory. All scripts run via `uv run` —
+dependencies resolve automatically (PEP 723).
 
-That's it. No other configuration needed.
+---
+
+## API reference
+
+| Need | Where |
+|---|---|
+| CSV format, column specs, constraints | [user-import-api.md](references/user-import-api.md) — "CSV constraints" and "Columns" |
+| Server-side import flow (all-or-nothing validation) | [user-import-api.md](references/user-import-api.md) — "Server-side import flow" |
+| Seat rules and active-rep counting | [user-import-api.md](references/user-import-api.md) — "GET /api/Public/v1/get-users" |
+| UserGroup auto-creation behavior + case-sensitivity | [user-import-api.md](references/user-import-api.md) — "UserGroup behavior" |
+| Unexpected 400/403 | [user-import-api.md](references/user-import-api.md) — "Errors" |
 
 ---
 
@@ -65,7 +76,7 @@ step in plain English; the script handles the deterministic work.
   delimited). Then re-run."*
 - Run:
   ```bash
-  uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+  uv run "<skill-dir>/scripts/upload_users.py" \
     inspect <csv-path> [--tenant TENANT]
   ```
 - The script prints a row count, all detected issues grouped by category,
@@ -96,7 +107,7 @@ The original CSV is **never modified**.
 Always render the "Why user groups matter" paragraph above. Then run:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+uv run "<skill-dir>/scripts/upload_users.py" \
   list-groups [--tenant TENANT]
 ```
 
@@ -109,7 +120,7 @@ proceeding.
 Run:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+uv run "<skill-dir>/scripts/upload_users.py" \
   suggest-groups [--tenant TENANT]
 ```
 
@@ -136,7 +147,7 @@ After this step every distinct group in the plan is tagged `existing` or
 Run:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+uv run "<skill-dir>/scripts/upload_users.py" \
   check-duplicates [--tenant TENANT]
 ```
 
@@ -152,7 +163,7 @@ user:
 If (a), exit. If (b), run:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+uv run "<skill-dir>/scripts/upload_users.py" \
   drop-duplicates [--tenant TENANT]
 ```
 
@@ -161,7 +172,7 @@ uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
 Run:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+uv run "<skill-dir>/scripts/upload_users.py" \
   check-seats [--tenant TENANT]
 ```
 
@@ -187,7 +198,7 @@ If (a), ask the user which rows to deactivate, edit the plan, then re-run
 Run:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py preview
+uv run "<skill-dir>/scripts/upload_users.py" preview
 ```
 
 The script prints role mix, status mix, group mix, and the first 5 lines of
@@ -202,7 +213,7 @@ Show this to the user, then ask:
 Only after explicit `yes`, run:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+uv run "<skill-dir>/scripts/upload_users.py" \
   import [--tenant TENANT] --live
 ```
 
@@ -227,7 +238,7 @@ If you manage multiple Itero tenants from one repo, add the optional
 `.env` instead. Example:
 
 ```bash
-uv run ${CLAUDE_PLUGIN_ROOT}/skills/upload-users/scripts/upload_users.py \
+uv run "<skill-dir>/scripts/upload_users.py" \
   inspect ~/Downloads/users.csv --tenant ACME
 ```
 
@@ -240,7 +251,7 @@ Omit `--tenant` for the common single-key case.
 - Cross-tenant imports. This skill only writes to your own tenant (the one
   your API key belongs to).
 - `.xlsx` auto-conversion — reject with a clear "save as CSV" message.
-- Updating existing users — there is no public PUT endpoint for users.
+- Updating/deactivating/deleting existing users — use the `manage-users` skill (`PUT /api/public/v1/user` now exists).
 
 ---
 
