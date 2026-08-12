@@ -1,5 +1,5 @@
-# Last Edited: 2026-04-27
-"""Itero Tenant API HTTP wrapper for the upload-users skill.
+# Last Edited: 2026-08-12 15:28
+"""Itero gateway HTTP wrapper for the upload-users skill.
 
 Self-contained — does not import from execution/itero_app/.
 Auth resolution:
@@ -20,7 +20,7 @@ from typing import Any
 import requests
 from dotenv import load_dotenv
 
-TENANT_BASE = "https://iterotenantapi.azurewebsites.net"
+GATEWAY_BASE = "https://iterogatewayapi.azurewebsites.net"
 
 
 class Client:
@@ -60,11 +60,11 @@ class Client:
         r = requests.request(method, url, headers=self._json_headers(), timeout=30, **kwargs)
         return self._handle_response(method, url, r)
 
-    @staticmethod
-    def _handle_response(method: str, url: str, r: requests.Response) -> Any:
+    def _handle_response(self, method: str, url: str, r: requests.Response) -> Any:
         print(f"  -> {r.status_code}")
         if not r.ok:
-            print(f"  body: {r.text[:1500]}", file=sys.stderr)
+            safe_body = r.text[:1500].replace(self.api_key, "[redacted]")
+            print(f"  body: {safe_body}", file=sys.stderr)
             raise SystemExit(f"{method} {url} failed")
         if not r.text:
             return {}

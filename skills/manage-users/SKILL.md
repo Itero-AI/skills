@@ -1,258 +1,76 @@
 ---
 name: manage-users
-description: |
-  Creates, updates, activates/deactivates, and deletes individual Itero users
-  via the public API. Use when someone wants to: add one or two users (not a
-  bulk CSV), change a user's role, move a user between user groups, fix a
-  user's name, deactivate a rep who left, re-activate a returning rep, or
-  delete a user. Triggers on: "add a user", "create a user", "change their
-  role", "deactivate", "offboard this rep", "remove a user", "move them to
-  the Sales East group", "promote to manager". For bulk CSV imports use
-  upload-users instead.
+description: Manage individual Itero users through the public API. Use when someone asks to list or find users, create one or a few users, change a name, role, active status, or group membership, deactivate or reactivate someone, or delete a user. Triggers include "add a user," "change their role," "move them to this group," "deactivate this rep," "offboard this user," and "delete this user." Use upload-users for a CSV or larger batch.
 user-invocable: true
+license: MIT
+metadata:
+  author: itero
+  version: "2.0.0"
+  homepage: https://iteroapp.ai
+  source: https://github.com/Itero-AI/skills
+inputs:
+  - name: ITERO_API_KEY
+    description: Itero public API key. A named tenant may use ITERO_API_KEY_<NAME>.
+    required: true
 references:
-    - user-api.md
+  - references/users.md
 ---
 
-# Manage Users Skill
+> **Mandatory API confirmation:** Before every `POST`, `PUT`, `PATCH`, or `DELETE`, show the exact method, URL, and complete payload (`no body` when applicable), then wait for explicit confirmation. For a delete, also show the user's name, email, and stable ID and require the user to confirm that target. Creating a user can send an invitation email, so include that effect in the confirmation.
 
-Add, update, deactivate, or remove individual Itero users via the public API.
-Backed by `scripts/manage_users.py`. This skill is designed for **non-technical
-users** — explain each step in plain English, never take a destructive action
-silently, and always dry-run before going live.
+# Manage Users
 
-> **Adding ~5 or more users at once?** Use the `upload-users` skill (bulk CSV
-> import) instead — it handles validation, duplicate detection, and seat-count
-> checks across a file at once.
+Use `https://iterogatewayapi.azurewebsites.net` and send `X-API-Key: $ITERO_API_KEY`. Read the key from the environment; never display, log, or paste its value. Use only the canonical `/api/public/v1/user` endpoint for user records. Load [the generated users reference](references/users.md) for exact schemas and verified role behavior.
 
----
+For a CSV or roughly five or more users, use the `upload-users` skill instead.
 
-## Running the scripts
+## Quick start: list users
 
-`<skill-dir>` below means the folder containing this SKILL.md (announced when
-the skill loads). Under a Claude Code plugin install this is the
-`skills/manage-users` subfolder of the plugin root; under a manual install it
-is the skill folder inside your agent's skills directory. All scripts run via
-`uv run` — dependencies resolve automatically (PEP 723).
-
----
-
-## Authentication
-
-The script reads `ITERO_API_KEY` from `.env`. For multi-tenant repos, pass
-`--tenant <NAME>` to use `ITERO_API_KEY_<NAME>` instead.
+Filter on the server when possible and project only identification fields.
 
 ```bash
-uv run "<skill-dir>/scripts/manage_users.py" list [--tenant NAME]
+curl --fail-with-body --silent --show-error \
+  --header "X-API-Key: $ITERO_API_KEY" \
+  "https://iterogatewayapi.azurewebsites.net/api/public/v1/user?isActive=true" \
+  | jq '(.items? // .) | map({id, tenantUserId, name, email, role, isActive})'
 ```
 
-> **Owner-role key required.** Every endpoint covered by this skill
-> (`GET`, `POST`, `PUT`, `DELETE /api/public/v1/user`) is documented as
-> requiring an Owner-role API key — not Manager. A `403 Forbidden` almost
-> always means the key in `.env` is a Manager key. Have an Owner generate a
-> new key and replace the value in `.env`.
+## What do you need?
 
----
-
-## API reference
-
-| Need | Where |
-|---|---|
-| `id` vs `tenantUserId` — which to use where | [user-api.md](references/user-api.md) — "`` `id` vs `tenantUserId` ``" |
-| Role values and which consume a billable seat | [user-api.md](references/user-api.md) — "Enums" |
-| Create request schema (`PublicUserCreateRequest`) | [user-api.md](references/user-api.md) — "POST /api/public/v1/user" |
-| Update request schema (`PublicUserUpdateRequest`) | [user-api.md](references/user-api.md) — "PUT /api/public/v1/user" |
-| Delete — pending-confirmation warning | [user-api.md](references/user-api.md) — "DELETE /api/public/v1/user/{id}" |
-| Error codes and remediation | [user-api.md](references/user-api.md) — "Errors" |
-
----
-
-## Flow 1 — List and inspect users
-
-### List all users
-
-```bash
-uv run "<skill-dir>/scripts/manage_users.py" list [--role ROLE] [--active true|false] [--tenant NAME]
-```
-
-`--role` accepts one of: `Representative`, `Manager`, `Coach`, `Owner`.
-`--active` filters by active status. Omit both to see everyone.
-
-Output prints `id`, `tenantUserId`, role, active flag, name, email, and group
-membership side-by-side. Use the `id` column (not `tenantUserId`) for all
-subcommands in this skill.
-
-### Inspect a single user
-
-```bash
-uv run "<skill-dir>/scripts/manage_users.py" fetch <id> [--tenant NAME]
-```
-
-Returns the full JSON record. Run this before any update to capture the current
-field values you need to carry forward.
-
----
-
-## Flow 2 — Create a user
-
-### Step 1 — List existing groups first
-
-```bash
-uv run "<skill-dir>/scripts/manage_users.py" list-groups [--tenant NAME]
-```
-
-Group names are **case-sensitive**. A near-miss (e.g., `"sales east"` instead
-of `"Sales East"`) creates a new group instead of joining the existing one. Run
-`list-groups` and confirm the exact title before building the plan.
-
-### Step 2 — Build a plan.json
-
-Prepare a JSON file with the user's details:
-
-```json
-{
-  "name": "Jane Smith",
-  "email": "jane.smith@example.com",
-  "role": "Representative",
-  "isActive": true,
-  "groups": ["Sales East"]
-}
-```
-
-Required fields: `name`, `email`, `role`. Optional: `isActive` (defaults to
-`true`) and `groups` (string array of exact group names).
-
-Valid roles: `Representative`, `Manager`, `Coach`, `Owner`.
-
-> **Seat warning.** Creating a `Representative` or `Manager` with
-> `isActive: true` consumes a billable seat. If the tenant is at its seat
-> limit, the API returns `400 NotEnoughSeats`.
-
-> **Invitation email.** An invitation email is sent to the user on creation.
-> Set expectations with the user before going live.
-
-> **Duplicate email.** If a user with the same email already exists in the
-> tenant, the existing record is reused — no error is returned.
-
-### Step 3 — Dry-run, then go live
-
-```bash
-# dry-run first (no --live)
-uv run "<skill-dir>/scripts/manage_users.py" create plan.json [--tenant NAME]
-
-# go live after explicit yes
-uv run "<skill-dir>/scripts/manage_users.py" create plan.json [--tenant NAME] --live
-```
-
-Dry-run prints the payload and skips the POST. Only add `--live` after the user
-has confirmed the preview looks correct.
-
----
-
-## Flow 3 — Update a user
-
-> **PUT requires the complete object.** The API replaces all user fields with
-> what you send. Omitting `isActive` silently defaults it to `true` — so if the
-> user is currently deactivated and you omit `isActive`, they will be
-> reactivated. Always fetch first and carry every field forward.
-
-### Step 1 — Fetch the current record
-
-```bash
-uv run "<skill-dir>/scripts/manage_users.py" fetch <id> [--tenant NAME]
-```
-
-Note the current values for `name`, `role`, `isActive`, and `groups` (as a
-list of name strings).
-
-### Step 2 — Build the updated payload
-
-Construct the complete JSON object with all fields, changing only what the user
-asked to change:
-
-```json
-{
-  "name": "Jane Smith",
-  "role": "Manager",
-  "isActive": true,
-  "groups": ["Sales East"]
-}
-```
-
-`email` cannot be changed — do not include it in the payload.
-
-### Step 3 — Dry-run, then go live
-
-```bash
-# dry-run first (no --live)
-uv run "<skill-dir>/scripts/manage_users.py" update <id> '{"name":"Jane Smith","role":"Manager","isActive":true,"groups":["Sales East"]}' [--tenant NAME]
-
-# go live after explicit yes
-uv run "<skill-dir>/scripts/manage_users.py" update <id> '{"name":"Jane Smith","role":"Manager","isActive":true,"groups":["Sales East"]}' [--tenant NAME] --live
-```
-
-The `id` argument is the integer from the `list` or `fetch` output (not
-`tenantUserId`). The script resolves it to `tenantUserId` before sending —
-the raw API's `PUT` body `id` field actually takes `tenantUserId` (verified
-live; see the reference). Don't hand-craft a `PUT` with the DTO `id` — it
-returns `404`.
-
----
-
-## Flow 4 — Deactivate or activate a user
-
-**Prefer deactivate over delete.** Deactivation frees the user's billable seat
-(active Representatives and Managers consume seats; deactivated users do not)
-and is fully reversible. All history, call recordings, and scores are preserved.
-
-```bash
-# deactivate — frees the seat; recommended for reps who have left
-uv run "<skill-dir>/scripts/manage_users.py" deactivate <id> [--tenant NAME] --live
-
-# reactivate — reclaims a seat
-uv run "<skill-dir>/scripts/manage_users.py" activate <id> [--tenant NAME] --live
-```
-
-Both subcommands fetch the current record and write back a complete object
-with only `isActive` changed — other fields are preserved automatically.
-Dry-run by default; add `--live` to execute.
-
----
-
-## Flow 5 — Delete a user
-
-**The script currently refuses live deletes.** Three things about the DELETE
-endpoint are pending platform confirmation:
-
-1. Whether the path `{id}` takes the DTO `id` or `tenantUserId`.
-2. Whether delete is a hard delete or a soft delete.
-3. Whether it immediately frees a billable seat.
-
-Until these are confirmed, `--live` on the `delete` subcommand raises an error
-and no API call is made. Relay this refusal to the user honestly — do not
-attempt to work around it.
-
-Dry-run still works and shows the target identity so you can verify you have
-the right user:
-
-```bash
-uv run "<skill-dir>/scripts/manage_users.py" delete <id> [--tenant NAME]
-```
-
-`--confirm-email` exists in the CLI but is reserved for when the platform
-confirms delete semantics — it does not bypass the live-delete guard.
-
-**Recommended path today:** deactivate the user (Flow 4). This frees the seat,
-is reversible, and is unambiguous.
-
----
-
-## Error table
-
-| Error | Cause | What to do |
+| Goal | Operation | Guidance |
 |---|---|---|
-| `403 Forbidden` | API key lacks Owner role | Have an Owner generate a new key and update `.env`; Manager keys are rejected by all endpoints in this skill |
-| `400 NotEnoughSeats` | Activating a Rep or Manager when the tenant is at its seat limit | Deactivate another active Rep/Manager first, or contact Itero to add seats |
-| `400` validation | Missing required field, invalid role string, or malformed payload | Check that `role` is exactly one of `Representative`, `Manager`, `Coach`, `Owner`; check that `name` and `email` are present for create; check that `name` and `role` are present for update |
-| `missing env var ITERO_API_KEY…` | Key not in `.env` | Add `ITERO_API_KEY=<key>` to `.env` (or `ITERO_API_KEY_<NAME>=<key>` for `--tenant NAME`) |
-| `user id=N not found` | Wrong id passed | Run `list` to see current ids; note that `id` and `tenantUserId` are different integers |
+| List or filter users | `GET /api/public/v1/user` | Use `role` and `isActive`, then project fields. |
+| List groups | `GET /api/public/v1/get-user-groups` | Copy exact group names. |
+| Create a user | `POST /api/public/v1/user` | Check the email and explain the invitation first. |
+| Update, deactivate, or reactivate | `PUT /api/public/v1/user` | Start from the complete current record. |
+| Delete a user | `DELETE /api/public/v1/user/{id}` | Prefer reversible deactivation unless deletion is explicit. |
+
+## Workflow
+
+1. List users through the canonical endpoint and show enough fields to disambiguate the person.
+2. List user groups before changing membership; preserve the exact spelling and capitalization.
+3. Read the selected operation in [the generated reference](references/users.md).
+4. For updates, start from the current complete object and change only the requested fields.
+5. Preview the exact request and its effects, then wait for confirmation.
+6. Re-list or inspect the response to verify the result without dumping the full collection.
+
+## Common Mistakes
+
+| Mistake | Correct approach |
+|---|---|
+| Using a duplicate list route | Use only `GET /api/public/v1/user`. |
+| Treating `id` and `tenantUserId` as interchangeable | Follow the identifier required by the specific operation. |
+| Sending a partial update | Carry forward fields that must not change. |
+| Silently creating a user | Explain that successful creation sends an invitation email. |
+| Deleting when deactivation meets the goal | Prefer the reversible update unless deletion is explicit. |
+| Guessing why a write returned `403` | Read the verified role note in the generated reference. |
+
+## Error quick reference
+
+| Response | What to do |
+|---|---|
+| `400 NotEnoughSeats` | Do not retry; ask the user to free a seat or change the plan. |
+| `400` | Check required fields, role values, group names, and identifier choice. |
+| `401` | Confirm the key is available and valid without printing it. |
+| `403` | Follow the verified role guidance in the generated reference. |
+| `404` | Re-list users and verify the operation's required identifier. |

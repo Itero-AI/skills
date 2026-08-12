@@ -1,0 +1,28 @@
+{
+  "name": "Sample discovery scorecard",
+  "callTypes": [
+    1
+  ],
+  "interactionType": 0,
+  "qualitiveAgentId": 1,
+  "qaAgentId": 2,
+  "categories": [
+    {
+      "name": "Discovery",
+      "scorecardType": 0,
+      "criteria": [
+        {
+          "title": "Identifies the business problem",
+          "criteria": "The rep identifies a concrete business problem and its impact.",
+          "rubrics": [
+            {
+              "scale": 4,
+              "description": "The problem and business impact are both clear."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "publish": false
+}

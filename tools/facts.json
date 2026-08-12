@@ -1,0 +1,137 @@
+{
+  "facts": [
+    {
+      "id": "fact:pagination-zero-indexed",
+      "notes": "notes/conversations.md",
+      "outputs": [
+        "skills/conversations/references/conversations.md"
+      ]
+    },
+    {
+      "id": "fact:evaluation-host-exception",
+      "notes": "notes/conversations.md",
+      "outputs": [
+        "skills/conversations/references/conversations.md"
+      ]
+    },
+    {
+      "id": "fact:scorecard-publish-api",
+      "notes": "notes/scorecards.md",
+      "outputs": [
+        "skills/scorecards/references/scorecards.md"
+      ]
+    },
+    {
+      "id": "fact:persona-voiceid",
+      "notes": "notes/personas.md",
+      "outputs": [
+        "skills/personas/references/personas.md"
+      ]
+    },
+    {
+      "id": "fact:context-safety-projection",
+      "notes": "notes/_shared.md",
+      "outputs": [
+        "skills/personas/references/personas.md",
+        "skills/scenarios/references/scenarios.md",
+        "skills/scorecards/references/scorecards.md",
+        "skills/learning-paths/references/learning-paths.md",
+        "skills/manage-users/references/users.md",
+        "skills/upload-users/references/upload-users.md",
+        "skills/conversations/references/conversations.md"
+      ]
+    },
+    {
+      "id": "fact:tenantuserid-not-id",
+      "notes": "notes/learning-paths.md",
+      "outputs": [
+        "skills/learning-paths/references/learning-paths.md"
+      ]
+    },
+    {
+      "id": "fact:user-write-owner-role",
+      "notes": "notes/users.md",
+      "outputs": [
+        "skills/manage-users/references/users.md",
+        "skills/upload-users/references/upload-users.md"
+      ]
+    },
+    {
+      "id": "fact:get-users-alias",
+      "notes": "notes/users.md",
+      "outputs": [
+        "skills/manage-users/references/users.md",
+        "skills/upload-users/references/upload-users.md"
+      ]
+    },
+    {
+      "id": "fact:auth-header",
+      "notes": "notes/_shared.md",
+      "outputs": [
+        "skills/personas/references/personas.md",
+        "skills/scenarios/references/scenarios.md",
+        "skills/scorecards/references/scorecards.md",
+        "skills/learning-paths/references/learning-paths.md",
+        "skills/manage-users/references/users.md",
+        "skills/upload-users/references/upload-users.md",
+        "skills/conversations/references/conversations.md"
+      ]
+    },
+    {
+      "id": "fact:tags-autocreate",
+      "notes": "notes/conversations.md",
+      "outputs": [
+        "skills/conversations/references/conversations.md"
+      ]
+    },
+    {
+      "id": "fact:calltags-substring-match",
+      "notes": "notes/conversations.md",
+      "outputs": [
+        "skills/conversations/references/conversations.md"
+      ]
+    },
+    {
+      "id": "fact:learning-path-put-reconciles",
+      "notes": "notes/learning-paths.md",
+      "outputs": [
+        "skills/learning-paths/references/learning-paths.md"
+      ]
+    },
+    {
+      "id": "fact:add-tags-replaces",
+      "notes": "notes/conversations.md",
+      "outputs": [
+        "skills/conversations/references/conversations.md"
+      ]
+    },
+    {
+      "id": "fact:evaluate-call-no-body",
+      "notes": "notes/conversations.md",
+      "outputs": [
+        "skills/conversations/references/conversations.md"
+      ]
+    },
+    {
+      "id": "fact:scenario-roundtrip-overrides",
+      "notes": "notes/scenarios.md",
+      "outputs": [
+        "skills/scenarios/references/scenarios.md"
+      ]
+    },
+    {
+      "id": "fact:persona-delete-side-effects",
+      "notes": "notes/personas.md",
+      "outputs": [
+        "skills/personas/references/personas.md"
+      ]
+    },
+    {
+      "id": "fact:scorecard-authoring-defaults",
+      "notes": "notes/scorecards.md",
+      "outputs": [
+        "skills/scorecards/references/scorecards.md"
+      ]
+    }
+  ]
+}

@@ -1,269 +1,120 @@
 ---
 name: upload-users
-description: |
-  Bulk-imports users into an Itero tenant from a CSV file. Walks the user
-  through validation fixes, user-group decisions, duplicate detection, and a
-  seat-count check before submitting. Triggers on:
-  "/upload-users <path>", "upload these users", "import this CSV of users",
-  "bulk-add users", "onboard these reps", "add this list of users to Itero",
-  "import users from a spreadsheet", or any request to load a list of new
-  Itero users (Managers or Representatives) from a CSV.
+description: Bulk-import Itero users from a CSV with local validation, group review, duplicate detection, seat checks, a dry-run preview, and explicit confirmation. Use when someone asks to upload users, import a CSV or spreadsheet of users, bulk-add users, onboard a list of reps or managers, or run `/upload-users <path>`. Use manage-users for one or a few individual records.
 user-invocable: true
+license: MIT
+metadata:
+  author: itero
+  version: "2.0.0"
+  homepage: https://iteroapp.ai
+  source: https://github.com/Itero-AI/skills
+inputs:
+  - name: ITERO_API_KEY
+    description: Itero public API key. A named tenant may use ITERO_API_KEY_<NAME>.
+    required: true
 references:
-    - user-import-api.md
+  - references/upload-users.md
 ---
 
-# Upload Users Skill
+> **Mandatory upload confirmation:** Before the multipart `POST`, show the exact method and gateway URL, the `file` field and filename, the final row and group summaries, and the first five CSV lines from `preview`. Explain that successful creation sends invitation emails, then wait for an explicit `yes`. Never infer approval from earlier cleanup or group decisions.
 
-Walk a user through cleaning and uploading a CSV of new Itero users. Backed by
-`scripts/upload_users.py`, which calls the Itero Tenant API
-(`https://iterotenantapi.azurewebsites.net`).
+# Upload Users
 
-The skill is designed for **non-technical users**. Explain every step in plain
-English. Never make a destructive choice silently. Always dry-run first; only
-hit `--live` after explicit `yes`.
+Use the bundled script to validate and import a CSV through the unified gateway. It is dry-run by default; add `--live` only after the final confirmation. Read [the generated upload reference](references/upload-users.md) for the multipart schema, limits, and verified role guidance.
 
----
+`<skill-dir>` means the directory containing this file. Run commands with `uv run`; dependencies come from the script's inline declaration.
 
-## Running the scripts
+## Quick start: inspect the CSV
 
-`<skill-dir>` below means the folder containing this SKILL.md (announced when the
-skill loads). Under a Claude Code plugin install this is the `skills/upload-users`
-subfolder of the plugin root; under a manual install it is the skill folder
-inside your agent's skills directory. All scripts run via `uv run` —
-dependencies resolve automatically (PEP 723).
+```bash
+uv run "<skill-dir>/scripts/upload_users.py" inspect path/to/users.csv
+```
 
----
+Add `--tenant NAME` to use `ITERO_API_KEY_<NAME>`. Never print the resolved key.
 
-## API reference
+## What do you need?
 
-| Need | Where |
-|---|---|
-| CSV format, column specs, constraints | [user-import-api.md](references/user-import-api.md) — "CSV constraints" and "Columns" |
-| Server-side import flow (all-or-nothing validation) | [user-import-api.md](references/user-import-api.md) — "Server-side import flow" |
-| Seat rules and active-rep counting | [user-import-api.md](references/user-import-api.md) — "GET /api/Public/v1/get-users" |
-| UserGroup auto-creation behavior + case-sensitivity | [user-import-api.md](references/user-import-api.md) — "UserGroup behavior" |
-| Unexpected 400/403 | [user-import-api.md](references/user-import-api.md) — "Errors" |
-
----
-
-## Why user groups matter (the user always sees this)
-
-> User groups in Itero are how you assign learning paths and certifications.
-> Each group can have its own training curriculum, scorecard requirements,
-> and certification track. Putting your reps into the right group up front
-> means they'll automatically see the right training when they log in.
-> Skipping this just means you'll have to assign things one rep at a time
-> later.
-
-Render this paragraph at Step 3, every time, regardless of the input file's
-state. Then list the existing groups so the user can decide whether to reuse
-them or create new ones.
-
----
-
-## The Flow
-
-The skill always runs the eight steps below in order. The agent narrates each
-step in plain English; the script handles the deterministic work.
-
-### Step 1 — Open the file
-
-- Resolve the CSV path: slash arg (`/upload-users path/to/file.csv`),
-  attached file in chat, or ask the user to drop it in.
-- If the file is `.xlsx` or anything other than `.csv`, stop and reply:
-  *"This needs to be a CSV file. In Excel: File → Save As → CSV (Comma
-  delimited). Then re-run."*
-- Run:
-  ```bash
-  uv run "<skill-dir>/scripts/upload_users.py" \
-    inspect <csv-path> [--tenant TENANT]
-  ```
-- The script prints a row count, all detected issues grouped by category,
-  and the first 3 rows. It writes `.tmp/users-import-plan.json`.
-
-### Step 2 — Fix data-shape errors
-
-Look at the `inspect` output. For every issue category present, walk the user
-through it in plain English. Categories and how to handle each:
-
-| Category | What to say to the user | What to do |
+| Goal | Command | Result |
 |---|---|---|
-| `missing_column` | "The header row is missing a required column: {col}." | Ask user to fix the file's header row and re-run inspect. |
-| `missing_value` (Name/Email/Role) | "Row {N} is missing {col}. What value should I put there, or should I drop the row?" | Update the plan or drop the row. |
-| `bad_email` | "Row {N} has {value} in the Email column — that doesn't look like an email. What's the correct address?" | Update the plan. |
-| `bad_role` | "Row {N} has Role={value}. Itero only supports `Manager` or `Representative`. Which one?" | Update the plan. |
-| `bad_isactive` | "Row {N} has IsActive={value} — I'll need true or false. (Blank is fine; that means active.)" | Update the plan. |
-| `too_long` | "Row {N}'s {col} is {length} chars; max is 100. What should I shorten it to?" | Update the plan. |
+| Validate a CSV | `inspect <csv>` | Reports issues and writes `.tmp/users-import-plan.json`. |
+| Review existing groups | `list-groups` | Reads `/api/public/v1/get-user-groups`. |
+| Review current users | `list-users` | Reads canonical `/api/public/v1/user`. |
+| Suggest and classify groups | `suggest-groups` | Marks each planned group as existing or new. |
+| Check duplicate emails | `check-duplicates` | Stops before an all-or-nothing import can fail. |
+| Check seats | `check-seats` | Compares active representatives with the configured seat cap. |
+| Review exact upload | `preview` | Shows counts and the first five CSV lines to confirm. |
+| Import | `import --live` | Uploads multipart field `file` after confirmation. |
 
-The agent edits `.tmp/users-import-plan.json` directly to apply the user's
-answers. Re-run `inspect` only if the user wants a fresh validation pass after
-edits — usually unnecessary.
+## Required workflow
 
-The original CSV is **never modified**.
+### 1. Inspect without changing the source
 
-### Step 3 — Educate on user groups, then list existing groups
+- Accept only `.csv`; ask the user to export a spreadsheet as CSV when needed.
+- Reject files over 1 MB.
+- Run `inspect`; never modify the original CSV.
+- Resolve missing columns or values, malformed email addresses, unsupported roles, invalid active flags, and values over 100 characters in the generated plan.
 
-Always render the "Why user groups matter" paragraph above. Then run:
+### 2. Review user groups
 
-```bash
-uv run "<skill-dir>/scripts/upload_users.py" \
-  list-groups [--tenant TENANT]
-```
-
-Show the returned list to the user. If the tenant has zero groups, say so —
-that's a real signal that the customer may need to think about cohorts before
-proceeding.
-
-### Step 4 — Resolve UserGroup column
-
-Run:
+Explain that user groups control learning-path and certification assignment. Then run:
 
 ```bash
-uv run "<skill-dir>/scripts/upload_users.py" \
-  suggest-groups [--tenant TENANT]
+uv run "<skill-dir>/scripts/upload_users.py" list-groups [--tenant NAME]
+uv run "<skill-dir>/scripts/upload_users.py" suggest-groups [--tenant NAME]
 ```
 
-Three branches, picked by the script based on plan state:
+Group names are case-sensitive. Ask for an explicit `yes` for each new group because the import auto-creates unknown names.
 
-- **Column missing or fully blank** — script suggests groupings (e.g., by
-  email domain). Agent asks: *"Here's what I'm thinking — does this look
-  right? Tell me any rows you'd like to move to a different group."* User
-  edits in chat; agent updates the plan.
-- **Column populated, all values match existing groups exactly** — agent
-  shows the table and asks *"Ready to proceed?"*.
-- **Column populated, one or more values are NEW** — script flags each new
-  group. Agent must ask explicit `yes` per new group:
-  > *"This will create a NEW group called 'Sales East' with the description
-  > 'This User Group has been created from a CSV file. Please update the
-  > description.' Type `yes` to confirm, or tell me a different name (which
-  > must match an existing group exactly — they're case-sensitive)."*
-
-After this step every distinct group in the plan is tagged `existing` or
-`new`.
-
-### Step 5 — Duplicate check (STOP)
-
-Run:
+### 3. Stop for duplicates
 
 ```bash
-uv run "<skill-dir>/scripts/upload_users.py" \
-  check-duplicates [--tenant TENANT]
+uv run "<skill-dir>/scripts/upload_users.py" check-duplicates [--tenant NAME]
 ```
 
-If duplicates are found, **STOP**. The script prints them. Render to the
-user:
+If duplicates exist, stop. Ask whether the user will fix the source and restart, or wants those rows removed from the plan. Run `drop-duplicates` only after that choice. Do not imply that duplicate users will be updated.
 
-> *"These N email(s) already exist in your tenant: {list}. Itero's import is
-> all-or-nothing, so I won't submit until we resolve these. Two options:*
-> *(a) you edit the file to remove these rows and we re-run the skill, or*
-> *(b) I drop them from the planned import and continue with the others.*
-> *Which do you want?"*
-
-If (a), exit. If (b), run:
+### 4. Stop for seat overflow
 
 ```bash
-uv run "<skill-dir>/scripts/upload_users.py" \
-  drop-duplicates [--tenant TENANT]
+uv run "<skill-dir>/scripts/upload_users.py" check-seats [--tenant NAME]
 ```
 
-### Step 6 — Seat-count check (STOP)
+If the configured seat cap would be exceeded, stop and let the user choose which planned representatives become inactive or whether to abort. Re-run the check after edits. If no seat-cap environment variable exists, state that the local check was skipped; do not claim capacity is available.
 
-Run:
-
-```bash
-uv run "<skill-dir>/scripts/upload_users.py" \
-  check-seats [--tenant TENANT]
-```
-
-If the seat cap is unknown (`ITERO_TENANT_SEATS_<NAME>` not set), the script
-warns and continues. Tell the user the script is skipping the check and
-why, then move on.
-
-If the seat cap is known and would be exceeded, the script prints the math.
-**STOP** and render:
-
-> *"Your tenant has {N} seats. {M} are already filled. This import would add
-> {K} more active reps, putting you at {total} — that's {over} over. Two
-> options:*
-> *(a) I'll set IsActive=false on {over} of the new rep rows so they're
-> created as inactive (you can activate them later from the Itero app), or*
-> *(b) abort and contact Itero to add seats. Which?"*
-
-If (a), ask the user which rows to deactivate, edit the plan, then re-run
-`check-seats`. If (b), exit.
-
-### Step 7 — Final preview + confirm
-
-Run:
+### 5. Preview and confirm
 
 ```bash
 uv run "<skill-dir>/scripts/upload_users.py" preview
 ```
 
-The script prints role mix, status mix, group mix, and the first 5 lines of
-the exact CSV that will be uploaded.
+Show the role, status, and group counts plus the first five CSV lines printed by the script. State that the request is `POST https://iterogatewayapi.azurewebsites.net/api/public/v1/user/import-csv`, multipart field `file`, and that invitations are sent for created users. Wait for explicit `yes`.
 
-Show this to the user, then ask:
-
-> *"Type `yes` to upload, or tell me what to change."*
-
-### Step 8 — Live import
-
-Only after explicit `yes`, run:
+### 6. Import once
 
 ```bash
-uv run "<skill-dir>/scripts/upload_users.py" \
-  import [--tenant TENANT] --live
+uv run "<skill-dir>/scripts/upload_users.py" import [--tenant NAME] --live
 ```
 
-Without `--live` the script dry-runs and reports what would have been sent.
-With `--live` it does the multipart POST and reports row count plus the list
-of groups the server auto-created. Relay both to the user.
+Report the imported row count and auto-created groups. On a server error, report the response without credentials and return to the relevant validation step instead of retrying blindly.
 
-If the server returns `400`, the script prints the `ProblemDetails` body
-verbatim. Common subtypes (`CSVFileValidation`, `NotEnoughSeats`) should be
-rare since steps 5 and 6 ran upstream — if they appear here, something
-changed in the tenant between checks. Investigate before retrying.
+## Common Mistakes
 
----
-
-## Authentication
-
-Default: skill reads `ITERO_API_KEY` from your `.env` file. That's the only
-setup needed for a single-tenant install.
-
-If you manage multiple Itero tenants from one repo, add the optional
-`--tenant <NAME>` flag; the skill will resolve `ITERO_API_KEY_<NAME>` from
-`.env` instead. Example:
-
-```bash
-uv run "<skill-dir>/scripts/upload_users.py" \
-  inspect ~/Downloads/users.csv --tenant ACME
-```
-
-Omit `--tenant` for the common single-key case.
-
----
-
-## Out of scope (v1)
-
-- Cross-tenant imports. This skill only writes to your own tenant (the one
-  your API key belongs to).
-- `.xlsx` auto-conversion — reject with a clear "save as CSV" message.
-- Updating/deactivating/deleting existing users — use the `manage-users` skill (`PUT /api/public/v1/user` now exists).
-
----
-
-## Error Handling
-
-| Error message | What to do |
+| Mistake | Correct approach |
 |---|---|
-| `missing env var ITERO_API_KEY` | Add `ITERO_API_KEY=<key>` to `.env`. |
-| `file is '.xlsx', not .csv` | Save the file as CSV in Excel and re-run. |
-| `file is N bytes, over the 1 MB import limit` | Split into smaller batches and run the skill once per batch. |
-| `plan not found at .tmp/...` | Run `inspect <csv>` first to create the plan. |
-| `seat_check.ok is False` (on import) | Re-run `check-seats` after deactivating rows or increasing seats. |
-| `400 NotEnoughSeats` (from server) | Tenant seat count changed between check and import. Re-run `check-seats`. |
-| `400 CSVFileValidation` (from server) | Re-run `inspect` to see what's wrong; the row count or shape changed. |
-| `403 Forbidden` | API key does not have Manager role. Generate a key from a Manager-role user in your Itero account. |
+| Uploading `.xlsx` | Export it as CSV first. |
+| Editing the source during cleanup | Edit only `.tmp/users-import-plan.json`. |
+| Skipping group review | Confirm every new, case-sensitive group name. |
+| Continuing with duplicate emails | Stop and remove or resolve them first. |
+| Assuming an unknown seat cap means room exists | State that the local capacity check was skipped. |
+| Running `--live` after a general approval | Require a final `yes` for the exact CSV upload. |
+
+## Error quick reference
+
+| Error | What to do |
+|---|---|
+| Missing `ITERO_API_KEY` | Add the environment variable without exposing its value. |
+| File is not CSV or exceeds 1 MB | Export or split the source and inspect again. |
+| `400 CSVFileValidation` | Return to `inspect`; the content or shape is invalid. |
+| `400 NotEnoughSeats` | Re-run the seat check because tenant state may have changed. |
+| `401` | Confirm the key is present and valid without printing it. |
+| `403` | Follow the verified role guidance in the generated reference. |

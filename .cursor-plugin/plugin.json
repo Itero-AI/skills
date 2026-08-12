@@ -1,8 +1,8 @@
 {
   "name": "itero",
   "displayName": "Itero",
-  "description": "Manage your Itero practice platform from Cursor — scenarios, scorecards, personas, bulk user imports, learning-path assignment, user management — plus prep documents for RAG / vector-store ingestion.",
-  "version": "1.4.0",
+  "description": "Manage Itero scenarios, scorecards, personas, users, learning paths, and conversations from Cursor, including transcripts and evaluation results, plus document preparation for RAG and vector stores.",
+  "version": "2.0.0",
   "author": {
     "name": "Itero",
     "url": "https://iteroapp.ai"
@@ -17,6 +17,8 @@
     "roleplay",
     "scorecards",
     "personas",
+    "conversations",
+    "transcripts",
     "doc-prep",
     "rag",
     "vector-store"

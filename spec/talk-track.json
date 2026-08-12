@@ -1,0 +1,1608 @@
+{
+  "components": {
+    "schemas": {
+      "Itero.TalkTrack.Api.Application.Dtos.PracticeScenarioActivityHistoryDto": {
+        "additionalProperties": false,
+        "properties": {
+          "activity": {
+            "nullable": true,
+            "type": "string"
+          },
+          "date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.TalkTrack.Api.Application.Dtos.PracticeScenarioInternalSystemDto": {
+        "additionalProperties": false,
+        "properties": {
+          "attributes": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PracticeScenarionInternalSystemAttributeDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "systemName": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.TalkTrack.Api.Application.Dtos.PracticeScenarionInternalSystemAttributeDto": {
+        "additionalProperties": false,
+        "properties": {
+          "attribute": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "value": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaCreateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "botName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "companyName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "elevenLabsVoiceId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "email": {
+            "nullable": true,
+            "type": "string"
+          },
+          "existingProcesses": {
+            "nullable": true,
+            "type": "string"
+          },
+          "gender": {
+            "nullable": true,
+            "type": "string"
+          },
+          "generalCharacteristics": {
+            "nullable": true,
+            "type": "string"
+          },
+          "language": {
+            "nullable": true,
+            "type": "string"
+          },
+          "mobile": {
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "pains": {
+            "nullable": true,
+            "type": "string"
+          },
+          "personaType": {
+            "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.PersonaAggregate.Enums.PersonaType"
+          },
+          "practiceScenarioCommunicationStyleId": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "title": {
+            "nullable": true,
+            "type": "string"
+          },
+          "voiceId": {
+            "description": "Retell voice id. Field name kept for public API backwards compatibility — internally stored as RetellVoiceId.\r\nOptional: at least one of VoiceId or ElevenLabsVoiceId must be provided.",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto": {
+        "additionalProperties": false,
+        "properties": {
+          "botName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "companyName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "elevenLabsVoiceId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "email": {
+            "nullable": true,
+            "type": "string"
+          },
+          "existingProcesses": {
+            "nullable": true,
+            "type": "string"
+          },
+          "gender": {
+            "nullable": true,
+            "type": "string"
+          },
+          "generalCharacteristics": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "language": {
+            "nullable": true,
+            "type": "string"
+          },
+          "mobile": {
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "pains": {
+            "nullable": true,
+            "type": "string"
+          },
+          "personaType": {
+            "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.PersonaAggregate.Enums.PersonaType"
+          },
+          "practiceScenarioCommunicationStyleId": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "title": {
+            "nullable": true,
+            "type": "string"
+          },
+          "voiceId": {
+            "description": "Retell voice id. Field name kept for public API backwards compatibility — internally stored as RetellVoiceId.",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaUpdateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "botName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "companyName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "elevenLabsVoiceId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "email": {
+            "nullable": true,
+            "type": "string"
+          },
+          "existingProcesses": {
+            "nullable": true,
+            "type": "string"
+          },
+          "gender": {
+            "nullable": true,
+            "type": "string"
+          },
+          "generalCharacteristics": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "language": {
+            "nullable": true,
+            "type": "string"
+          },
+          "mobile": {
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "pains": {
+            "nullable": true,
+            "type": "string"
+          },
+          "personaType": {
+            "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.PersonaAggregate.Enums.PersonaType"
+          },
+          "practiceScenarioCommunicationStyleId": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "title": {
+            "nullable": true,
+            "type": "string"
+          },
+          "voiceId": {
+            "description": "Retell voice id. Field name kept for public API backwards compatibility — internally stored as RetellVoiceId.\r\nOptional: at least one of VoiceId or ElevenLabsVoiceId must be provided.",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioCallTypeDto": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioCommunicationStyle": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioCreateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "activityHistories": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PracticeScenarioActivityHistoryDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "dialogueStartSetting": {
+            "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.PersonaAggregate.Enums.DialogueStartSetting"
+          },
+          "endCallFunctionExpression": {
+            "nullable": true,
+            "type": "string"
+          },
+          "internalSystems": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PracticeScenarioInternalSystemDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "keyBehaviorsOpinions": {
+            "nullable": true,
+            "type": "string"
+          },
+          "omitFromScoring": {
+            "type": "boolean"
+          },
+          "personaBotName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "personaCompany": {
+            "nullable": true,
+            "type": "string"
+          },
+          "personaId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "personaTitle": {
+            "nullable": true,
+            "type": "string"
+          },
+          "practiceScenarioCallTypeId": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "practiceScenarioCommunicationStyleId": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "practiceScenarioDescription": {
+            "nullable": true,
+            "type": "string"
+          },
+          "practiceScenarioName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "practiceScenarioType": {
+            "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.ScenarioAggregate.PracticeScenarioType"
+          },
+          "scorecardTemplateId": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "starterLine": {
+            "nullable": true,
+            "type": "string"
+          },
+          "transcript": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto": {
+        "additionalProperties": false,
+        "properties": {
+          "activityHistories": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PracticeScenarioActivityHistoryDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "dialogueStartSetting": {
+            "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.PersonaAggregate.Enums.DialogueStartSetting"
+          },
+          "endCallFunctionExpression": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "internalSystems": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PracticeScenarioInternalSystemDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "keyBehaviorsOpinions": {
+            "nullable": true,
+            "type": "string"
+          },
+          "omitFromScoring": {
+            "type": "boolean"
+          },
+          "personaBotName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "personaCompany": {
+            "nullable": true,
+            "type": "string"
+          },
+          "personaId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "personaTitle": {
+            "nullable": true,
+            "type": "string"
+          },
+          "practiceScenarioCallTypeId": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "practiceScenarioCommunicationStyleId": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "practiceScenarioDescription": {
+            "nullable": true,
+            "type": "string"
+          },
+          "practiceScenarioName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "practiceScenarioType": {
+            "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.ScenarioAggregate.PracticeScenarioType"
+          },
+          "scorecardTemplateId": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "starterLine": {
+            "nullable": true,
+            "type": "string"
+          },
+          "transcript": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioUpdateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "activityHistories": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PracticeScenarioActivityHistoryDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "dialogueStartSetting": {
+            "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.PersonaAggregate.Enums.DialogueStartSetting"
+          },
+          "endCallFunctionExpression": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "internalSystems": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PracticeScenarioInternalSystemDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "keyBehaviorsOpinions": {
+            "nullable": true,
+            "type": "string"
+          },
+          "omitFromScoring": {
+            "type": "boolean"
+          },
+          "personaBotName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "personaCompany": {
+            "nullable": true,
+            "type": "string"
+          },
+          "personaId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "personaTitle": {
+            "nullable": true,
+            "type": "string"
+          },
+          "practiceScenarioCallTypeId": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "practiceScenarioCommunicationStyleId": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "practiceScenarioDescription": {
+            "nullable": true,
+            "type": "string"
+          },
+          "practiceScenarioName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "practiceScenarioType": {
+            "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.ScenarioAggregate.PracticeScenarioType"
+          },
+          "scorecardTemplateId": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "starterLine": {
+            "nullable": true,
+            "type": "string"
+          },
+          "transcript": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.TalkTrack.Domain.AggregatesModel.PersonaAggregate.Enums.DialogueStartSetting": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "format": "int32",
+        "type": "integer"
+      },
+      "Itero.TalkTrack.Domain.AggregatesModel.PersonaAggregate.Enums.PersonaType": {
+        "enum": [
+          0,
+          1
+        ],
+        "format": "int32",
+        "type": "integer"
+      },
+      "Itero.TalkTrack.Domain.AggregatesModel.ScenarioAggregate.PracticeScenarioType": {
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "format": "int32",
+        "type": "integer"
+      },
+      "Microsoft.AspNetCore.Mvc.ProblemDetails": {
+        "additionalProperties": {},
+        "properties": {
+          "detail": {
+            "nullable": true,
+            "type": "string"
+          },
+          "instance": {
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "title": {
+            "nullable": true,
+            "type": "string"
+          },
+          "type": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "ApiKey": {
+        "description": "Please enter your API key",
+        "in": "header",
+        "name": "X-API-Key",
+        "type": "apiKey"
+      },
+      "Bearer": {
+        "bearerFormat": "JWT",
+        "description": "Please enter a valid token",
+        "scheme": "Bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "description": "Public endpoints exposed to clients",
+    "title": "Itero Public API",
+    "version": "v1"
+  },
+  "openapi": "3.0.1",
+  "paths": {
+    "/api/public/v1/persona": {
+      "get": {
+        "description": "This endpoint returns a list of all personas belonging to the tenant associated with the API key.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Response Structure\r\nReturns an array of persona objects. Each persona contains:\r\n- **id** (integer): Unique identifier of the persona.\r\n- **personaType** (integer): Type of persona.\r\n  - `0` - Enterprise\r\n  - `1` - Consumer\r\n- **name** (string): Name of the persona.\r\n- **botName** (string): Name of the bot.\r\n- **title** (string, Enterprise only): Job title of the persona.\r\n- **companyName** (string, Enterprise only): Company name.\r\n- **email** (string, optional): Email address.\r\n- **mobile** (string, optional): Mobile phone number.\r\n- **existingProcesses** (string, Enterprise optional): Description of existing processes.\r\n- **pains** (string, Enterprise optional): Description of pain points.\r\n- **generalCharacteristics** (string, Enterprise optional): General characteristics.\r\n- **practiceScenarioCommunicationStyleId** (integer, Consumer only): Communication style ID.\r\n- **voiceId** (string): Unique identifier for the voice/AI model.\r\n- **gender** (string): Gender of the persona.\r\n- **language** (string): Language code.\r\n            \r\n## Notes\r\n- Returns all personas for the current tenant regardless of type.\r\n- The list may be empty if no personas exist for the tenant.\r\n- The response is an array of persona objects, not paginated.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Personas were successfully retrieved."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves all personas for the current tenant.",
+        "tags": [
+          "PublicPersona"
+        ]
+      },
+      "post": {
+        "description": "Creates a new persona. Personas can be of two types: Enterprise or Consumer.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\nThe request body must contain the following fields:\r\n- **personaType** (required, integer): Type of persona.\r\n  - Allowed values:\r\n    - `0` - Enterprise\r\n    - `1` - Consumer\r\n- **name** (required, string, max 255): Name of the persona.\r\n- **botName** (required, string, max 255): Name of the bot.\r\n- **title** (required for Enterprise, string, max 255): Job title of the persona.\r\n- **companyName** (required for Enterprise, string, max 255): Company name.\r\n- **email** (optional, string, max 255): Email address. Must be valid email format if provided.\r\n- **mobile** (optional, string): Mobile phone number.\r\n- **existingProcesses** (optional for Enterprise, string): Description of existing processes. Must be null for Consumer.\r\n- **pains** (optional for Enterprise, string): Description of pain points. Must be null for Consumer.\r\n- **generalCharacteristics** (optional for Enterprise, string): General characteristics.\r\n- **practiceScenarioCommunicationStyleId** (required for Consumer, integer): Communication style ID. Must be greater than 0.\r\n- **voiceId** (required, string): Unique identifier for the voice/AI model.\r\n- **gender** (required, string): Gender of the persona.\r\n  - Allowed values: `Male`, `Female`\r\n- **language** (required, string): Language code.\r\n  - Allowed values: `es-419`, `es-ES`, `en-GB`, `en-US`\r\n            \r\n## Example Request (Enterprise)\r\n```json\r\n{\r\n  \"personaType\": 0,\r\n  \"name\": \"John Smith\",\r\n  \"botName\": \"Enterprise Bot\",\r\n  \"title\": \"Sales Director\",\r\n  \"companyName\": \"Acme Corp\",\r\n  \"email\": \"john@acme.com\",\r\n  \"mobile\": \"+12025551234\",\r\n  \"existingProcesses\": \"Current sales process description\",\r\n  \"pains\": \"Long sales cycles and limited automation\",\r\n  \"generalCharacteristics\": \"Strategic, data-driven decision maker\",\r\n  \"voiceId\": \"voice-001\",\r\n  \"gender\": \"Male\",\r\n  \"language\": \"en-US\"\r\n}\r\n```\r\n            \r\n## Example Request (Consumer)\r\n```json\r\n{\r\n  \"personaType\": 1,\r\n  \"name\": \"Jane Doe\",\r\n  \"botName\": \"Consumer Bot\",\r\n  \"email\": \"jane@example.com\",\r\n  \"mobile\": \"+12025559876\",\r\n  \"practiceScenarioCommunicationStyleId\": 5,\r\n  \"voiceId\": \"voice-002\",\r\n  \"gender\": \"Female\",\r\n  \"language\": \"en-GB\"\r\n}\r\n```\r\n            \r\n## Response Structure\r\nThe created persona object contains all the submitted fields plus:\r\n- **id** (integer): Unique identifier of the newly created persona (auto-generated).\r\n            \r\n## Notes\r\n- Enterprise personas require `title` and `companyName`, and optionally `existingProcesses`, `pains`, and `generalCharacteristics`.\r\n- Consumer personas require `practiceScenarioCommunicationStyleId` and must not include enterprise-specific fields (`existingProcesses`, `pains`).\r\n- The persona is created under the tenant associated with the API key.\r\n- If personaType is not set, it defaults to 0 (Enterprise)",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaCreateRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaCreateRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaCreateRequest"
+              }
+            }
+          },
+          "description": "The persona creation request body."
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                }
+              }
+            },
+            "description": "Persona was successfully created."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Creates a new persona for the current tenant.",
+        "tags": [
+          "PublicPersona"
+        ]
+      },
+      "put": {
+        "description": "Updates an existing persona within the current tenant context.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\nThe request body must contain all fields (same as create, plus `id`):\r\n- **id** (required, integer): Unique identifier of the persona to update.\r\n- **personaType** (required, integer): Type of persona.\r\n  - Allowed values:\r\n    - `0` - Enterprise\r\n    - `1` - Consumer\r\n- **name** (required, string, max 255): Name of the persona.\r\n- **botName** (required, string, max 255): Name of the bot.\r\n- **title** (required for Enterprise, string, max 255): Job title of the persona.\r\n- **companyName** (required for Enterprise, string, max 255): Company name.\r\n- **email** (optional, string, max 255): Email address. Must be valid email format if provided.\r\n- **mobile** (optional, string): Mobile phone number.\r\n- **existingProcesses** (optional for Enterprise, string): Description of existing processes. Must be null for Consumer.\r\n- **pains** (optional for Enterprise, string): Description of pain points. Must be null for Consumer.\r\n- **generalCharacteristics** (optional for Enterprise, string): General characteristics.\r\n- **practiceScenarioCommunicationStyleId** (required for Consumer, integer): Communication style ID.\r\n- **voiceId** (required, string): Unique identifier for the voice/AI model.\r\n- **gender** (required, string): Gender of the persona. Must be one of: `Male`, `Female`.\r\n- **language** (required, string): Language code (`es-419`, `es-ES`, `en-GB`, `en-US`).\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"id\": 5,\r\n  \"personaType\": 0,\r\n  \"name\": \"John Smith Updated\",\r\n  \"botName\": \"Enterprise Bot Updated\",\r\n  \"title\": \"VP Sales\",\r\n  \"companyName\": \"Acme Corp\",\r\n  \"email\": \"john.updated@acme.com\",\r\n  \"mobile\": \"+12025551234\",\r\n  \"existingProcesses\": \"Updated process\",\r\n  \"pains\": \"Current challenges\",\r\n  \"generalCharacteristics\": \"Innovative\",\r\n  \"voiceId\": \"voice-001\",\r\n  \"gender\": \"Male\",\r\n  \"language\": \"en-US\"\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns the updated persona object with all fields.\r\n            \r\n## Notes\r\n- The persona must exist and belong to the current tenant.\r\n- All fields are required in the request body; provide the complete persona object.\r\n- If personaType is not set, it defaults to 0 (Enterprise)",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaUpdateRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaUpdateRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaUpdateRequest"
+              }
+            }
+          },
+          "description": "The persona update request body."
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                }
+              }
+            },
+            "description": "Persona was successfully updated."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Updates an existing persona for the current tenant.",
+        "tags": [
+          "PublicPersona"
+        ]
+      }
+    },
+    "/api/public/v1/persona/voices": {
+      "get": {
+        "description": "This endpoint returns a list of available voice configurations that can be assigned to personas.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Response Structure\r\nReturns an array of available voice objects.\r\n            \r\n## Notes\r\n- Use the returned voice identifiers when creating or updating personas.\r\n- The available voices may vary based on tenant configuration.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Available voices were successfully retrieved."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves available voices for personas.",
+        "tags": [
+          "PublicPersona"
+        ]
+      }
+    },
+    "/api/public/v1/persona/{id}": {
+      "delete": {
+        "description": "Permanently deletes a persona and all associated data.\r\n            \r\n## Authorization\r\nAccess is secured using Bearer token authentication:\r\n- Access is secured using a public API key.\r\n- Include the Bearer token in the Authorization header:\r\n```http\r\nAuthorization: Bearer your-admin-token\r\n```\r\n            \r\n## Path Parameters\r\n- **id** (required, integer): Unique identifier of the persona to delete.\r\n            \r\n## Example Request\r\n```http\r\nDELETE /api/PublicAdminPersona/v1/5\r\nAuthorization: Bearer your-admin-token\r\n```\r\n            \r\n## Response\r\nReturns an empty 200 OK response on successful deletion.\r\n            \r\n## Notes\r\n- This is a destructive operation and cannot be undone.\r\n- All data associated with the persona (practice scenarios, dialogue history, etc.) will be deleted.\r\n- The persona must exist; attempting to delete a non-existent persona will return an error.\r\n- Ensure the persona ID is correct before performing this operation.\r\n- Admin endpoint allows deletion without tenant-level restrictions.\r\n- Consider the impact on any practice scenarios or systems that reference this persona.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persona was successfully deleted."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — Bearer token is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — User does not have Admin permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Deletes a persona from the system.",
+        "tags": [
+          "PublicPersona"
+        ]
+      }
+    },
+    "/api/public/v1/practice-scenario": {
+      "get": {
+        "description": "This endpoint returns a list of all practice scenarios belonging to the tenant associated with the API key.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Response Structure\r\nReturns an array of practice scenario objects. Each scenario contains:\r\n- **id** (integer): Unique identifier of the scenario.\r\n- **personaId** (integer): ID of the associated persona.\r\n- **practiceScenarioName** (string): Name of the scenario.\r\n- **practiceScenarioDescription** (string): Description of the scenario.\r\n- **personaBotName** (string, optional): Override bot name.\r\n- **personaCompany** (string, optional): Override company name.\r\n- **personaTitle** (string, optional): Override title.\r\n- **practiceScenarioCallTypeId** (integer, optional): Call type ID. `null` when not set.\r\n- **practiceScenarioCommunicationStyleId** (integer, optional): Communication style ID. `null` when not set.\r\n- **endCallFunctionExpression** (string, optional): End call expression.\r\n- **practiceScenarioType** (integer): Scenario type.\r\n  - `0` - CommonScenario\r\n  - `1` - ObjectionHandling\r\n  - `2` - LiveCallSimulation\r\n  - `3` - FocusScenario\r\n- **keyBehaviorsOpinions** (string, optional): Key behaviors (CommonScenario, FocusScenario, ObjectionHandling only).\r\n- **transcript** (string, optional): Transcript (LiveCallSimulation only).\r\n- **omitFromScoring** (boolean): Whether excluded from scoring.\r\n- **dialogueStartSetting** (integer): Who starts the dialogue.\r\n  - `0` - ProspectDynamic, `1` - ProspectPredefined, `2` - Representative\r\n- **starterLine** (string, optional): Predefined starter line.\r\n- **activityHistories** (array, optional): Activity history items.\r\n- **internalSystems** (array, optional): Internal system configurations.\r\n- **scorecardTemplateId** (integer, optional): Scorecard template ID.\r\n            \r\n## Notes\r\n- Returns all practice scenarios for the current tenant.\r\n- The list may be empty if no scenarios exist.\r\n- The response is an array of scenario objects, not paginated.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Practice scenarios were successfully retrieved."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves all practice scenarios for the current tenant.",
+        "tags": [
+          "PublicPracticeScenario"
+        ]
+      },
+      "post": {
+        "description": "Allows the caller to create a new practice scenario.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\n- **personaId** (required, integer): ID of the persona associated with this scenario.\r\n- **practiceScenarioName** (required, string): Name of the practice scenario.\r\n- **practiceScenarioDescription** (required, string): Description of the practice scenario.\r\n- **personaBotName** (optional, string): Override bot name. If not set, uses the persona's botName.\r\n- **personaCompany** (optional, string, Enterprise only): Override company name. If not set, uses the persona's company.\r\n- **personaTitle** (optional, string, Enterprise only): Override title. If not set, uses the persona's title.\r\n- **practiceScenarioCallTypeId** (required, integer): ID of the call type for this scenario.\r\n- **practiceScenarioCommunicationStyleId** (required, integer): ID of the communication style.\r\n- **endCallFunctionExpression** (optional, string): Expression that defines when to end the call.\r\n- **practiceScenarioType** (required, integer): Type of the practice scenario.\r\n  - `0` - CommonScenario\r\n  - `1` - ObjectionHandling\r\n  - `2` - LiveCallSimulation\r\n  - `3` - FocusScenario\r\n- **keyBehaviorsOpinions** (optional, string): Key behaviors and opinions. Required for CommonScenario, FocusScenario, and ObjectionHandling. Not applicable for LiveCallSimulation.\r\n- **transcript** (optional, string): Call transcript. Required only for LiveCallSimulation. Not applicable for CommonScenario, FocusScenario, and ObjectionHandling.\r\n- **omitFromScoring** (required, boolean): Whether to exclude this scenario from scoring.\r\n- **dialogueStartSetting** (required, integer): Who starts the dialogue.\r\n  - `0` - ProspectDynamic (Ai begins. Generate a dynamic message)\r\n  - `1` - ProspectPredefined (Ai begins. Use a message that setted in the attribute starteLine)\r\n  - `2` - Representative (User begins. No Ai actions until the user speeaks first)\r\n- **starterLine** (optional, string): Predefined starter line. Used when dialogueStartSetting is ProspectPredefined.\r\n- **activityHistories** (optional, array): List of activity history items. Each item contains:\r\n  - `id` (integer), `date` (datetime), `activity` (string)\r\n- **internalSystems** (optional, array): List of internal system configurations. Each item contains:\r\n  - `systemName` (string), `attributes` (array of `{ id, attribute, value }`)\r\n- **scorecardTemplateId** (optional, integer): ID of the scorecard template to use for scoring.\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"personaId\": 1,\r\n  \"practiceScenarioName\": \"Cold Call Training\",\r\n  \"practiceScenarioDescription\": \"Practice cold calling techniques\",\r\n  \"personaBotName\": \"Sales Bot\",\r\n  \"practiceScenarioCallTypeId\": 1,\r\n  \"practiceScenarioCommunicationStyleId\": 2,\r\n  \"practiceScenarioType\": 0,\r\n  \"omitFromScoring\": false,\r\n  \"dialogueStartSetting\": 0,\r\n  \"scorecardTemplateId\": 5\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns the created practice scenario object with all fields plus:\r\n- **id** (integer): Unique identifier of the newly created scenario (auto-generated).\r\n            \r\n## Notes\r\n- The scenario is created under the tenant associated with the API key.\r\n- The `personaId` must reference an existing persona within the specified tenant.\r\n- If `practiceScenarioType` is not setted it defaults to `0` (CommonScenario).\r\n- If `omitFromScoring` is not setted it defaults to `false`.\r\n- If `dialogueStartSetting` is not setted it defaults to `0` (ProspectDynamic).",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioCreateRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioCreateRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioCreateRequest"
+              }
+            }
+          },
+          "description": "The practice scenario creation request body."
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                }
+              }
+            },
+            "description": "Practice scenario was successfully created."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Creates a new practice scenario for the current tenant.",
+        "tags": [
+          "PublicPracticeScenario"
+        ]
+      },
+      "put": {
+        "description": "Allows the caller to update an existing practice scenario.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\nSame fields as the create endpoint, plus:\r\n- **id** (required, integer): Unique identifier of the scenario to update.\r\n            \r\nDifferences from the create endpoint:\r\n- **practiceScenarioCallTypeId** and **practiceScenarioCommunicationStyleId** are optional (nullable) on update.\r\n  A value of `0` is treated as not set and stored as `null`.\r\n- **keyBehaviorsOpinions** is optional on update; scenarios based on a default template keep it `null`\r\n  and can be updated as returned by the GET endpoint.\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"id\": 10,\r\n  \"personaId\": 1,\r\n  \"practiceScenarioName\": \"Updated Cold Call Training\",\r\n  \"practiceScenarioDescription\": \"Updated description\",\r\n  \"practiceScenarioCallTypeId\": 1,\r\n  \"practiceScenarioCommunicationStyleId\": 2,\r\n  \"practiceScenarioType\": 0,\r\n  \"omitFromScoring\": false,\r\n  \"dialogueStartSetting\": 0,\r\n  \"scorecardTemplateId\": 5\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns the updated practice scenario object with all fields.\r\n            \r\n## Notes\r\n- The scenario must exist and belong to the current tenant.\r\n- The update is applied on top of the stored scenario: fields that are not part of the public contract\r\n  (e.g. the default template linkage) are preserved.\r\n- The `personaId` must reference an existing persona within the specified tenant.\r\n- If `practiceScenarioType` is not setted it defaults to `0` (CommonScenario).\r\n- If `omitFromScoring` is not setted it defaults to `false`.\r\n- If `dialogueStartSetting` is not setted it defaults to `0` (ProspectDynamic).",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioUpdateRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioUpdateRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioUpdateRequest"
+              }
+            }
+          },
+          "description": "The practice scenario update request body."
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                }
+              }
+            },
+            "description": "Practice scenario was successfully updated."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Bad request — the request body failed validation."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Not found — the scenario does not exist for the current tenant."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Updates an existing practice scenario for the current tenant.",
+        "tags": [
+          "PublicPracticeScenario"
+        ]
+      }
+    },
+    "/api/public/v1/practice-scenario/call-types": {
+      "get": {
+        "description": "This endpoint returns a list of available call types that can be assigned to practice scenarios.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Response Structure\r\nReturns an array of call type objects. Each call type contains:\r\n- **id** (integer): Unique identifier of the call type.\r\n- **name** (string): Name of the call type.\r\n- **description** (string, optional): Description of the call type.\r\n            \r\n## Notes\r\n- Use the returned call type IDs when creating or updating practice scenarios (in the `practiceScenarioCallTypeId` field).\r\n- The available call types are system-defined and may vary.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioCallTypeDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioCallTypeDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioCallTypeDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Call types were successfully retrieved."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves available practice scenario call types.",
+        "tags": [
+          "PublicPracticeScenario"
+        ]
+      }
+    },
+    "/api/public/v1/practice-scenario/communication-styles": {
+      "get": {
+        "description": "This endpoint returns a list of available communication styles that can be assigned to practice scenarios and consumer personas.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Response Structure\r\nReturns an array of communication style objects. Each style contains:\r\n- **id** (integer): Unique identifier of the communication style.\r\n- **name** (string): Name of the communication style.\r\n- **description** (string, optional): Description of the communication style.\r\n            \r\n## Notes\r\n- Use the returned communication style IDs when creating or updating practice scenarios (in the `practiceScenarioCommunicationStyleId` field).\r\n- Communication styles are also used when creating Consumer personas.\r\n- The available styles are system-defined and may vary.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioCommunicationStyle"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioCommunicationStyle"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioCommunicationStyle"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Communication styles were successfully retrieved."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves available practice scenario communication styles.",
+        "tags": [
+          "PublicPracticeScenario"
+        ]
+      }
+    },
+    "/api/public/v1/practice-scenario/{id}": {
+      "delete": {
+        "description": "Allows the caller to delete a practice scenario.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Path Parameters\r\n- **id** (required, integer): Unique identifier of the practice scenario to delete.\r\n            \r\n## Example Request\r\n```http\r\nDELETE /api/public/v1/practice-scenario/10\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Response\r\nReturns an empty 200 OK response on successful deletion.\r\n            \r\n## Notes\r\n- This is a destructive operation and cannot be undone.\r\n- The scenario must exist and belong to the current tenant.\r\n- Consider the impact on any related data before performing this operation.",
+        "parameters": [
+          {
+            "description": "Unique identifier of the practice scenario to delete.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Practice scenario was successfully deleted."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Deletes a practice scenario from the current tenant.",
+        "tags": [
+          "PublicPracticeScenario"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKey": [],
+      "Bearer": []
+    }
+  ]
+}
