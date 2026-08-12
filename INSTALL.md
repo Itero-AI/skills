@@ -1,23 +1,23 @@
 # Manually Installing the Itero Skills — Step by Step
 
-> **Most people don't need this guide.** The fastest way to install is the [auto-install prompt in the README](README.md#automatic--paste-a-prompt-into-your-agent) — copy one block of text, paste it into your AI assistant, answer one question. This manual guide is for anyone who hits a problem with the auto-install or who'd rather do it themselves.
+> **Most people don't need this guide.** The README offers an [automatic paste-a-prompt path](README.md#automatic--paste-a-prompt-into-your-agent) and a [developer shell path](README.md#developer--shell-commands). This guide preserves the third option: installing the folders yourself without terminal experience.
 
-This guide walks you through installing the Itero skills into your AI assistant by hand. It's written for people who have never opened a terminal and have no idea what a "hidden folder" is. If that's you, you're in the right place.
+This guide walks you through installing the nine Itero skills into your AI assistant by hand. The platform skills connect to the unified gateway at `https://iterogatewayapi.azurewebsites.net`. It's written for people who have never opened a terminal and have no idea what a "hidden folder" is. If that's you, you're in the right place.
 
 There are 6 steps. Plan for 5–10 minutes the first time.
 
 > **Step 1** — Download the skills folder
 > **Step 2** — Open your AI assistant's skills folder
-> **Step 3** — Drag the eight skills into place
+> **Step 3** — Drag the nine skills into place
 > **Step 4** — Save your Itero API key
-> **Step 5** — Install uv (one time only)
+> **Step 5** — Install uv if you need a scripted skill
 > **Step 6** — Restart your AI assistant and test
 
 ---
 
 ## Step 1 — Download the skills folder
 
-You're going to download all eight Itero skills as a single zipped folder.
+You're going to download all nine Itero skills as a single zipped folder.
 
 1. Go to **https://github.com/Itero-AI/skills** in your web browser.
 2. Click the green **Code** button (it's near the top-right of the file list).
@@ -34,8 +34,9 @@ A file called `skills-main.zip` will land in your **Downloads** folder.
 
 Open `skills-main`. Inside, you'll see a folder called `skills`. Open that too.
 
-You should now see eight folders side by side:
+You should now see nine folders side by side:
 
+- `conversations`
 - `doc-consolidator`
 - `doc-optimizer`
 - `learning-paths`
@@ -51,7 +52,7 @@ You should now see eight folders side by side:
 
 ## Step 2 — Open your AI assistant's skills folder
 
-Your AI assistant looks for skills in a specific folder on your computer. You need to open that folder so you can drop the eight skill folders into it.
+Your AI assistant looks for skills in a specific folder on your computer. You need to open that folder so you can drop the nine skill folders into it.
 
 The folder path depends on which assistant you use. Find your assistant below.
 
@@ -145,20 +146,20 @@ If missing, create the path: `%USERPROFILE%` → create `.gemini` → create `an
 
 ---
 
-## Step 3 — Drag the eight skills into place
+## Step 3 — Drag the nine skills into place
 
 You should now have **two windows open**:
 
-- **Window A:** the unzipped `skills` folder from Step 1, showing `doc-consolidator`, `doc-optimizer`, `learning-paths`, `manage-users`, `personas`, `scenarios`, `scorecards`, `upload-users`.
+- **Window A:** the unzipped `skills` folder from Step 1, showing `conversations`, `doc-consolidator`, `doc-optimizer`, `learning-paths`, `manage-users`, `personas`, `scenarios`, `scorecards`, and `upload-users`.
 - **Window B:** your AI assistant's empty (or near-empty) `skills` folder from Step 2.
 
 Now:
 
-1. In Window A, click `doc-consolidator`, hold the Shift key, and click `upload-users`. All eight folders should now be highlighted.
+1. Click inside Window A and select all nine folders with **Cmd + A** on Mac or **Ctrl + A** on Windows.
 2. Drag them from Window A into Window B.
 3. If your computer asks "Copy or Move?", choose **Copy**.
 
-When the copy finishes, Window B should now contain eight folders: `doc-consolidator`, `doc-optimizer`, `learning-paths`, `manage-users`, `personas`, `scenarios`, `scorecards`, `upload-users`.
+When the copy finishes, Window B should now contain nine folders: `conversations`, `doc-consolidator`, `doc-optimizer`, `learning-paths`, `manage-users`, `personas`, `scenarios`, `scorecards`, and `upload-users`.
 
 You can close Window A.
 
@@ -166,7 +167,7 @@ You can close Window A.
 
 ## Step 4 — Save your Itero API key
 
-The skills need your Itero API key to talk to your account. You'll put it in a small text file called `.env` inside the project folder you'll use the AI assistant from.
+The seven Itero platform skills need your Itero API key to talk to your account. The two document-preparation skills do not. You'll put the key in a small text file called `.env` inside the project folder you'll use the AI assistant from.
 
 ### Get the key
 
@@ -233,9 +234,11 @@ Then in your AI assistant you can say things like *"list scorecards on the stagi
 
 ---
 
-## Step 5 — Install uv (one time only)
+## Step 5 — Install uv if you need a scripted skill
 
-The skills are written in Python, but you don't have to install Python or any Python packages yourself. The skills use a tool called **uv** that handles all of that automatically — including installing the right Python version if you don't have one. You only install uv once per machine.
+Only four skills need **uv**: `scorecards`, `upload-users`, `doc-optimizer`, and `doc-consolidator`. If you do not plan to use any of those, skip to Step 6. The other five skills make API requests directly and do not need Python or uv.
+
+The four scripted skills declare their own Python dependencies. uv installs the right Python version and dependencies automatically, and you only install uv once per machine.
 
 ### On a Mac
 
@@ -267,7 +270,7 @@ In a fresh Terminal/PowerShell window, type:
 uv --version
 ```
 
-You should see something like `uv 0.11.x`. If you do, Step 5 is complete — uv will fetch the right Python version and the right Python packages the first time each skill runs, automatically.
+You should see a uv version number. If you do, Step 5 is complete — uv will fetch the required Python version and packages the first time one of the four scripted skills runs.
 
 ---
 
@@ -305,7 +308,7 @@ Three things to check:
 
 ### "It says `uv: command not found` or `uv` is not recognized"
 
-You missed Step 5. On Mac: `brew install uv`. On Windows: `winget install --id=astral-sh.uv -e`. After installing, fully close any open Terminal/PowerShell windows and open a fresh one before retrying.
+This applies only to `scorecards`, `upload-users`, `doc-optimizer`, and `doc-consolidator`. On Mac, run `brew install uv`. On Windows, run `winget install --id=astral-sh.uv -e`. After installing, fully close any open Terminal or PowerShell windows and open a fresh one before retrying.
 
 ### "Hidden folders don't show up in Finder"
 
@@ -317,15 +320,15 @@ You can also press **Cmd + Shift + .** (period) in any Finder window to temporar
 
 Confirm the folders are in `~/.agents/skills/` (or `~/.cursor/skills/` if you used that one). On Windows: `%USERPROFILE%\.agents\skills\`.
 
-If you'd rather scope skills to a single project (so only that project sees them), create `<project-folder>/.cursor/skills/` and put the eight folders there instead. Cursor reads from both global and project locations.
+If you'd rather scope skills to a single project (so only that project sees them), create `<project-folder>/.cursor/skills/` and put the nine folders there instead. Cursor reads from both global and project locations.
 
 ### "I get an error mentioning a missing Python package (`requests`, `dotenv`, `fitz`, etc.)"
 
-This means the script is being run with plain `python3` instead of `uv run`. The skills are designed to invoke each script with `uv run`, which auto-installs the right packages. Make sure your AI assistant restarted after Step 3 picked up the new SKILL.md files. If the error persists, check that `uv --version` works in your Terminal/PowerShell — if it doesn't, redo Step 5.
+This means a scripted skill is being run with plain `python3` instead of `uv run`. The `scorecards`, `upload-users`, `doc-optimizer`, and `doc-consolidator` skills invoke their scripts with `uv run`, which installs the right packages automatically. Restart your assistant so it reloads the new skill instructions. If the error persists, check that `uv --version` works and repeat Step 5 if it does not.
 
-### "I prefer not to use uv — can I install the dependencies with pip?"
+### "Do I need uv for every skill?"
 
-Not in a supported way. The skills are designed to be invoked via `uv run` from each `SKILL.md` — that's what your AI assistant reads and executes. To opt out of uv, you'd need to edit every `SKILL.md` to call `python3` instead of `uv run`, install all deps globally with `pip3 install -r requirements.txt` (the repo's `requirements.txt` is kept up to date as a reference for advanced setups), and ensure your global Python version is ≥3.11. We don't recommend this; uv handles all of it for you, including installing Python itself if missing.
+No. You need uv only for `scorecards`, `upload-users`, `doc-optimizer`, and `doc-consolidator`. The `personas`, `scenarios`, `learning-paths`, `manage-users`, and `conversations` skills do not use local Python scripts.
 
 ### Still stuck?
 
@@ -347,6 +350,6 @@ If you're comfortable typing slash commands inside your AI assistant, Claude Cod
 1. Open Claude Code.
 2. In the chat, type: `/plugin marketplace add Itero-AI/skills` and press Enter.
 3. Then type: `/plugin install itero@itero-plugins` and press Enter.
-4. Continue with **Step 4** (the API key) and **Step 5** (uv) above. The plugin install handles the rest.
+4. Continue with **Step 4** (the API key), and use **Step 5** only if you need one of the four scripted skills. The plugin install handles the rest.
 
 This path doesn't yet exist for Cursor, Codex, or Antigravity — those still use the manual download in Steps 1–3.

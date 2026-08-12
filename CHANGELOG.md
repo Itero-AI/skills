@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.0 — 2026-08-12
+
+- Added `conversations` for searching calls, reading transcripts and evaluations, tagging calls, and starting evaluations.
+- Moved all Itero API skills to the unified gateway, with the documented practice-host exception for individual evaluation reads and deletes.
+- Generated API references from committed OpenAPI snapshots and verified notes so endpoint, schema, enum, and known-behavior documentation stays in sync.
+- Consolidated the scorecard builder and HTTP client into one journaled, dry-run-first script, and removed duplicated HTTP clients from knowledge-only skills.
+- Updated the user-upload client to use the unified gateway and retained local scripts only where they provide meaningful workflow logic.
+
 ## 1.4.0 — 2026-06-11
 
 - New skill: `learning-paths` — list learning paths/certifications, assign and reassign to users.

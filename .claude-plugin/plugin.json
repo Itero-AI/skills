@@ -1,7 +1,7 @@
 {
   "name": "itero",
-  "version": "1.4.0",
-  "description": "Manage your Itero practice platform from Claude Code — build scenarios from playbooks, design scorecards from training docs, author personas from customer materials, bulk-import users from CSV, assign learning paths and certifications, and manage individual users — plus prep documents for RAG / vector-store ingestion (single-doc and batch consolidation).",
+  "version": "2.0.0",
+  "description": "Manage Itero scenarios, scorecards, personas, users, learning paths, and conversations from Claude Code, including transcripts and evaluation results, plus document preparation for RAG and vector stores.",
   "author": {
     "name": "Itero",
     "email": "support@iteroapp.ai",
@@ -17,6 +17,8 @@
     "roleplay",
     "scorecards",
     "personas",
+    "conversations",
+    "transcripts",
     "doc-prep",
     "rag",
     "vector-store"
