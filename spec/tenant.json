@@ -1,0 +1,1019 @@
+{
+  "components": {
+    "schemas": {
+      "Itero.Core.Domain.Enums.AgentType": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "format": "int32",
+        "type": "integer"
+      },
+      "Itero.Core.Domain.Enums.InteractionType": {
+        "enum": [
+          0,
+          1
+        ],
+        "format": "int32",
+        "type": "integer"
+      },
+      "Itero.Tenant.Api.Application.Dtos.PublicApi.PublicAgentDto": {
+        "additionalProperties": false,
+        "properties": {
+          "agentType": {
+            "$ref": "#/components/schemas/Itero.Core.Domain.Enums.AgentType"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "interactionType": {
+            "$ref": "#/components/schemas/Itero.Core.Domain.Enums.InteractionType"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "tenantId": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Tenant.Api.Application.Dtos.PublicApi.PublicUserGroupDto": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "tenantId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "title": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Tenant.Api.Application.Dtos.PublicApi.UserPublicDto": {
+        "additionalProperties": false,
+        "properties": {
+          "createdDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "email": {
+            "nullable": true,
+            "type": "string"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.Users.UserPublicGroupDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "role": {
+            "nullable": true,
+            "type": "string"
+          },
+          "tenantUserId": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Tenant.Api.Application.Dtos.PublicApi.Users.PublicUserCreateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "nullable": true,
+            "type": "string"
+          },
+          "groups": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "role": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Tenant.Api.Application.Dtos.PublicApi.Users.PublicUserUpdateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "groups": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "role": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Tenant.Api.Application.Dtos.PublicApi.Users.UserPublicGroupDto": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Microsoft.AspNetCore.Mvc.ProblemDetails": {
+        "additionalProperties": {},
+        "properties": {
+          "detail": {
+            "nullable": true,
+            "type": "string"
+          },
+          "instance": {
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "title": {
+            "nullable": true,
+            "type": "string"
+          },
+          "type": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "ApiKey": {
+        "description": "Please enter your API key",
+        "in": "header",
+        "name": "X-API-Key",
+        "type": "apiKey"
+      },
+      "Bearer": {
+        "bearerFormat": "JWT",
+        "description": "Please enter a valid token",
+        "scheme": "Bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "description": "Public endpoints exposed to clients",
+    "title": "Itero Public API",
+    "version": "v1"
+  },
+  "openapi": "3.0.1",
+  "paths": {
+    "/api/public/v1/agent": {
+      "get": {
+        "description": "Retrieves all agents belonging to the current tenant.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key.\r\n            \r\n## Response Structure\r\nEach agent contains:\r\n- **id** (required): Unique identifier of the agent.\r\n- **name** (required): Display name of the agent.\r\n- **agentType** (required): Type of agent (Coaching, AskItero, or DataCapture).\r\n- **tenantId** (required): ID of the tenant this agent belongs to.\r\n- **interactionType** (optional): Type of interaction this agent supports.\r\n  - `0` – Voice\r\n  - `1` – Chat\r\n            \r\n## Agent Types\r\nNumeric enum values representing agent types:\r\n- **0** – Coaching Agent\r\n- **1** – Ask Itero Agent\r\n- **2** – Data Capture Agent\r\n            \r\n## Interaction Type\r\nIndicates the communication channel the agent is designed to handle:\r\n- **Voice (0)**: Agent handles voice call interactions (phone/video calls).\r\n- **Chat (1)**: Agent handles text-based chat interactions.\r\nWhen assigning agents to a scorecard template, ensure the agent's interaction type matches the scorecard's interaction type.\r\n            \r\n## Example Response\r\n```json\r\n[\r\n  {\r\n    \"id\": 1,\r\n    \"name\": \"Sales Coaching Agent\",\r\n    \"agentType\": 0,\r\n    \"tenantId\": 10,\r\n    \"interactionType\": 0\r\n  },\r\n  {\r\n    \"id\": 2,\r\n    \"name\": \"Data Capture Agent\",\r\n    \"agentType\": 2,\r\n    \"tenantId\": 10,\r\n    \"interactionType\": 1\r\n  }\r\n]\r\n```\r\n            \r\n## Notes\r\n- Only agents belonging to the current tenant are returned.\r\n- The list may be empty if no agents are configured for the tenant.\r\n- Agents are used to power different features within the Itero platform.\r\n- **Important:** Agents must be matched with scorecard templates that have the same interaction type (Voice agents with Voice scorecards, Chat agents with Chat scorecards).",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.PublicAgentDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.PublicAgentDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.PublicAgentDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Agents were successfully retrieved."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — user is not authenticated."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves all agents associated with the current tenant.",
+        "tags": [
+          "PublicAgent"
+        ]
+      }
+    },
+    "/api/public/v1/get-user-groups": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.PublicUserGroupDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.PublicUserGroupDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.PublicUserGroupDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        },
+        "tags": [
+          "Public"
+        ]
+      }
+    },
+    "/api/public/v1/get-users": {
+      "get": {
+        "description": " Retrieves users belonging to the current tenant, optionally filtered by user role.\r\n\r\n ## Authorization\r\n Access is secured using a public API key. Include the API key in the request headers:\r\n ```http\r\n X-API-Key: your-public-api-key\r\n ```\r\n \r\n ## Query Parameters\r\n - **role** (optional): Filters users by role.\r\n   - Allowed values:\r\n     - `Representative`\r\n     - `Manager`\r\n     - `Coach`\r\n     - `Owner`\r\n   - If not provided, users of **all roles** are returned.\r\n- **isActive** (optional): Filters users by status active.\r\n   - Allowed values:\r\n     - `true`\r\n     - `false`\r\n   - If not provided, all users are returned.\r\n ## Response Structure\r\n Each user contains:\r\n - **id** (required): Unique identifier of the user.\r\n - **tenantUserId** (required): Identifier of the user within the current tenant.\r\n - **createdDate** (required): Date and time when the user was created (UTC).\r\n - **name** (required): Full name of the user.\r\n - **role** (required): Role assigned to the user.\r\n - **email** (required): Email address of the user.\r\n - **isActive** (required): Status of the user\r\n \r\n ## Example Response\r\n ```json\r\n [\r\n   {\r\n     \"id\": 1,\r\n     \"tenantUserId\": 101,\r\n     \"createdDate\": \"2024-12-10T09:15:30Z\",\r\n     \"name\": \"John Doe\",\r\n     \"role\": \"Manager\",\r\n     \"isActive\" : \"true\",\r\n     \"email\": \"john.doe@example.com\"\r\n   },\r\n   {\r\n     \"id\": 2,\r\n     \"tenantUserId\": 101,\r\n     \"createdDate\": \"2024-12-11T14:42:10Z\",\r\n     \"name\": \"Jane Smith\",\r\n     \"role\": \"Representative\",\r\n     \"isActive\" : \"true\",\r\n     \"email\": \"jane.smith@example.com\"\r\n   }\r\n ]\r\n ```\r\n \r\n ## Notes\r\n - Only users belonging to the current tenant are returned.\r\n - When the **role** parameter is specified, only users with that role are returned.\r\n - The list may be empty if no users match the criteria.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "role",
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "in": "query",
+            "name": "isActive",
+            "schema": {
+              "type": "boolean"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.UserPublicDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.UserPublicDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.UserPublicDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Users were successfully retrieved."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Returns users associated with the current tenant.",
+        "tags": [
+          "Public"
+        ]
+      }
+    },
+    "/api/public/v1/user": {
+      "get": {
+        "description": "Retrieves users belonging to the current tenant, optionally filtered by role and active status.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key.\r\n            \r\n## Query Parameters\r\n- **role** (optional): Filters users by role (`Representative`, `Manager`, `Coach`, or `Owner`).\r\n- **isActive** (optional): Filters users by active status.",
+        "parameters": [
+          {
+            "description": "Optional role filter.",
+            "in": "query",
+            "name": "role",
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Optional active-status filter.",
+            "in": "query",
+            "name": "isActive",
+            "schema": {
+              "type": "boolean"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.UserPublicDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.UserPublicDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.UserPublicDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Users were successfully retrieved."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — user is not authenticated."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves users for the current tenant.",
+        "tags": [
+          "PublicUser"
+        ]
+      },
+      "post": {
+        "description": "Creates a new user inside the current tenant.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key.\r\n            \r\n## Required Fields\r\n- **name**: Full name of the user.\r\n- **email**: Email address of the user.\r\n- **role**: Role assigned to the user.\r\n  - Allowed values:\r\n    - `Representative`\r\n    - `Manager`\r\n    - `Coach`\r\n    - `Owner`\r\n            \r\n## Optional Fields\r\n- **isActive**: Whether the user is active. Defaults to `true`.\r\n- **groups**: List of user group names the user belongs to. Groups that do not yet exist for the tenant will be created automatically.\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"name\": \"John Doe\",\r\n  \"email\": \"john.doe@example.com\",\r\n  \"role\": \"Representative\",\r\n  \"isActive\": true,\r\n  \"groups\": [\"Sales East\", \"VIP Accounts\"]\r\n}\r\n```\r\n            \r\n## Notes\r\n- The user will be associated with the current tenant.\r\n- If a user with the same email already exists in the tenant, the existing record will be reused.\r\n- An invitation email is sent to the user upon creation.\r\n- Activating a `Representative` or `Manager` consumes a billable seat and may be rejected if the tenant has reached its seat limit.",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.Users.PublicUserCreateRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.Users.PublicUserCreateRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.Users.PublicUserCreateRequest"
+              }
+            }
+          },
+          "description": "The user data to create. See Itero.Tenant.Api.Application.Dtos.PublicApi.Users.PublicUserCreateRequest for the full schema.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.UserPublicDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.UserPublicDto"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.UserPublicDto"
+                }
+              }
+            },
+            "description": "User was successfully created. Returns the created user."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Invalid input — e.g., missing required fields, invalid email, or seat limit reached."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — user is not authenticated."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Creates a new user in the current tenant.",
+        "tags": [
+          "PublicUser"
+        ]
+      },
+      "put": {
+        "description": "Updates the details of an existing user.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key.\r\n            \r\n## Required Fields\r\n- **id**: The tenant-user identifier of the user to update.\r\n- **name**: Updated full name of the user.\r\n- **role**: Updated role of the user.\r\n  - Allowed values:\r\n    - `Representative`\r\n    - `Manager`\r\n    - `Coach`\r\n    - `Owner`\r\n            \r\n## Optional Fields\r\n- **isActive**: Whether the user should be active. Defaults to `true`.\r\n- **groups**: Updated list of user group names. Groups that do not yet exist for the tenant will be created automatically.\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"id\": 1,\r\n  \"name\": \"John Doe\",\r\n  \"role\": \"Representative\",\r\n  \"isActive\": true,\r\n  \"groups\": [\"Sales East\", \"VIP Accounts\"]\r\n}\r\n```\r\n            \r\n## Notes\r\n- The user must already exist in the current tenant.\r\n- Activating a `Representative` or `Manager` consumes a billable seat and may be rejected if the tenant has reached its seat limit.",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.Users.PublicUserUpdateRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.Users.PublicUserUpdateRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.Users.PublicUserUpdateRequest"
+              }
+            }
+          },
+          "description": "The user data to update. See Itero.Tenant.Api.Application.Dtos.PublicApi.Users.PublicUserUpdateRequest for the full schema.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.UserPublicDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.UserPublicDto"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.UserPublicDto"
+                }
+              }
+            },
+            "description": "User was successfully updated. Returns the updated user."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Invalid input — e.g., user not found or seat limit reached."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — user is not authenticated."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Updates an existing user in the current tenant.",
+        "tags": [
+          "PublicUser"
+        ]
+      }
+    },
+    "/api/public/v1/user/import-csv": {
+      "post": {
+        "description": "Bulk-imports users into the current tenant by uploading a CSV file.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key.\r\n            \r\n## Parameters\r\n- **file** (required): The CSV file containing user data to import.\r\n            \r\n## File Requirements\r\n- The file must not be empty.\r\n- The file must have a `.csv` extension.\r\n- The file size must not exceed **1 MB**.\r\n            \r\n## CSV Format\r\nThe CSV file should contain user records with columns matching the expected\r\nuser import schema (e.g. name, email, role).\r\n            \r\n## Notes\r\n- Users are imported into the tenant associated with the current authenticated session.\r\n- Existing users will not be duplicated; the service handles conflicts internally.",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "encoding": {
+                "file": {
+                  "style": "form"
+                }
+              },
+              "schema": {
+                "properties": {
+                  "file": {
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Users were successfully imported."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Bad request — file is missing, not a CSV, or exceeds the size limit."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — user is not authenticated."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Imports users from a CSV file into the current tenant.",
+        "tags": [
+          "PublicUser"
+        ]
+      }
+    },
+    "/api/public/v1/user/{id}": {
+      "delete": {
+        "description": "Deletes a user from the current tenant.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key.",
+        "parameters": [
+          {
+            "description": "The tenant-user identifier of the user to delete.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User was successfully deleted."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Invalid input — e.g., user not found."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — user is not authenticated."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Deletes a user from the current tenant.",
+        "tags": [
+          "PublicUser"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKey": [],
+      "Bearer": []
+    }
+  ]
+}
