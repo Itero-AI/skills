@@ -6,7 +6,7 @@
 #     "python-dotenv>=1.0",
 # ]
 # ///
-# Last Edited: 2026-04-27
+# Last Edited: 2026-08-12 15:28
 """
 Itero upload-users skill — CLI.
 
@@ -15,8 +15,8 @@ Pass --tenant NAME to use ITERO_API_KEY_NAME; omit for bare ITERO_API_KEY.
 
 Subcommands:
   inspect <csv>           Parse the CSV, surface validation issues, write the initial plan.
-  list-groups             GET /api/Public/v1/get-user-groups on the tenant host.
-  list-users              GET /api/Public/v1/get-users on the tenant host.
+  list-groups             GET /api/public/v1/get-user-groups on the gateway.
+  list-users              GET /api/public/v1/user on the gateway.
   suggest-groups          Read plan, propose UserGroup assignments based on signals.
   check-duplicates        Cross-reference plan emails against current tenant users.
   check-seats             Compute seat math against ITERO_TENANT_SEATS_<TENANT> (or skip).
@@ -36,8 +36,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from users_client import Client, TENANT_BASE, unwrap
-
+from users_client import GATEWAY_BASE, Client, unwrap
 
 VALID_ROLES = {"Manager", "Representative"}
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
@@ -273,7 +272,7 @@ def _summarize_groups(plan_rows: list[dict], existing_groups: set[str]) -> dict[
 
 
 def cmd_list_groups(client: Client, args: argparse.Namespace) -> None:
-    body = client.get(f"{TENANT_BASE}/api/Public/v1/get-user-groups")
+    body = client.get(f"{GATEWAY_BASE}/api/public/v1/get-user-groups")
     groups = unwrap(body)
     if not groups:
         print("No user groups exist on this tenant yet.")
@@ -286,7 +285,7 @@ def cmd_list_groups(client: Client, args: argparse.Namespace) -> None:
 
 
 def cmd_list_users(client: Client, args: argparse.Namespace) -> None:
-    body = client.get(f"{TENANT_BASE}/api/Public/v1/get-users")
+    body = client.get(f"{GATEWAY_BASE}/api/public/v1/user")
     users = unwrap(body)
     if not users:
         print("No users exist on this tenant yet.")
@@ -299,7 +298,7 @@ def cmd_list_users(client: Client, args: argparse.Namespace) -> None:
 
 
 def _fetch_existing_groups(client: Client) -> set[str]:
-    body = client.get(f"{TENANT_BASE}/api/Public/v1/get-user-groups")
+    body = client.get(f"{GATEWAY_BASE}/api/public/v1/get-user-groups")
     return {(g.get("title") or g.get("Title") or g.get("name") or g.get("Name") or "") for g in unwrap(body)} - {""}
 
 
@@ -349,7 +348,7 @@ def cmd_suggest_groups(client: Client, args: argparse.Namespace) -> None:
 
 def cmd_check_duplicates(client: Client, args: argparse.Namespace) -> None:
     plan = load_plan(args)
-    existing_users = unwrap(client.get(f"{TENANT_BASE}/api/Public/v1/get-users"))
+    existing_users = unwrap(client.get(f"{GATEWAY_BASE}/api/public/v1/user"))
     existing_emails = {(u.get("email") or "").lower() for u in existing_users} - {""}
 
     duplicates = []
@@ -409,7 +408,7 @@ def cmd_check_seats(client: Client, args: argparse.Namespace) -> None:
     plan = load_plan(args)
     cap = _seat_cap(client.tenant)
 
-    existing_users = unwrap(client.get(f"{TENANT_BASE}/api/Public/v1/get-users"))
+    existing_users = unwrap(client.get(f"{GATEWAY_BASE}/api/public/v1/user"))
     current_active_reps = sum(
         1 for u in existing_users
         if u.get("isActive") and u.get("role") == "Representative"
@@ -474,7 +473,7 @@ def cmd_preview(client: Client | None, args: argparse.Namespace) -> None:
     print(f"\nPlan: {len(rows)} row(s) ready to import")
     print(f"  Role mix:    {dict(role_counts)}")
     print(f"  Status mix:  {dict(active_counts)}")
-    print(f"  Group mix:")
+    print("  Group mix:")
     for group, count in group_counts.most_common():
         status = plan.get("groups", {}).get(group, "—")
         print(f"    {group!r:<30}  {count:>3} ({status})")
@@ -490,7 +489,7 @@ def cmd_preview(client: Client | None, args: argparse.Namespace) -> None:
         print("\nWARNING: seat_check.ok is False — re-run check-seats and resolve before import.")
 
     print("\nWhen the user confirms with `yes`, run:")
-    print(f"  python3 {sys.argv[0]} import [--tenant ...] --live")
+    print(f"  uv run {sys.argv[0]} import [--tenant ...] --live")
 
 
 def cmd_import(client: Client, args: argparse.Namespace) -> None:
@@ -516,8 +515,8 @@ def cmd_import(client: Client, args: argparse.Namespace) -> None:
         )
 
     csv_bytes = _build_csv_bytes(plan)
-    url = f"{TENANT_BASE}/api/public/v1/user/import-csv"
-    result = client.post_multipart(url, filename="users.csv", content=csv_bytes)
+    url = f"{GATEWAY_BASE}/api/public/v1/user/import-csv"
+    client.post_multipart(url, filename="users.csv", content=csv_bytes)
 
     if client.dry_run:
         print(f"\n[DRY-RUN] would have uploaded {len(csv_bytes)} bytes ({len(rows)} users) to {url}")
