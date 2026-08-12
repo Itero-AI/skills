@@ -50,6 +50,18 @@ Apply the same rule to every list operation: filter on the server when possible,
 
 Unknown tag names sent to add-call or add-tags are created automatically. Show the final tag names before the write so a spelling or capitalization mistake does not create an unwanted tag.
 
+<!-- fact:add-tags-replaces -->
+### Bulk tagging replaces the whole tag list
+
+`POST /api/public/v1/call-tag/add-tags-to-calls` overwrites: on any call that already has tags, the provided list fully replaces the existing tags. Sending `["follow-up"]` to a call tagged `vip` leaves it tagged only `follow-up`.
+
+To append instead of replace, fetch each selected call's current tags first and send the union of current + new tags per call. Always show the final tag list each call will end up with — not just the tags being added — in the confirmation.
+
+<!-- fact:evaluate-call-no-body -->
+### `evaluate-call` returns no body — poll for the new evaluation ID
+
+`POST /api/public/v1/call/evaluate-call` returns `200` with an empty response. There is no evaluation ID in the reply. To find the new evaluation, poll `GET /api/public/v1/call/get-call?callId=...` until a new entry appears in `evaluations[]` (match on `scorecardTemplateId` and the newest `evaluationDate`), and check its `status` (0=NotStarted, 1=InProgress, 2=Success, 3=Error) before reading the breakdown. Evaluation runs asynchronously — allow for a wait, and stop polling on status 2 or 3.
+
 <!-- fact:calltags-substring-match -->
 ### Know which call-search filters are fuzzy
 
@@ -65,7 +77,7 @@ The `callTags` filter uses case-insensitive substring matching. Prospect and com
 
 Search calls first, select a stable `callId`, and fetch the transcript only when needed. Logging an external call, adding tags, and starting an evaluation are writes, so preview the exact payload and wait for explicit confirmation.
 
-After starting an evaluation, use its returned identifier to read the category and criterion breakdown. If an evaluation is already running, do not submit a duplicate request. Before deleting an evaluation, show its stable ID and require the user to confirm that exact ID.
+Starting an evaluation returns no identifier — poll the call record until the new evaluation summary appears, then use that `evaluationId` to read the category and criterion breakdown. If an evaluation is already running, do not submit a duplicate request. Before deleting an evaluation, show its stable ID and require the user to confirm that exact ID.
 <!-- /lifecycle -->
 
 ## Endpoint map

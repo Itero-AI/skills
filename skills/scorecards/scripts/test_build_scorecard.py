@@ -417,5 +417,36 @@ def test_plan_rejects_invalid_enums_and_unknown_fields() -> None:
         builder.ScorecardPlan.model_validate(unknown_field)
 
 
+def test_plan_rejects_invalid_weight_and_rubric_scale() -> None:
+    for bad_weight in (0, -1, 1001):
+        invalid_weight = plan_data()
+        invalid_weight["categories"][0]["weight"] = bad_weight
+        with pytest.raises(builder.ValidationError):
+            builder.ScorecardPlan.model_validate(invalid_weight)
+
+    # Scale 5 (NotApplicable) is never auto-created, so plans cannot target it.
+    invalid_scale = plan_data()
+    invalid_scale["categories"][0]["criteria"][0]["rubrics"][0]["scale"] = 5
+    with pytest.raises(builder.ValidationError):
+        builder.ScorecardPlan.model_validate(invalid_scale)
+
+
+def test_omitted_weight_is_left_out_of_category_payload(tmp_path: Path) -> None:
+    data = plan_data()
+    del data["categories"][0]["weight"]
+    plan = builder.ScorecardPlan.model_validate(data)
+    transport = FakeTransport()
+    journal_path = tmp_path / "plan.json.journal.json"
+
+    builder.build_scorecard(
+        plan, live_client(transport), journal_path, output=lambda _: None
+    )
+
+    category_call = next(
+        call for call in transport.calls if call["path"] == builder.CATEGORY_PATH
+    )
+    assert "weight" not in category_call["json"]
+
+
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__]))

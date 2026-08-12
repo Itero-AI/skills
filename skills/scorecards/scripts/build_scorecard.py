@@ -29,6 +29,7 @@ from dotenv import load_dotenv
 from pydantic import (
     BaseModel,
     ConfigDict,
+    Field,
     ValidationError,
 )
 
@@ -74,7 +75,9 @@ class StrictModel(BaseModel):
 
 
 class RubricPlan(StrictModel):
-    scale: Literal[0, 1, 2, 3, 4, 5]
+    # Only scales 0-4 (Poor..Excellent) are auto-created with a criterion;
+    # scale 5 (NotApplicable) never exists to update (field-verified).
+    scale: Literal[0, 1, 2, 3, 4]
     description: str
 
 
@@ -86,7 +89,9 @@ class CriterionPlan(StrictModel):
 
 class CategoryPlan(StrictModel):
     name: str
-    weight: int
+    # Omit weight when authoring: the platform defaults to equal weights.
+    # When overriding, the API accepts 1-1000 (zero/negative rejected).
+    weight: int | None = Field(default=None, ge=1, le=1000)
     scorecardType: Literal[0, 1]
     criteria: list[CriterionPlan]
 
@@ -542,7 +547,8 @@ def build_scorecard(
                 name=category.name,
                 payload={
                     "name": category.name,
-                    "weight": category.weight,
+                    # Omitted when None: the platform assigns equal weights.
+                    **({"weight": category.weight} if category.weight is not None else {}),
                     "scorecardType": int(category.scorecardType),
                     "scorecardTemplateId": template_id,
                 },

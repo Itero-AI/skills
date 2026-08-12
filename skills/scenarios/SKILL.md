@@ -50,8 +50,8 @@ curl --fail-with-body --silent --show-error \
 2. Resolve the persona, call type, communication style, and scorecard IDs before drafting.
 3. Read the exact operation in [the generated reference](references/scenarios.md).
 4. Write `keyBehaviorsOpinions` from the simulated person's point of view: give a concise `Context`, then specific `Key Behaviors and Opinions`.
-5. Fetch and preserve the complete object for an update, changing only what the user requested.
-6. Show the exact request and wait for confirmation before sending it.
+5. Fetch the complete object for an update and change only what the user requested — but never trust the fetched persona overrides: GET can return synthesized `personaBotName`, `personaCompany`, and `personaTitle` values that were never stored. Set `personaBotName` to the intended value and null `personaCompany`/`personaTitle` unless a B2B override is genuinely wanted.
+6. Show the exact request — including those three override fields — and wait for confirmation before sending it.
 
 ## Common Mistakes
 
@@ -60,6 +60,7 @@ curl --fail-with-body --silent --show-error \
 | Loading hundreds of full scenarios into context | Project IDs, names, and relationship IDs, or save the response to a file. |
 | Putting stable personality traits on every scenario | Keep reusable traits on the persona and situation-specific facts on the scenario. |
 | Writing behavior from the rep's point of view | Describe what the simulated customer knows, believes, and does. |
+| Round-tripping fetched persona overrides in a PUT | GET can synthesize `personaBotName`/`personaCompany`/`personaTitle`; set them deliberately, nulling company/title unless intended. |
 | Guessing related IDs or enum values | Read the list endpoints and generated schema first. |
 | Sending a partial `PUT` | Carry forward all fields that should remain unchanged. |
 

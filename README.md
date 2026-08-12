@@ -110,6 +110,15 @@ test ! -e "$ITERO_SKILLS_DEST/manage-users.v1.bak"
 test ! -e "$ITERO_SKILLS_DEST/upload-users.v1.bak"
 test ! -e "$ITERO_SKILLS_DEST/conversations"
 
+# All six v1 folders must exist before anything moves — a partial install
+# would otherwise stop mid-upgrade with some skills moved and some not.
+test -d "$ITERO_SKILLS_DEST/personas"
+test -d "$ITERO_SKILLS_DEST/scenarios"
+test -d "$ITERO_SKILLS_DEST/scorecards"
+test -d "$ITERO_SKILLS_DEST/learning-paths"
+test -d "$ITERO_SKILLS_DEST/manage-users"
+test -d "$ITERO_SKILLS_DEST/upload-users"
+
 mv "$ITERO_SKILLS_DEST/personas" "$ITERO_SKILLS_DEST/personas.v1.bak"
 mv "$ITERO_SKILLS_DEST/scenarios" "$ITERO_SKILLS_DEST/scenarios.v1.bak"
 mv "$ITERO_SKILLS_DEST/scorecards" "$ITERO_SKILLS_DEST/scorecards.v1.bak"

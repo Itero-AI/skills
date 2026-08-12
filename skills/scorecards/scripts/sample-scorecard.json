@@ -1,13 +1,14 @@
 {
   "name": "Sample discovery scorecard",
-  "callTypes": [1],
+  "callTypes": [
+    1
+  ],
   "interactionType": 0,
   "qualitiveAgentId": 1,
   "qaAgentId": 2,
   "categories": [
     {
       "name": "Discovery",
-      "weight": 100,
       "scorecardType": 0,
       "criteria": [
         {

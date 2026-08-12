@@ -57,8 +57,8 @@ curl --fail-with-body --silent --show-error \
 
 1. Search for the call and inspect its existing evaluation summaries. Do not start another evaluation while one is already evaluating.
 2. List evaluable templates and select the intended `scorecardTemplateId`.
-3. Preview and confirm the exact `evaluate-call` payload, then send it once.
-4. Read the returned evaluation ID through the practice host documented in the reference. The gateway currently returns `503` for `GET` and `DELETE` evaluation-by-ID; only those two operations use the exception.
+3. Preview and confirm the exact `evaluate-call` payload, then send it once. The response is `200` with no body — it does not return an evaluation ID.
+4. Poll `GET /call/get-call?callId=...` until the new entry appears in `evaluations[]` (match `scorecardTemplateId`, take the newest `evaluationDate`) and its `status` reaches 2 (Success) or 3 (Error). Then read the breakdown by that `evaluationId` through the practice host documented in the reference. The gateway currently returns `503` for `GET` and `DELETE` evaluation-by-ID; only those two operations use the exception.
 5. Explain the result from `categories[]` and nested `criteria[]`, including score, result, and justification. Tie a low overall result to the specific criteria rather than guessing.
 6. If deletion is requested, show and confirm the stable evaluation ID before using the practice-host delete operation.
 
@@ -66,13 +66,16 @@ curl --fail-with-body --silent --show-error \
 
 - Validate external-call dates, owner email, transcript order, participants, and any external URL before previewing `add-call`.
 - Treat tag spelling as data. Unknown tag names on `add-call` or bulk add-tags are created automatically, so a typo creates a new tag.
-- Project IDs from search results before a bulk tag request, then show every selected call ID and final tag name before confirmation.
+- Bulk add-tags **replaces** the entire tag list on any call that already has tags. To keep existing tags, fetch each call's current tags and send the union.
+- Project IDs from search results before a bulk tag request, then show every selected call ID and the **final tag list each call will end up with** before confirmation.
 
 ## Common Mistakes
 
 | Mistake | Correct approach |
 |---|---|
 | Starting call search at page 1 | Start at `pageNumber: 0`; page 1 skips the newest page. |
+| Expecting `evaluate-call` to return the evaluation ID | The response has no body; poll `get-call` for the new `evaluations[]` entry. |
+| Adding tags on top of existing tags with bulk add-tags | It replaces the list; send the union of current + new tags per call. |
 | Loading a raw transcript into context | Save the response and extract only the needed transcript fields. |
 | Using a partial prospect or company name | Use exact matching; only `callTags` uses substring matching. |
 | Retrying an already-running evaluation | Inspect current evaluation status and wait. |

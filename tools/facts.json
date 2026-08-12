@@ -90,6 +90,48 @@
       "outputs": [
         "skills/conversations/references/conversations.md"
       ]
+    },
+    {
+      "id": "fact:learning-path-put-reconciles",
+      "notes": "notes/learning-paths.md",
+      "outputs": [
+        "skills/learning-paths/references/learning-paths.md"
+      ]
+    },
+    {
+      "id": "fact:add-tags-replaces",
+      "notes": "notes/conversations.md",
+      "outputs": [
+        "skills/conversations/references/conversations.md"
+      ]
+    },
+    {
+      "id": "fact:evaluate-call-no-body",
+      "notes": "notes/conversations.md",
+      "outputs": [
+        "skills/conversations/references/conversations.md"
+      ]
+    },
+    {
+      "id": "fact:scenario-roundtrip-overrides",
+      "notes": "notes/scenarios.md",
+      "outputs": [
+        "skills/scenarios/references/scenarios.md"
+      ]
+    },
+    {
+      "id": "fact:persona-delete-side-effects",
+      "notes": "notes/personas.md",
+      "outputs": [
+        "skills/personas/references/personas.md"
+      ]
+    },
+    {
+      "id": "fact:scorecard-authoring-defaults",
+      "notes": "notes/scorecards.md",
+      "outputs": [
+        "skills/scorecards/references/scorecards.md"
+      ]
     }
   ]
 }

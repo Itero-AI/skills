@@ -75,7 +75,6 @@ All paths above are under `/api/public/v1`; see [the endpoint map](references/sc
      "categories": [
        {
          "name": "Discovery",
-         "weight": 100,
          "scorecardType": 0,
          "criteria": [
            {
@@ -90,7 +89,7 @@ All paths above are under `/api/public/v1`; see [the endpoint map](references/sc
    }
    ```
 
-   Use [the generated scorecards reference](references/scorecards.md) to select valid enum values.
+   Use [the generated scorecards reference](references/scorecards.md) to select valid enum values. Omit `weight` (the platform assigns equal weights; a custom override must be 1–1000, qualitative categories only) and omit `rubrics` during initial authoring — rubric descriptions are platform-managed and the update endpoint is for later tenant-specific customization. Only scales 0–4 exist on a new criterion.
 2. Validate without credentials or network access:
 
    ```bash

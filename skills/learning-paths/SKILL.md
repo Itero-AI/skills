@@ -41,7 +41,8 @@ curl --fail-with-body --silent --show-error \
 | Inspect one path | `GET /api/public/v1/learning-path/{id}` | Read details before assigning. |
 | Assign learners | `POST /api/public/v1/learning-path/{id}/assign` | Use each user's `tenantUserId`. |
 | Start a fresh attempt | `POST /api/public/v1/learning-path/{id}/reassign` | Explain that progress does not continue. |
-| Work with path or certification records | Relevant generated operation | Follow the exact schema; detailed CRUD guidance lives in the reference. |
+| Edit a path or certification | `PUT /api/public/v1/learning-path/{id}` | **Replace-semantics:** users omitted from `assignments` are unassigned, and omitting the field removes ALL active assignments. GET first, echo current `assignments` and `stages` back verbatim, and show how many assignments the payload preserves. |
+| Work with other record operations | Relevant generated operation | Follow the exact schema; detailed CRUD guidance lives in the reference. |
 | Delete a path | `DELETE /api/public/v1/learning-path/{id}` | Confirm name and ID. |
 
 ## Assignment workflow
@@ -58,6 +59,7 @@ curl --fail-with-body --silent --show-error \
 | Mistake | Correct approach |
 |---|---|
 | Sending the user record's `id` | Send `tenantUserId` for assignment and reassignment. |
+| Renaming a path with a metadata-only PUT | `PUT` reconciles: omitted `assignments` unassigns everyone. Echo the current assignments and stages back in the payload. |
 | Treating reassign as a due-date edit | Use it only when a fresh attempt is intended. |
 | Guessing a path or person from a name | List and show stable identifiers before previewing the write. |
 | Sending a local time or past due date | Convert to a future UTC date-time. |

@@ -44,6 +44,12 @@ EXPECTED_FACT_IDS = {
     "fact:auth-header",
     "fact:tags-autocreate",
     "fact:calltags-substring-match",
+    "fact:learning-path-put-reconciles",
+    "fact:add-tags-replaces",
+    "fact:evaluate-call-no-body",
+    "fact:scenario-roundtrip-overrides",
+    "fact:persona-delete-side-effects",
+    "fact:scorecard-authoring-defaults",
 }
 
 
@@ -468,7 +474,7 @@ def load_and_validate_facts() -> list[dict[str, Any]]:
         if unexpected:
             details.append("unexpected " + ", ".join(unexpected))
         raise ReferenceBuildError(
-            "tools/facts.json must list the 11 verified facts exactly: "
+            "tools/facts.json must list the 17 verified facts exactly: "
             + "; ".join(details)
         )
     return facts
@@ -954,6 +960,9 @@ def sample_scalar(schema: Mapping[str, Any], field_name: str) -> Any:
             return 0
         if lowered == "pagesize":
             return 25
+        if lowered == "weight":
+            # The API rejects weight 0; render a valid override example.
+            return 500
         return 123 if lowered.endswith("id") else 0
     if schema_type_name == "number":
         return 0.0

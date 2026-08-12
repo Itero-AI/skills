@@ -41,7 +41,7 @@ curl --fail-with-body --silent --show-error \
 | Choose a voice | `GET /api/public/v1/persona/voices` | Filter by `voiceName`, `gender`, or `age`. |
 | Create a persona | `POST /api/public/v1/persona` | List existing personas and voices first. |
 | Change a persona | `PUT /api/public/v1/persona` | Start from the current complete object. |
-| Remove a persona | `DELETE /api/public/v1/persona/{id}` | Identify it by name and ID before confirmation. |
+| Remove a persona | `DELETE /api/public/v1/persona/{id}` | List its scenarios first; deletion affects them too. See the workflow below. |
 
 ## Workflow
 
@@ -50,6 +50,7 @@ curl --fail-with-body --silent --show-error \
 3. Use `voiceId` from the voices endpoint in create and update payloads.
 4. Keep the persona reusable. Put prospect-specific facts, immediate objections, and one-off circumstances on the scenario.
 5. Show the exact request and wait for confirmation before sending a write.
+6. Before a delete: fetch `GET /practice-scenario`, project `id`, `practiceScenarioName`, and `personaId`, and list every scenario referencing this persona in the confirmation along with the persona's name and ID. Warn that those scenarios will be deleted with it or orphaned — documentation and field testing disagree on which (see the reference). After a confirmed delete, re-list scenarios and offer to clean up leftovers.
 6. Report the returned ID and summarize only the fields that changed.
 
 ## Common Mistakes
