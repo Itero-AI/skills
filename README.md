@@ -31,7 +31,7 @@ Before any API write, the Itero platform skills show the exact request and wait 
 
 ## Install
 
-Choose any of these three paths. If you already installed v1, use [Upgrade from v1](#upgrade-from-v1) so the old HTTP clients are not merged into v2.
+Choose any of these three paths. If you already installed v1, delete the old folders first — see [Upgrade from v1](#upgrade-from-v1).
 
 ### Automatic — paste a prompt into your agent
 
@@ -90,7 +90,13 @@ The `doc-optimizer` and `doc-consolidator` skills do not use an Itero API key.
 
 ## Upgrade from v1
 
-Do not copy v2 over an existing v1 install — a folder merge can leave the old v1 scripts active. Follow the step-by-step commands in [UPGRADING.md](UPGRADING.md); they back up your six v1 skill folders first, so the upgrade is fully reversible.
+Delete your old Itero skill folders, then install v2 fresh. The folders contain nothing of yours — they are copies of this repo — so there is nothing to back up. Your `.env` file with the API key is separate and stays put.
+
+Delete these folders from your skills directory (`~/.claude/skills/`, `~/.agents/skills/`, or `~/.gemini/antigravity/skills/`):
+
+`personas`, `scenarios`, `scorecards`, `learning-paths`, `manage-users`, `upload-users`, `doc-optimizer`, `doc-consolidator`
+
+Then follow [Install](#install). Do not copy v2 over v1 without deleting first — a folder merge leaves old v1 scripts behind.
 
 ## Sanity check
 
