@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.0 — 2026-08-27
+
+- `scenarios`: added field-tested authoring guidance for `keyBehaviorsOpinions` — a reusable conversation-discipline template for voice scenarios, fact-block design rules (one fact per line revealed only when asked, absolute dates, dates in words, digit-grouped numbers, synthetic-only identity and payment values, facts covering the scorecard's probing questions, internal records mirroring the call type), and behavior-rule design rules (no conflicting instructions, trigger-based break conditions, deflections are not exits, difficulty through vagueness, quoted negative examples).
+- `personas`: documented keeping persona personality flat and non-conflicting so scenario reveal rules are not overridden by talkative traits.
+- Restored the observed ~4,000-character `keyBehaviorsOpinions` limit note (unverified against the current API).
+
 ## 2.0.0 — 2026-08-12
 
 - Added `conversations` for searching calls, reading transcripts and evaluations, tagging calls, and starting evaluations.

@@ -1,4 +1,4 @@
-*Last Edited: 2026-08-12 15:08*
+*Last Edited: 2026-08-27 12:00*
 
 # Persona Notes
 
@@ -20,6 +20,10 @@ Two sources disagree on what `DELETE /persona/{id}` does to the persona's scenar
 Related: creating a persona auto-spawns ~18 default practice scenarios attached to it, asynchronously — they can take minutes to appear after `POST /persona`.
 
 Before any persona delete: call `GET /practice-scenario`, project `id`, `practiceScenarioName`, and `personaId`, and list every scenario referencing the persona in the confirmation alongside the persona's name and ID. Tell the user those scenarios will be either deleted with it or orphaned. After a confirmed delete, re-list scenarios and offer to clean up any that were orphaned or left behind.
+
+### Keep persona personality flat and non-conflicting
+
+A talkative or "chatty" trait on the persona fights per-scenario rules like "answer only what's asked," and the bot resolves the conflict by info-dumping — the single biggest observed realism defect, caused by a well-intentioned trait. Prefer flat, warm phrasing ("warm, pleasant, and in no hurry") and let each scenario's behavior rules control how much the person reveals.
 
 ### Keep the persona reusable
 

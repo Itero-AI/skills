@@ -51,6 +51,10 @@ Related: creating a persona auto-spawns ~18 default practice scenarios attached 
 
 Before any persona delete: call `GET /practice-scenario`, project `id`, `practiceScenarioName`, and `personaId`, and list every scenario referencing the persona in the confirmation alongside the persona's name and ID. Tell the user those scenarios will be either deleted with it or orphaned. After a confirmed delete, re-list scenarios and offer to clean up any that were orphaned or left behind.
 
+### Keep persona personality flat and non-conflicting
+
+A talkative or "chatty" trait on the persona fights per-scenario rules like "answer only what's asked," and the bot resolves the conflict by info-dumping — the single biggest observed realism defect, caused by a well-intentioned trait. Prefer flat, warm phrasing ("warm, pleasant, and in no hurry") and let each scenario's behavior rules control how much the person reveals.
+
 ### Keep the persona reusable
 
 A persona is a reusable behavioral archetype, not one specific prospect. Put facts that change from one role-play to another—such as a person's exact age, employer, account details, or immediate objection—on the practice scenario instead.
