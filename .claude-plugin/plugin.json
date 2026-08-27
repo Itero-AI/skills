@@ -1,6 +1,6 @@
 {
   "name": "itero",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Manage Itero scenarios, scorecards, personas, users, learning paths, and conversations from Claude Code, including transcripts and evaluation results, plus document preparation for RAG and vector stores.",
   "author": {
     "name": "Itero",

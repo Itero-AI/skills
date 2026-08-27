@@ -53,7 +53,7 @@ Before any persona delete: call `GET /practice-scenario`, project `id`, `practic
 
 ### Keep persona personality flat and non-conflicting
 
-A talkative or "chatty" trait on the persona fights per-scenario rules like "answer only what's asked," and the bot resolves the conflict by info-dumping — the single biggest observed realism defect, caused by a well-intentioned trait. Prefer flat, warm phrasing ("warm, pleasant, and in no hurry") and let each scenario's behavior rules control how much the person reveals.
+A talkative or "chatty" trait in `generalCharacteristics` fights per-scenario rules like "answer only what's asked," and the bot resolves the conflict by info-dumping — the single biggest observed realism defect, caused by a well-intentioned trait. Write `generalCharacteristics` as flat, warm phrasing ("warm, pleasant, and in no hurry") and let each scenario's behavior rules control how much the person reveals. The same conflict applies when choosing the scenario's communication style: avoid styles that push talkativeness when the scenario relies on reveal-only-when-asked facts.
 
 ### Keep the persona reusable
 
