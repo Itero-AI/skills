@@ -5,7 +5,7 @@ user-invocable: true
 license: MIT
 metadata:
   author: itero
-  version: "2.0.0"
+  version: "2.1.0"
   homepage: https://iteroapp.ai
   source: https://github.com/Itero-AI/skills
 inputs:
@@ -60,6 +60,7 @@ curl --fail-with-body --silent --show-error \
 | Sending `elevenLabsVoiceId` | Send `voiceId`; the other field is returned for compatibility. |
 | Creating a persona for one named prospect | Create a reusable archetype and place instance details on the scenario. |
 | Inventing rich context | Ground behavior in the user's playbook or source material. |
+| A chatty or talkative trait in `generalCharacteristics` | Keep it flat and warm; talkative traits conflict with scenario reveal rules and cause info-dumping. |
 | Sending a partial update | Fetch the current object and carry forward fields that must remain. |
 | Reading a full list into context | Project the few fields needed or save raw JSON to a file. |
 

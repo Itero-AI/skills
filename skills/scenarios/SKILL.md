@@ -5,7 +5,7 @@ user-invocable: true
 license: MIT
 metadata:
   author: itero
-  version: "2.0.0"
+  version: "2.1.0"
   homepage: https://iteroapp.ai
   source: https://github.com/Itero-AI/skills
 inputs:
@@ -49,7 +49,7 @@ curl --fail-with-body --silent --show-error \
 1. List scenarios with a projection and identify the intended record or confirm a new one is needed.
 2. Resolve the persona, call type, communication style, and scorecard IDs before drafting.
 3. Read the exact operation in [the generated reference](references/scenarios.md).
-4. Write `keyBehaviorsOpinions` from the simulated person's point of view: give a concise `Context`, then specific `Key Behaviors and Opinions`.
+4. Write `keyBehaviorsOpinions` from the simulated person's point of view, following the authoring rules in [the generated reference](references/scenarios.md): conversation-discipline template, fact-block design, and behavior-rule design.
 5. Fetch the complete object for an update and change only what the user requested — but never trust the fetched persona overrides: GET can return synthesized `personaBotName`, `personaCompany`, and `personaTitle` values that were never stored. Set `personaBotName` to the intended value and null `personaCompany`/`personaTitle` unless a B2B override is genuinely wanted.
 6. Show the exact request — including those three override fields — and wait for confirmation before sending it.
 
@@ -60,6 +60,10 @@ curl --fail-with-body --silent --show-error \
 | Loading hundreds of full scenarios into context | Project IDs, names, and relationship IDs, or save the response to a file. |
 | Putting stable personality traits on every scenario | Keep reusable traits on the persona and situation-specific facts on the scenario. |
 | Writing behavior from the rep's point of view | Describe what the simulated customer knows, believes, and does. |
+| Bundling several facts on one line | One fact per line under a "reveal each fact only when asked" header. |
+| Giving the persona a chatty trait alongside reveal rules | Keep personality flat; conflicting instructions make the bot info-dump. |
+| Numeric dates or ungrouped digit strings in facts | Write dates in words and long numbers in comma-separated spoken groups. |
+| Judgment-based break conditions ("a genuine reason") | Use generous triggers: "when they make a reasonable attempt, let it go." |
 | Round-tripping fetched persona overrides in a PUT | GET can synthesize `personaBotName`/`personaCompany`/`personaTitle`; set them deliberately, nulling company/title unless intended. |
 | Guessing related IDs or enum values | Read the list endpoints and generated schema first. |
 | Sending a partial `PUT` | Carry forward all fields that should remain unchanged. |

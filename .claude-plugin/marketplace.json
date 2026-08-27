@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Official Itero plugin for Claude Code — manage scenarios, scorecards, personas, users, learning paths, and conversations, including transcripts and evaluations, plus document-prep utilities.",
-    "version": "2.0.0"
+    "version": "2.1.0"
   },
   "plugins": [
     {
