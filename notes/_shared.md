@@ -1,4 +1,4 @@
-*Last Edited: 2026-08-12 15:08*
+*Last Edited: 2026-09-16 16:08*
 
 # Shared Itero API Notes
 
@@ -136,6 +136,57 @@ The API spells this enum `RubrikScale`.
 | 1 | ObjectionHandling |
 | 2 | LiveCallSimulation |
 | 3 | FocusScenario |
+
+### VoiceProvider
+
+The speech providers a persona voice can come from.
+
+| Value | Name |
+|---:|---|
+| 0 | Retell |
+| 1 | ElevenLabs |
+| 2 | Itero |
+
+### PracticeScenarioStatus
+
+The scenario publish states. **These values are the reverse of `ScorecardTemplateStatus`:** a practice scenario is published at `0` and draft at `1`, while a scorecard template is draft at `0` and published at `1`. Read the table for the resource you are writing; never carry one status convention across resources.
+
+| Value | Name | Notes |
+|---:|---|---|
+| 0 | Published | The scenario is available for practice. |
+| 1 | Draft | The scenario is hidden from practice. |
+
+### ProductType
+
+The metered products on a billing contract.
+
+| Value | Name |
+|---:|---|
+| 0 | ScoringEvaluations |
+| 1 | VoicePractice |
+| 2 | DataCapture |
+| 3 | QualitativeScoringEvaluation |
+| 4 | QaScoringEvaluation |
+| 5 | ChatPractice |
+| 6 | ScreenRecordingScoringEvaluation |
+
+### PlanType
+
+| Value | Name | Notes |
+|---:|---|---|
+| 0 | Prepaid | `remainingUnits` counts down from `includedUnits`; overage accrues once the allowance is exhausted. |
+| 1 | PayAsYouGo | `remainingUnits` is always `0` and every consumed unit bills at `overageRate`. |
+
+### InvoiceStatus
+
+| Value | Name |
+|---:|---|
+| 0 | New |
+| 1 | Pending |
+| 2 | PaymentDue |
+| 3 | Paid |
+| 4 | Failed |
+| 5 | Legacy |
 
 ### ScorecardAppliedStatus
 

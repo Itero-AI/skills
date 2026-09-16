@@ -34,7 +34,7 @@ A file called `skills-main.zip` will land in your **Downloads** folder.
 
 Open `skills-main`. Inside, you'll see a folder called `skills`. Open that too.
 
-You should now see nine folders side by side:
+You should now see ten folders side by side:
 
 - `conversations`
 - `doc-consolidator`
@@ -45,6 +45,7 @@ You should now see nine folders side by side:
 - `scenarios`
 - `scorecards`
 - `upload-users`
+- `usage`
 
 **Leave this window open** — you'll come back to it in Step 3.
 
@@ -150,16 +151,16 @@ If missing, create the path: `%USERPROFILE%` → create `.gemini` → create `an
 
 You should now have **two windows open**:
 
-- **Window A:** the unzipped `skills` folder from Step 1, showing `conversations`, `doc-consolidator`, `doc-optimizer`, `learning-paths`, `manage-users`, `personas`, `scenarios`, `scorecards`, and `upload-users`.
+- **Window A:** the unzipped `skills` folder from Step 1, showing `conversations`, `doc-consolidator`, `doc-optimizer`, `learning-paths`, `manage-users`, `personas`, `scenarios`, `scorecards`, `upload-users`, and `usage`.
 - **Window B:** your AI assistant's empty (or near-empty) `skills` folder from Step 2.
 
 Now:
 
-1. Click inside Window A and select all nine folders with **Cmd + A** on Mac or **Ctrl + A** on Windows.
+1. Click inside Window A and select all ten folders with **Cmd + A** on Mac or **Ctrl + A** on Windows.
 2. Drag them from Window A into Window B.
 3. If your computer asks "Copy or Move?", choose **Copy**.
 
-When the copy finishes, Window B should now contain nine folders: `conversations`, `doc-consolidator`, `doc-optimizer`, `learning-paths`, `manage-users`, `personas`, `scenarios`, `scorecards`, and `upload-users`.
+When the copy finishes, Window B should now contain ten folders: `conversations`, `doc-consolidator`, `doc-optimizer`, `learning-paths`, `manage-users`, `personas`, `scenarios`, `scorecards`, `upload-users`, and `usage`.
 
 You can close Window A.
 
@@ -236,7 +237,7 @@ Then in your AI assistant you can say things like *"list scorecards on the stagi
 
 ## Step 5 — Install uv if you need a scripted skill
 
-Only four skills need **uv**: `scorecards`, `upload-users`, `doc-optimizer`, and `doc-consolidator`. If you do not plan to use any of those, skip to Step 6. The other five skills make API requests directly and do not need Python or uv.
+Only four skills need **uv**: `scorecards`, `upload-users`, `doc-optimizer`, and `doc-consolidator`. If you do not plan to use any of those, skip to Step 6. The other six skills make API requests directly and do not need Python or uv.
 
 The four scripted skills declare their own Python dependencies. uv installs the right Python version and dependencies automatically, and you only install uv once per machine.
 
@@ -320,7 +321,7 @@ You can also press **Cmd + Shift + .** (period) in any Finder window to temporar
 
 Confirm the folders are in `~/.agents/skills/` (or `~/.cursor/skills/` if you used that one). On Windows: `%USERPROFILE%\.agents\skills\`.
 
-If you'd rather scope skills to a single project (so only that project sees them), create `<project-folder>/.cursor/skills/` and put the nine folders there instead. Cursor reads from both global and project locations.
+If you'd rather scope skills to a single project (so only that project sees them), create `<project-folder>/.cursor/skills/` and put the ten folders there instead. Cursor reads from both global and project locations.
 
 ### "I get an error mentioning a missing Python package (`requests`, `dotenv`, `fitz`, etc.)"
 
@@ -328,7 +329,7 @@ This means a scripted skill is being run with plain `python3` instead of `uv run
 
 ### "Do I need uv for every skill?"
 
-No. You need uv only for `scorecards`, `upload-users`, `doc-optimizer`, and `doc-consolidator`. The `personas`, `scenarios`, `learning-paths`, `manage-users`, and `conversations` skills do not use local Python scripts.
+No. You need uv only for `scorecards`, `upload-users`, `doc-optimizer`, and `doc-consolidator`. The `personas`, `scenarios`, `learning-paths`, `manage-users`, `conversations`, and `usage` skills do not use local Python scripts.
 
 ### Still stuck?
 

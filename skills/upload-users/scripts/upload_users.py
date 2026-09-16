@@ -38,7 +38,7 @@ from typing import Any
 
 from users_client import GATEWAY_BASE, Client, unwrap
 
-VALID_ROLES = {"Manager", "Representative"}
+VALID_ROLES = {"Owner", "Coach", "Manager", "Representative"}
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 DEFAULT_PLAN_PATH = ".tmp/users-import-plan.json"
 MAX_CSV_BYTES = 1_048_576  # 1 MB
@@ -176,10 +176,10 @@ def _validate_row(row: dict) -> list[dict]:
     role = row.get("Role", "")
     if not role:
         out.append({"row": line, "column": "Role", "value": "", "kind": "missing_value",
-                    "message": "Role is required (Manager or Representative)"})
+                    "message": "Role is required (Owner, Coach, Manager, or Representative)"})
     elif role not in VALID_ROLES:
         out.append({"row": line, "column": "Role", "value": role, "kind": "bad_role",
-                    "message": f"{role!r} is not a valid Role. Use Manager or Representative."})
+                    "message": f"{role!r} is not a valid Role. Use Owner, Coach, Manager, or Representative."})
 
     is_active_raw = row.get("IsActive", None)
     parsed, err = _parse_isactive(is_active_raw)

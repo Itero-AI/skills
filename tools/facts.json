@@ -38,7 +38,8 @@
         "skills/learning-paths/references/learning-paths.md",
         "skills/manage-users/references/users.md",
         "skills/upload-users/references/upload-users.md",
-        "skills/conversations/references/conversations.md"
+        "skills/conversations/references/conversations.md",
+        "skills/usage/references/usage.md"
       ]
     },
     {
@@ -74,7 +75,8 @@
         "skills/learning-paths/references/learning-paths.md",
         "skills/manage-users/references/users.md",
         "skills/upload-users/references/upload-users.md",
-        "skills/conversations/references/conversations.md"
+        "skills/conversations/references/conversations.md",
+        "skills/usage/references/usage.md"
       ]
     },
     {
@@ -131,6 +133,70 @@
       "notes": "notes/scorecards.md",
       "outputs": [
         "skills/scorecards/references/scorecards.md"
+      ]
+    },
+    {
+      "id": "fact:scenario-status-inverted",
+      "notes": "notes/scenarios.md",
+      "outputs": [
+        "skills/scenarios/references/scenarios.md"
+      ]
+    },
+    {
+      "id": "fact:scenario-duplicate-draft",
+      "notes": "notes/scenarios.md",
+      "outputs": [
+        "skills/scenarios/references/scenarios.md"
+      ]
+    },
+    {
+      "id": "fact:user-role-enum",
+      "notes": "notes/users.md",
+      "outputs": [
+        "skills/manage-users/references/users.md",
+        "skills/upload-users/references/upload-users.md"
+      ]
+    },
+    {
+      "id": "fact:usage-host-exception",
+      "notes": "notes/usage.md",
+      "outputs": [
+        "skills/usage/references/usage.md"
+      ]
+    },
+    {
+      "id": "fact:usage-owner-role",
+      "notes": "notes/usage.md",
+      "outputs": [
+        "skills/usage/references/usage.md"
+      ]
+    },
+    {
+      "id": "fact:usage-history-empty",
+      "notes": "notes/usage.md",
+      "outputs": [
+        "skills/usage/references/usage.md"
+      ]
+    },
+    {
+      "id": "fact:usage-history-per-invoice",
+      "notes": "notes/usage.md",
+      "outputs": [
+        "skills/usage/references/usage.md"
+      ]
+    },
+    {
+      "id": "fact:persona-voices-array",
+      "notes": "notes/personas.md",
+      "outputs": [
+        "skills/personas/references/personas.md"
+      ]
+    },
+    {
+      "id": "fact:scenario-update-requires-draft",
+      "notes": "notes/scenarios.md",
+      "outputs": [
+        "skills/scenarios/references/scenarios.md"
       ]
     }
   ]

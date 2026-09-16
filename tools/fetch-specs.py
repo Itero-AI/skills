@@ -7,20 +7,41 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import sys
 import tempfile
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-BASE_URL = "https://iterogatewayapi.azurewebsites.net/swagger/docs/public"
-SPEC_URLS = {
-    "practice.json": f"{BASE_URL}/practice",
-    "talk-track.json": f"{BASE_URL}/talk-track",
-    "tenant.json": f"{BASE_URL}/tenant",
+GATEWAY_BASE_URL = "https://iterogatewayapi.azurewebsites.net/swagger/docs/public"
+TENANT_API_SPEC_URL = (
+    "https://iterotenantapi.azurewebsites.net/swagger/public/swagger.json"
+)
+COMPONENT_REF_PREFIX = "#/components/schemas/"
+
+
+@dataclass(frozen=True)
+class SpecSource:
+    """Describe one upstream document and the paths kept from it."""
+
+    url: str
+    path_prefixes: tuple[str, ...] | None = None
+
+
+SPEC_SOURCES = {
+    "practice.json": SpecSource(f"{GATEWAY_BASE_URL}/practice"),
+    "talk-track.json": SpecSource(f"{GATEWAY_BASE_URL}/talk-track"),
+    "tenant.json": SpecSource(f"{GATEWAY_BASE_URL}/tenant"),
+    # The usage endpoints are not published through the gateway aggregator, so this
+    # snapshot is narrowed to them from the tenant service's own document. Every
+    # other tenant path is already covered by tenant.json above.
+    "usage.json": SpecSource(TENANT_API_SPEC_URL, ("/api/public/v1/usage",)),
 }
 OUTPUT_DIR = Path(__file__).resolve().parents[1] / "spec"
 REQUEST_TIMEOUT_SECONDS = 30
@@ -71,6 +92,57 @@ def fetch_spec(filename: str, url: str) -> dict[str, Any]:
         raise SpecFetchError(f"{url} returned a document without components.schemas")
 
     return document
+
+
+def collect_referenced_components(
+    node: Any, schemas: Mapping[str, Any], seen: set[str]
+) -> set[str]:
+    """Walk one subtree and record every component schema it reaches."""
+    if isinstance(node, dict):
+        reference = node.get("$ref")
+        if isinstance(reference, str) and reference.startswith(COMPONENT_REF_PREFIX):
+            name = reference[len(COMPONENT_REF_PREFIX) :]
+            if name not in seen:
+                seen.add(name)
+                collect_referenced_components(schemas.get(name), schemas, seen)
+        for value in node.values():
+            collect_referenced_components(value, schemas, seen)
+    elif isinstance(node, list):
+        for item in node:
+            collect_referenced_components(item, schemas, seen)
+    return seen
+
+
+def narrow_spec(
+    filename: str, document: dict[str, Any], prefixes: tuple[str, ...]
+) -> dict[str, Any]:
+    """Keep only the named paths and the component schemas they reach."""
+    paths = {
+        path: item
+        for path, item in document["paths"].items()
+        if path.startswith(prefixes)
+    }
+    if not paths:
+        raise SpecFetchError(
+            f"{filename}: upstream document has no path starting with "
+            + ", ".join(prefixes)
+        )
+
+    schemas = document["components"]["schemas"]
+    reachable = collect_referenced_components(paths, schemas, set())
+    missing = sorted(reachable - set(schemas))
+    if missing:
+        raise SpecFetchError(
+            f"{filename}: upstream document references undefined schema(s): "
+            + ", ".join(missing)
+        )
+
+    narrowed = dict(document)
+    narrowed["paths"] = paths
+    components = dict(document["components"])
+    components["schemas"] = {name: schemas[name] for name in sorted(reachable)}
+    narrowed["components"] = components
+    return narrowed
 
 
 def serialize_spec(document: dict[str, Any]) -> bytes:
@@ -143,19 +215,46 @@ def replace_specs(documents: dict[str, dict[str, Any]]) -> None:
             temporary_path.unlink(missing_ok=True)
 
 
-def main() -> int:
-    """Fetch all specifications before replacing any committed snapshot."""
+def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    """Parse the optional snapshot subset selection."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--only",
+        action="append",
+        choices=sorted(SPEC_SOURCES),
+        metavar="SNAPSHOT",
+        help=(
+            "refresh only this snapshot; repeatable. Use it when one upstream "
+            "document is unavailable and the others must still be refreshed. "
+            f"Choices: {', '.join(sorted(SPEC_SOURCES))}."
+        ),
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """Fetch the selected specifications before replacing any committed snapshot."""
+    arguments = parse_args(argv)
+    selected = dict.fromkeys(arguments.only) if arguments.only else SPEC_SOURCES
+
     try:
-        documents = {
-            filename: fetch_spec(filename, url) for filename, url in SPEC_URLS.items()
-        }
+        documents = {}
+        for filename in selected:
+            source = SPEC_SOURCES[filename]
+            document = fetch_spec(filename, source.url)
+            if source.path_prefixes is not None:
+                document = narrow_spec(filename, document, source.path_prefixes)
+            documents[filename] = document
         replace_specs(documents)
     except SpecFetchError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
 
-    for filename in SPEC_URLS:
+    for filename in documents:
         print(f"updated {OUTPUT_DIR / filename}")
+    skipped = sorted(set(SPEC_SOURCES) - set(documents))
+    if skipped:
+        print(f"left unchanged: {', '.join(skipped)}")
     return 0
 
 

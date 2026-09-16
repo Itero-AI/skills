@@ -54,6 +54,20 @@
         },
         "type": "object"
       },
+      "Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicDuplicatePracticeScenarioRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "practiceScenarioId": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
       "Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaCreateRequest": {
         "additionalProperties": false,
         "properties": {
@@ -66,6 +80,8 @@
             "type": "string"
           },
           "elevenLabsVoiceId": {
+            "deprecated": true,
+            "description": "Obsolete — do not use, kept for public API backwards compatibility only.\r\nElevenLabs voice id, mapped into a Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaCreateRequest.Voices entry. Use Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaCreateRequest.Voices instead.",
             "nullable": true,
             "type": "string"
           },
@@ -114,9 +130,18 @@
             "type": "string"
           },
           "voiceId": {
-            "description": "Retell voice id. Field name kept for public API backwards compatibility — internally stored as RetellVoiceId.\r\nOptional: at least one of VoiceId or ElevenLabsVoiceId must be provided.",
+            "deprecated": true,
+            "description": "Obsolete — do not use, kept for public API backwards compatibility only.\r\nRetell voice id, mapped into a Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaCreateRequest.Voices entry. Use Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaCreateRequest.Voices instead.",
             "nullable": true,
             "type": "string"
+          },
+          "voices": {
+            "description": "Per-provider voice ids. At least one entry is required.\r\nValues from the obsolete Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaCreateRequest.VoiceId and Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaCreateRequest.ElevenLabsVoiceId fields\r\nare merged in for providers not present in this collection.",
+            "items": {
+              "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaVoiceDto"
+            },
+            "nullable": true,
+            "type": "array"
           }
         },
         "type": "object"
@@ -133,7 +158,10 @@
             "type": "string"
           },
           "elevenLabsVoiceId": {
+            "deprecated": true,
+            "description": "Obsolete — do not use, kept for public API backwards compatibility only.\r\nElevenLabs voice id derived from Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto.Voices. Use Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto.Voices instead.",
             "nullable": true,
+            "readOnly": true,
             "type": "string"
           },
           "email": {
@@ -185,9 +213,19 @@
             "type": "string"
           },
           "voiceId": {
-            "description": "Retell voice id. Field name kept for public API backwards compatibility — internally stored as RetellVoiceId.",
+            "deprecated": true,
+            "description": "Obsolete — do not use, kept for public API backwards compatibility only.\r\nRetell voice id derived from Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto.Voices. Use Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto.Voices instead.",
             "nullable": true,
+            "readOnly": true,
             "type": "string"
+          },
+          "voices": {
+            "description": "Per-provider voice ids.",
+            "items": {
+              "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaVoiceDto"
+            },
+            "nullable": true,
+            "type": "array"
           }
         },
         "type": "object"
@@ -204,6 +242,8 @@
             "type": "string"
           },
           "elevenLabsVoiceId": {
+            "deprecated": true,
+            "description": "Obsolete — do not use, kept for public API backwards compatibility only.\r\nElevenLabs voice id, mapped into a Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaUpdateRequest.Voices entry. Use Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaUpdateRequest.Voices instead.",
             "nullable": true,
             "type": "string"
           },
@@ -256,7 +296,29 @@
             "type": "string"
           },
           "voiceId": {
-            "description": "Retell voice id. Field name kept for public API backwards compatibility — internally stored as RetellVoiceId.\r\nOptional: at least one of VoiceId or ElevenLabsVoiceId must be provided.",
+            "deprecated": true,
+            "description": "Obsolete — do not use, kept for public API backwards compatibility only.\r\nRetell voice id, mapped into a Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaUpdateRequest.Voices entry. Use Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaUpdateRequest.Voices instead.",
+            "nullable": true,
+            "type": "string"
+          },
+          "voices": {
+            "description": "Per-provider voice ids. At least one entry is required.\r\nValues from the obsolete Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaUpdateRequest.VoiceId and Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaUpdateRequest.ElevenLabsVoiceId fields\r\nare merged in for providers not present in this collection.",
+            "items": {
+              "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaVoiceDto"
+            },
+            "nullable": true,
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaVoiceDto": {
+        "additionalProperties": false,
+        "properties": {
+          "provider": {
+            "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.PersonaAggregate.Enums.VoiceProvider"
+          },
+          "voiceId": {
             "nullable": true,
             "type": "string"
           }
@@ -367,6 +429,9 @@
           "practiceScenarioType": {
             "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.ScenarioAggregate.PracticeScenarioType"
           },
+          "requiresScreenRecording": {
+            "type": "boolean"
+          },
           "scorecardTemplateId": {
             "format": "int32",
             "nullable": true,
@@ -375,6 +440,9 @@
           "starterLine": {
             "nullable": true,
             "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.ScenarioAggregate.Enums.PracticeScenarioStatus"
           },
           "transcript": {
             "nullable": true,
@@ -455,6 +523,9 @@
           "practiceScenarioType": {
             "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.ScenarioAggregate.PracticeScenarioType"
           },
+          "requiresScreenRecording": {
+            "type": "boolean"
+          },
           "scorecardTemplateId": {
             "format": "int32",
             "nullable": true,
@@ -463,6 +534,9 @@
           "starterLine": {
             "nullable": true,
             "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.ScenarioAggregate.Enums.PracticeScenarioStatus"
           },
           "transcript": {
             "nullable": true,
@@ -543,6 +617,9 @@
           "practiceScenarioType": {
             "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.ScenarioAggregate.PracticeScenarioType"
           },
+          "requiresScreenRecording": {
+            "type": "boolean"
+          },
           "scorecardTemplateId": {
             "format": "int32",
             "nullable": true,
@@ -559,6 +636,45 @@
         },
         "type": "object"
       },
+      "Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicVoiceDto": {
+        "additionalProperties": false,
+        "properties": {
+          "age": {
+            "nullable": true,
+            "type": "string"
+          },
+          "elevenLabsVoiceId": {
+            "deprecated": true,
+            "description": "Obsolete — do not use, kept for public API backwards compatibility only.\r\nElevenLabs voice id derived from Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicVoiceDto.Voices. Use Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicVoiceDto.Voices instead.",
+            "nullable": true,
+            "readOnly": true,
+            "type": "string"
+          },
+          "gender": {
+            "nullable": true,
+            "type": "string"
+          },
+          "voiceId": {
+            "deprecated": true,
+            "description": "Obsolete — do not use, kept for public API backwards compatibility only.\r\nRetell voice id derived from Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicVoiceDto.Voices. Use Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicVoiceDto.Voices instead.",
+            "nullable": true,
+            "readOnly": true,
+            "type": "string"
+          },
+          "voiceName": {
+            "nullable": true,
+            "type": "string"
+          },
+          "voices": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaVoiceDto"
+            },
+            "nullable": true,
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
       "Itero.TalkTrack.Domain.AggregatesModel.PersonaAggregate.Enums.DialogueStartSetting": {
         "enum": [
           0,
@@ -569,6 +685,23 @@
         "type": "integer"
       },
       "Itero.TalkTrack.Domain.AggregatesModel.PersonaAggregate.Enums.PersonaType": {
+        "enum": [
+          0,
+          1
+        ],
+        "format": "int32",
+        "type": "integer"
+      },
+      "Itero.TalkTrack.Domain.AggregatesModel.PersonaAggregate.Enums.VoiceProvider": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "format": "int32",
+        "type": "integer"
+      },
+      "Itero.TalkTrack.Domain.AggregatesModel.ScenarioAggregate.Enums.PracticeScenarioStatus": {
         "enum": [
           0,
           1
@@ -638,7 +771,7 @@
   "paths": {
     "/api/public/v1/persona": {
       "get": {
-        "description": "This endpoint returns a list of all personas belonging to the tenant associated with the API key.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Response Structure\r\nReturns an array of persona objects. Each persona contains:\r\n- **id** (integer): Unique identifier of the persona.\r\n- **personaType** (integer): Type of persona.\r\n  - `0` - Enterprise\r\n  - `1` - Consumer\r\n- **name** (string): Name of the persona.\r\n- **botName** (string): Name of the bot.\r\n- **title** (string, Enterprise only): Job title of the persona.\r\n- **companyName** (string, Enterprise only): Company name.\r\n- **email** (string, optional): Email address.\r\n- **mobile** (string, optional): Mobile phone number.\r\n- **existingProcesses** (string, Enterprise optional): Description of existing processes.\r\n- **pains** (string, Enterprise optional): Description of pain points.\r\n- **generalCharacteristics** (string, Enterprise optional): General characteristics.\r\n- **practiceScenarioCommunicationStyleId** (integer, Consumer only): Communication style ID.\r\n- **voiceId** (string): Unique identifier for the voice/AI model.\r\n- **gender** (string): Gender of the persona.\r\n- **language** (string): Language code.\r\n            \r\n## Notes\r\n- Returns all personas for the current tenant regardless of type.\r\n- The list may be empty if no personas exist for the tenant.\r\n- The response is an array of persona objects, not paginated.",
+        "description": "This endpoint returns a list of all personas belonging to the tenant associated with the API key.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Response Structure\r\nReturns an array of persona objects. Each persona contains:\r\n- **id** (integer): Unique identifier of the persona.\r\n- **personaType** (integer): Type of persona.\r\n  - `0` - Enterprise\r\n  - `1` - Consumer\r\n- **name** (string): Name of the persona.\r\n- **botName** (string): Name of the bot.\r\n- **title** (string, Enterprise only): Job title of the persona.\r\n- **companyName** (string, Enterprise only): Company name.\r\n- **email** (string, optional): Email address.\r\n- **mobile** (string, optional): Mobile phone number.\r\n- **existingProcesses** (string, Enterprise optional): Description of existing processes.\r\n- **pains** (string, Enterprise optional): Description of pain points.\r\n- **generalCharacteristics** (string, Enterprise optional): General characteristics.\r\n- **practiceScenarioCommunicationStyleId** (integer, Consumer only): Communication style ID.\r\n- **voices** (array): Per-provider voice ids. Each entry contains **provider** (integer: `0` - Retell, `1` - ElevenLabs, `2` - Itero) and **voiceId** (string).\r\n- **voiceId** (deprecated, string): Retell voice id derived from `voices`. Use `voices` instead.\r\n- **elevenLabsVoiceId** (deprecated, string): ElevenLabs voice id derived from `voices`. Use `voices` instead.\r\n- **gender** (string): Gender of the persona.\r\n- **language** (string): Language code.\r\n            \r\n## Notes\r\n- Returns all personas for the current tenant regardless of type.\r\n- The list may be empty if no personas exist for the tenant.\r\n- The response is an array of persona objects, not paginated.",
         "responses": {
           "200": {
             "content": {
@@ -719,7 +852,7 @@
         ]
       },
       "post": {
-        "description": "Creates a new persona. Personas can be of two types: Enterprise or Consumer.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\nThe request body must contain the following fields:\r\n- **personaType** (required, integer): Type of persona.\r\n  - Allowed values:\r\n    - `0` - Enterprise\r\n    - `1` - Consumer\r\n- **name** (required, string, max 255): Name of the persona.\r\n- **botName** (required, string, max 255): Name of the bot.\r\n- **title** (required for Enterprise, string, max 255): Job title of the persona.\r\n- **companyName** (required for Enterprise, string, max 255): Company name.\r\n- **email** (optional, string, max 255): Email address. Must be valid email format if provided.\r\n- **mobile** (optional, string): Mobile phone number.\r\n- **existingProcesses** (optional for Enterprise, string): Description of existing processes. Must be null for Consumer.\r\n- **pains** (optional for Enterprise, string): Description of pain points. Must be null for Consumer.\r\n- **generalCharacteristics** (optional for Enterprise, string): General characteristics.\r\n- **practiceScenarioCommunicationStyleId** (required for Consumer, integer): Communication style ID. Must be greater than 0.\r\n- **voiceId** (required, string): Unique identifier for the voice/AI model.\r\n- **gender** (required, string): Gender of the persona.\r\n  - Allowed values: `Male`, `Female`\r\n- **language** (required, string): Language code.\r\n  - Allowed values: `es-419`, `es-ES`, `en-GB`, `en-US`\r\n            \r\n## Example Request (Enterprise)\r\n```json\r\n{\r\n  \"personaType\": 0,\r\n  \"name\": \"John Smith\",\r\n  \"botName\": \"Enterprise Bot\",\r\n  \"title\": \"Sales Director\",\r\n  \"companyName\": \"Acme Corp\",\r\n  \"email\": \"john@acme.com\",\r\n  \"mobile\": \"+12025551234\",\r\n  \"existingProcesses\": \"Current sales process description\",\r\n  \"pains\": \"Long sales cycles and limited automation\",\r\n  \"generalCharacteristics\": \"Strategic, data-driven decision maker\",\r\n  \"voiceId\": \"voice-001\",\r\n  \"gender\": \"Male\",\r\n  \"language\": \"en-US\"\r\n}\r\n```\r\n            \r\n## Example Request (Consumer)\r\n```json\r\n{\r\n  \"personaType\": 1,\r\n  \"name\": \"Jane Doe\",\r\n  \"botName\": \"Consumer Bot\",\r\n  \"email\": \"jane@example.com\",\r\n  \"mobile\": \"+12025559876\",\r\n  \"practiceScenarioCommunicationStyleId\": 5,\r\n  \"voiceId\": \"voice-002\",\r\n  \"gender\": \"Female\",\r\n  \"language\": \"en-GB\"\r\n}\r\n```\r\n            \r\n## Response Structure\r\nThe created persona object contains all the submitted fields plus:\r\n- **id** (integer): Unique identifier of the newly created persona (auto-generated).\r\n            \r\n## Notes\r\n- Enterprise personas require `title` and `companyName`, and optionally `existingProcesses`, `pains`, and `generalCharacteristics`.\r\n- Consumer personas require `practiceScenarioCommunicationStyleId` and must not include enterprise-specific fields (`existingProcesses`, `pains`).\r\n- The persona is created under the tenant associated with the API key.\r\n- If personaType is not set, it defaults to 0 (Enterprise)",
+        "description": "Creates a new persona. Personas can be of two types: Enterprise or Consumer.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\nThe request body must contain the following fields:\r\n- **personaType** (required, integer): Type of persona.\r\n  - Allowed values:\r\n    - `0` - Enterprise\r\n    - `1` - Consumer\r\n- **name** (required, string, max 255): Name of the persona.\r\n- **botName** (required, string, max 255): Name of the bot.\r\n- **title** (required for Enterprise, string, max 255): Job title of the persona.\r\n- **companyName** (required for Enterprise, string, max 255): Company name.\r\n- **email** (optional, string, max 255): Email address. Must be valid email format if provided.\r\n- **mobile** (optional, string): Mobile phone number.\r\n- **existingProcesses** (optional for Enterprise, string): Description of existing processes. Must be null for Consumer.\r\n- **pains** (optional for Enterprise, string): Description of pain points. Must be null for Consumer.\r\n- **generalCharacteristics** (optional for Enterprise, string): General characteristics.\r\n- **practiceScenarioCommunicationStyleId** (required for Consumer, integer): Communication style ID. Must be greater than 0.\r\n- **voices** (required, array): Per-provider voice ids. At least one entry is required; each provider can be specified only once.\r\n  - **provider** (integer): Voice provider. Allowed values: `0` - Retell, `1` - ElevenLabs, `2` - Itero.\r\n  - **voiceId** (string): Voice id at the provider. Use the `voices` endpoint to list available ids.\r\n- **voiceId** (deprecated, string): Retell voice id, merged into `voices` as a Retell entry when that provider is not present there. Use `voices` instead.\r\n- **elevenLabsVoiceId** (deprecated, string): ElevenLabs voice id, merged into `voices` as an ElevenLabs entry when that provider is not present there. Use `voices` instead.\r\n- **gender** (required, string): Gender of the persona.\r\n  - Allowed values: `Male`, `Female`\r\n- **language** (required, string): Language code.\r\n  - Allowed values: `es-419`, `es-ES`, `en-GB`, `en-US`\r\n            \r\n## Example Request (Enterprise)\r\n```json\r\n{\r\n  \"personaType\": 0,\r\n  \"name\": \"John Smith\",\r\n  \"botName\": \"Enterprise Bot\",\r\n  \"title\": \"Sales Director\",\r\n  \"companyName\": \"Acme Corp\",\r\n  \"email\": \"john@acme.com\",\r\n  \"mobile\": \"+12025551234\",\r\n  \"existingProcesses\": \"Current sales process description\",\r\n  \"pains\": \"Long sales cycles and limited automation\",\r\n  \"generalCharacteristics\": \"Strategic, data-driven decision maker\",\r\n  \"voices\": [\r\n    { \"provider\": 2, \"voiceId\": \"voice-001\" }\r\n  ],\r\n  \"gender\": \"Male\",\r\n  \"language\": \"en-US\"\r\n}\r\n```\r\n            \r\n## Example Request (Consumer)\r\n```json\r\n{\r\n  \"personaType\": 1,\r\n  \"name\": \"Jane Doe\",\r\n  \"botName\": \"Consumer Bot\",\r\n  \"email\": \"jane@example.com\",\r\n  \"mobile\": \"+12025559876\",\r\n  \"practiceScenarioCommunicationStyleId\": 5,\r\n  \"voices\": [\r\n    { \"provider\": 2, \"voiceId\": \"voice-002\" }\r\n  ],\r\n  \"gender\": \"Female\",\r\n  \"language\": \"en-GB\"\r\n}\r\n```\r\n            \r\n## Response Structure\r\nThe created persona object contains all the submitted fields plus:\r\n- **id** (integer): Unique identifier of the newly created persona (auto-generated).\r\n            \r\n## Notes\r\n- Enterprise personas require `title` and `companyName`, and optionally `existingProcesses`, `pains`, and `generalCharacteristics`.\r\n- Consumer personas require `practiceScenarioCommunicationStyleId` and must not include enterprise-specific fields (`existingProcesses`, `pains`).\r\n- The persona is created under the tenant associated with the API key.\r\n- If personaType is not set, it defaults to 0 (Enterprise)",
         "requestBody": {
           "content": {
             "application/*+json": {
@@ -811,7 +944,7 @@
         ]
       },
       "put": {
-        "description": "Updates an existing persona within the current tenant context.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\nThe request body must contain all fields (same as create, plus `id`):\r\n- **id** (required, integer): Unique identifier of the persona to update.\r\n- **personaType** (required, integer): Type of persona.\r\n  - Allowed values:\r\n    - `0` - Enterprise\r\n    - `1` - Consumer\r\n- **name** (required, string, max 255): Name of the persona.\r\n- **botName** (required, string, max 255): Name of the bot.\r\n- **title** (required for Enterprise, string, max 255): Job title of the persona.\r\n- **companyName** (required for Enterprise, string, max 255): Company name.\r\n- **email** (optional, string, max 255): Email address. Must be valid email format if provided.\r\n- **mobile** (optional, string): Mobile phone number.\r\n- **existingProcesses** (optional for Enterprise, string): Description of existing processes. Must be null for Consumer.\r\n- **pains** (optional for Enterprise, string): Description of pain points. Must be null for Consumer.\r\n- **generalCharacteristics** (optional for Enterprise, string): General characteristics.\r\n- **practiceScenarioCommunicationStyleId** (required for Consumer, integer): Communication style ID.\r\n- **voiceId** (required, string): Unique identifier for the voice/AI model.\r\n- **gender** (required, string): Gender of the persona. Must be one of: `Male`, `Female`.\r\n- **language** (required, string): Language code (`es-419`, `es-ES`, `en-GB`, `en-US`).\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"id\": 5,\r\n  \"personaType\": 0,\r\n  \"name\": \"John Smith Updated\",\r\n  \"botName\": \"Enterprise Bot Updated\",\r\n  \"title\": \"VP Sales\",\r\n  \"companyName\": \"Acme Corp\",\r\n  \"email\": \"john.updated@acme.com\",\r\n  \"mobile\": \"+12025551234\",\r\n  \"existingProcesses\": \"Updated process\",\r\n  \"pains\": \"Current challenges\",\r\n  \"generalCharacteristics\": \"Innovative\",\r\n  \"voiceId\": \"voice-001\",\r\n  \"gender\": \"Male\",\r\n  \"language\": \"en-US\"\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns the updated persona object with all fields.\r\n            \r\n## Notes\r\n- The persona must exist and belong to the current tenant.\r\n- All fields are required in the request body; provide the complete persona object.\r\n- If personaType is not set, it defaults to 0 (Enterprise)",
+        "description": "Updates an existing persona within the current tenant context.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\nThe request body must contain all fields (same as create, plus `id`):\r\n- **id** (required, integer): Unique identifier of the persona to update.\r\n- **personaType** (required, integer): Type of persona.\r\n  - Allowed values:\r\n    - `0` - Enterprise\r\n    - `1` - Consumer\r\n- **name** (required, string, max 255): Name of the persona.\r\n- **botName** (required, string, max 255): Name of the bot.\r\n- **title** (required for Enterprise, string, max 255): Job title of the persona.\r\n- **companyName** (required for Enterprise, string, max 255): Company name.\r\n- **email** (optional, string, max 255): Email address. Must be valid email format if provided.\r\n- **mobile** (optional, string): Mobile phone number.\r\n- **existingProcesses** (optional for Enterprise, string): Description of existing processes. Must be null for Consumer.\r\n- **pains** (optional for Enterprise, string): Description of pain points. Must be null for Consumer.\r\n- **generalCharacteristics** (optional for Enterprise, string): General characteristics.\r\n- **practiceScenarioCommunicationStyleId** (required for Consumer, integer): Communication style ID.\r\n- **voices** (required, array): Per-provider voice ids. At least one entry is required; each provider can be specified only once.\r\n  - **provider** (integer): Voice provider. Allowed values: `0` - Retell, `1` - ElevenLabs, `2` - Itero.\r\n  - **voiceId** (string): Voice id at the provider. Use the `voices` endpoint to list available ids.\r\n- **voiceId** (deprecated, string): Retell voice id, merged into `voices` as a Retell entry when that provider is not present there. Use `voices` instead.\r\n- **elevenLabsVoiceId** (deprecated, string): ElevenLabs voice id, merged into `voices` as an ElevenLabs entry when that provider is not present there. Use `voices` instead.\r\n- **gender** (required, string): Gender of the persona. Must be one of: `Male`, `Female`.\r\n- **language** (required, string): Language code (`es-419`, `es-ES`, `en-GB`, `en-US`).\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"id\": 5,\r\n  \"personaType\": 0,\r\n  \"name\": \"John Smith Updated\",\r\n  \"botName\": \"Enterprise Bot Updated\",\r\n  \"title\": \"VP Sales\",\r\n  \"companyName\": \"Acme Corp\",\r\n  \"email\": \"john.updated@acme.com\",\r\n  \"mobile\": \"+12025551234\",\r\n  \"existingProcesses\": \"Updated process\",\r\n  \"pains\": \"Current challenges\",\r\n  \"generalCharacteristics\": \"Innovative\",\r\n  \"voices\": [\r\n    { \"provider\": 2, \"voiceId\": \"voice-001\" }\r\n  ],\r\n  \"gender\": \"Male\",\r\n  \"language\": \"en-US\"\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns the updated persona object with all fields.\r\n            \r\n## Notes\r\n- The persona must exist and belong to the current tenant.\r\n- All fields are required in the request body; provide the complete persona object.\r\n- If personaType is not set, it defaults to 0 (Enterprise)",
         "requestBody": {
           "content": {
             "application/*+json": {
@@ -905,14 +1038,14 @@
     },
     "/api/public/v1/persona/voices": {
       "get": {
-        "description": "This endpoint returns a list of available voice configurations that can be assigned to personas.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Response Structure\r\nReturns an array of available voice objects.\r\n            \r\n## Notes\r\n- Use the returned voice identifiers when creating or updating personas.\r\n- The available voices may vary based on tenant configuration.",
+        "description": "This endpoint returns a list of available voice configurations that can be assigned to personas.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Response Structure\r\nReturns an array of available voice objects. Each voice contains:\r\n- **voices** (array): Per-provider ids of this voice. Each entry contains **provider** (integer: `0` - Retell, `1` - ElevenLabs, `2` - Itero) and **voiceId** (string).\r\n- **gender** (string): Gender of the voice.\r\n- **age** (string): Age group of the voice.\r\n- **voiceName** (string): Display name of the voice.\r\n- **voiceId** (deprecated, string): Retell voice id derived from `voices`. Use `voices` instead.\r\n- **elevenLabsVoiceId** (deprecated, string): ElevenLabs voice id derived from `voices`. Use `voices` instead.\r\n            \r\n## Example Response\r\n```json\r\n[\r\n  {\r\n    \"voices\": [\r\n      { \"provider\": 2, \"voiceId\": \"voice-001\" }\r\n    ],\r\n    \"gender\": \"Male\",\r\n    \"age\": \"middle-aged\",\r\n    \"voiceName\": \"John\"\r\n  }\r\n]\r\n```\r\n            \r\n## Notes\r\n- Use the returned `voices` entries when creating or updating personas.\r\n- The available voices may vary based on tenant configuration.",
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicVoiceDto"
                   },
                   "type": "array"
                 }
@@ -920,7 +1053,7 @@
               "text/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicVoiceDto"
                   },
                   "type": "array"
                 }
@@ -928,7 +1061,7 @@
               "text/plain": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPersonaDto"
+                    "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicVoiceDto"
                   },
                   "type": "array"
                 }
@@ -1138,7 +1271,7 @@
         ]
       },
       "post": {
-        "description": "Allows the caller to create a new practice scenario.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\n- **personaId** (required, integer): ID of the persona associated with this scenario.\r\n- **practiceScenarioName** (required, string): Name of the practice scenario.\r\n- **practiceScenarioDescription** (required, string): Description of the practice scenario.\r\n- **personaBotName** (optional, string): Override bot name. If not set, uses the persona's botName.\r\n- **personaCompany** (optional, string, Enterprise only): Override company name. If not set, uses the persona's company.\r\n- **personaTitle** (optional, string, Enterprise only): Override title. If not set, uses the persona's title.\r\n- **practiceScenarioCallTypeId** (required, integer): ID of the call type for this scenario.\r\n- **practiceScenarioCommunicationStyleId** (required, integer): ID of the communication style.\r\n- **endCallFunctionExpression** (optional, string): Expression that defines when to end the call.\r\n- **practiceScenarioType** (required, integer): Type of the practice scenario.\r\n  - `0` - CommonScenario\r\n  - `1` - ObjectionHandling\r\n  - `2` - LiveCallSimulation\r\n  - `3` - FocusScenario\r\n- **keyBehaviorsOpinions** (optional, string): Key behaviors and opinions. Required for CommonScenario, FocusScenario, and ObjectionHandling. Not applicable for LiveCallSimulation.\r\n- **transcript** (optional, string): Call transcript. Required only for LiveCallSimulation. Not applicable for CommonScenario, FocusScenario, and ObjectionHandling.\r\n- **omitFromScoring** (required, boolean): Whether to exclude this scenario from scoring.\r\n- **dialogueStartSetting** (required, integer): Who starts the dialogue.\r\n  - `0` - ProspectDynamic (Ai begins. Generate a dynamic message)\r\n  - `1` - ProspectPredefined (Ai begins. Use a message that setted in the attribute starteLine)\r\n  - `2` - Representative (User begins. No Ai actions until the user speeaks first)\r\n- **starterLine** (optional, string): Predefined starter line. Used when dialogueStartSetting is ProspectPredefined.\r\n- **activityHistories** (optional, array): List of activity history items. Each item contains:\r\n  - `id` (integer), `date` (datetime), `activity` (string)\r\n- **internalSystems** (optional, array): List of internal system configurations. Each item contains:\r\n  - `systemName` (string), `attributes` (array of `{ id, attribute, value }`)\r\n- **scorecardTemplateId** (optional, integer): ID of the scorecard template to use for scoring.\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"personaId\": 1,\r\n  \"practiceScenarioName\": \"Cold Call Training\",\r\n  \"practiceScenarioDescription\": \"Practice cold calling techniques\",\r\n  \"personaBotName\": \"Sales Bot\",\r\n  \"practiceScenarioCallTypeId\": 1,\r\n  \"practiceScenarioCommunicationStyleId\": 2,\r\n  \"practiceScenarioType\": 0,\r\n  \"omitFromScoring\": false,\r\n  \"dialogueStartSetting\": 0,\r\n  \"scorecardTemplateId\": 5\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns the created practice scenario object with all fields plus:\r\n- **id** (integer): Unique identifier of the newly created scenario (auto-generated).\r\n            \r\n## Notes\r\n- The scenario is created under the tenant associated with the API key.\r\n- The `personaId` must reference an existing persona within the specified tenant.\r\n- If `practiceScenarioType` is not setted it defaults to `0` (CommonScenario).\r\n- If `omitFromScoring` is not setted it defaults to `false`.\r\n- If `dialogueStartSetting` is not setted it defaults to `0` (ProspectDynamic).",
+        "description": "Allows the caller to create a new practice scenario.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\n- **personaId** (required, integer): ID of the persona associated with this scenario.\r\n- **practiceScenarioName** (required, string): Name of the practice scenario.\r\n- **practiceScenarioDescription** (required, string): Description of the practice scenario.\r\n- **personaBotName** (optional, string): Override bot name. If not set, uses the persona's botName.\r\n- **personaCompany** (optional, string, Enterprise only): Override company name. If not set, uses the persona's company.\r\n- **personaTitle** (optional, string, Enterprise only): Override title. If not set, uses the persona's title.\r\n- **practiceScenarioCallTypeId** (required, integer): ID of the call type for this scenario.\r\n- **practiceScenarioCommunicationStyleId** (required, integer): ID of the communication style.\r\n- **endCallFunctionExpression** (optional, string): Expression that defines when to end the call.\r\n- **practiceScenarioType** (required, integer): Type of the practice scenario.\r\n  - `0` - CommonScenario\r\n  - `1` - ObjectionHandling\r\n  - `2` - LiveCallSimulation\r\n  - `3` - FocusScenario\r\n- **keyBehaviorsOpinions** (optional, string): Key behaviors and opinions. Required for CommonScenario, FocusScenario, and ObjectionHandling. Not applicable for LiveCallSimulation.\r\n- **transcript** (optional, string): Call transcript. Required only for LiveCallSimulation. Not applicable for CommonScenario, FocusScenario, and ObjectionHandling.\r\n- **omitFromScoring** (required, boolean): Whether to exclude this scenario from scoring.\r\n- **dialogueStartSetting** (required, integer): Who starts the dialogue.\r\n  - `0` - ProspectDynamic (Ai begins. Generate a dynamic message)\r\n  - `1` - ProspectPredefined (Ai begins. Use a message that setted in the attribute starteLine)\r\n  - `2` - Representative (User begins. No Ai actions until the user speeaks first)\r\n- **starterLine** (optional, string): Predefined starter line. Used when dialogueStartSetting is ProspectPredefined.\r\n- **activityHistories** (optional, array): List of activity history items. Each item contains:\r\n  - `id` (integer), `date` (datetime), `activity` (string)\r\n- **internalSystems** (optional, array): List of internal system configurations. Each item contains:\r\n  - `systemName` (string), `attributes` (array of `{ id, attribute, value }`)\r\n- **scorecardTemplateId** (optional, integer): ID of the scorecard template to use for scoring.\r\n- **status** (optional, integer): Draft/published state. Defaults to `1` (Draft) when omitted.\r\n  - `0` - Published (full validation; voice agents are provisioned)\r\n  - `1` - Draft (minimal validation; no agents created)\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"personaId\": 1,\r\n  \"practiceScenarioName\": \"Cold Call Training\",\r\n  \"practiceScenarioDescription\": \"Practice cold calling techniques\",\r\n  \"personaBotName\": \"Sales Bot\",\r\n  \"practiceScenarioCallTypeId\": 1,\r\n  \"practiceScenarioCommunicationStyleId\": 2,\r\n  \"practiceScenarioType\": 0,\r\n  \"omitFromScoring\": false,\r\n  \"dialogueStartSetting\": 0,\r\n  \"scorecardTemplateId\": 5,\r\n  \"status\": 0\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns the created practice scenario object with all fields plus:\r\n- **id** (integer): Unique identifier of the newly created scenario (auto-generated).\r\n            \r\n## Notes\r\n- The scenario is created under the tenant associated with the API key.\r\n- When `status` is `0` (Published), all fields are validated and voice agents are provisioned;\r\n  when `status` is `1` (Draft), only `practiceScenarioName` is required and no agents are created.\r\n- The `personaId` must reference an existing persona within the specified tenant (required when publishing).\r\n- If `practiceScenarioType` is not setted it defaults to `0` (CommonScenario).\r\n- If `omitFromScoring` is not setted it defaults to `false`.\r\n- If `dialogueStartSetting` is not setted it defaults to `0` (ProspectDynamic).\r\n- If `status` is not setted it defaults to `1` (Draft).",
         "requestBody": {
           "content": {
             "application/*+json": {
@@ -1230,7 +1363,7 @@
         ]
       },
       "put": {
-        "description": "Allows the caller to update an existing practice scenario.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\nSame fields as the create endpoint, plus:\r\n- **id** (required, integer): Unique identifier of the scenario to update.\r\n            \r\nDifferences from the create endpoint:\r\n- **practiceScenarioCallTypeId** and **practiceScenarioCommunicationStyleId** are optional (nullable) on update.\r\n  A value of `0` is treated as not set and stored as `null`.\r\n- **keyBehaviorsOpinions** is optional on update; scenarios based on a default template keep it `null`\r\n  and can be updated as returned by the GET endpoint.\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"id\": 10,\r\n  \"personaId\": 1,\r\n  \"practiceScenarioName\": \"Updated Cold Call Training\",\r\n  \"practiceScenarioDescription\": \"Updated description\",\r\n  \"practiceScenarioCallTypeId\": 1,\r\n  \"practiceScenarioCommunicationStyleId\": 2,\r\n  \"practiceScenarioType\": 0,\r\n  \"omitFromScoring\": false,\r\n  \"dialogueStartSetting\": 0,\r\n  \"scorecardTemplateId\": 5\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns the updated practice scenario object with all fields.\r\n            \r\n## Notes\r\n- The scenario must exist and belong to the current tenant.\r\n- The update is applied on top of the stored scenario: fields that are not part of the public contract\r\n  (e.g. the default template linkage) are preserved.\r\n- The `personaId` must reference an existing persona within the specified tenant.\r\n- If `practiceScenarioType` is not setted it defaults to `0` (CommonScenario).\r\n- If `omitFromScoring` is not setted it defaults to `false`.\r\n- If `dialogueStartSetting` is not setted it defaults to `0` (ProspectDynamic).",
+        "description": "Allows the caller to update an existing practice scenario.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\nSame fields as the create endpoint, plus:\r\n- **id** (required, integer): Unique identifier of the scenario to update.\r\n            \r\nDifferences from the create endpoint:\r\n- There is no **status** field: the update endpoint never changes the publish state.\r\n  Use `PATCH /api/public/v1/practice-scenario/{id}/status` to publish or unpublish.\r\n- **practiceScenarioCallTypeId** and **practiceScenarioCommunicationStyleId** are optional (nullable) on update.\r\n  A value of `0` is treated as not set and stored as `null`.\r\n- **keyBehaviorsOpinions** is required on publish only for scenarios that are not based on a default template;\r\n  template-based scenarios keep it `null` and can be updated as returned by the GET endpoint.\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"id\": 10,\r\n  \"personaId\": 1,\r\n  \"practiceScenarioName\": \"Updated Cold Call Training\",\r\n  \"practiceScenarioDescription\": \"Updated description\",\r\n  \"practiceScenarioCallTypeId\": 1,\r\n  \"practiceScenarioCommunicationStyleId\": 2,\r\n  \"practiceScenarioType\": 0,\r\n  \"omitFromScoring\": false,\r\n  \"dialogueStartSetting\": 0,\r\n  \"scorecardTemplateId\": 5\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns the updated practice scenario object with all fields.\r\n            \r\n## Notes\r\n- The scenario must exist and belong to the current tenant.\r\n- **Only draft scenarios can be updated.** Updating a published scenario returns a 400 response;\r\n  move it to draft first via `PATCH /api/public/v1/practice-scenario/{id}/status?status=1`.\r\n- The update is applied on top of the stored scenario: fields that are not part of the public contract\r\n  (e.g. the default template linkage) are preserved.\r\n- The scenario stays in draft after the update; publish-readiness is validated when the scenario is\r\n  published via the status endpoint.\r\n- The `personaId` must reference an existing persona within the specified tenant (required when publishing).\r\n- If `practiceScenarioType` is not setted it defaults to `0` (CommonScenario).\r\n- If `omitFromScoring` is not setted it defaults to `false`.\r\n- If `dialogueStartSetting` is not setted it defaults to `0` (ProspectDynamic).",
         "requestBody": {
           "content": {
             "application/*+json": {
@@ -1290,7 +1423,7 @@
                 }
               }
             },
-            "description": "Bad request — the request body failed validation."
+            "description": "Bad request — the request body failed validation or the scenario is not in draft status."
           },
           "401": {
             "content": {
@@ -1528,6 +1661,120 @@
         ]
       }
     },
+    "/api/public/v1/practice-scenario/duplicate": {
+      "post": {
+        "description": "Creates a copy of an existing practice scenario under a new name.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\n- **practiceScenarioId** (required, integer): Unique identifier of the source practice scenario to duplicate.\r\n- **name** (required, string): Name for the newly created (duplicated) scenario.\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"practiceScenarioId\": 10,\r\n  \"name\": \"Copy of Cold Call Training\"\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns the newly created practice scenario object with all fields, including its new **id** and **status**.\r\n            \r\n## Notes\r\n- The source scenario must exist and belong to the current tenant.\r\n- The duplicate is created with **status** `1` (Draft) and placed last in the tenant's ordering.\r\n- Persona fields, agents, internal systems, and activity histories are copied to the new scenario.\r\n- Attached files are not copied.",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicDuplicatePracticeScenarioRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicDuplicatePracticeScenarioRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicDuplicatePracticeScenarioRequest"
+              }
+            }
+          },
+          "description": "The duplicate request body containing the source scenario id and the new name."
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                }
+              }
+            },
+            "description": "Practice scenario was successfully duplicated."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Bad request — invalid input or the source scenario does not exist for the current tenant."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Duplicates an existing practice scenario for the current tenant.",
+        "tags": [
+          "PublicPracticeScenario"
+        ]
+      }
+    },
     "/api/public/v1/practice-scenario/{id}": {
       "delete": {
         "description": "Allows the caller to delete a practice scenario.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Path Parameters\r\n- **id** (required, integer): Unique identifier of the practice scenario to delete.\r\n            \r\n## Example Request\r\n```http\r\nDELETE /api/public/v1/practice-scenario/10\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Response\r\nReturns an empty 200 OK response on successful deletion.\r\n            \r\n## Notes\r\n- This is a destructive operation and cannot be undone.\r\n- The scenario must exist and belong to the current tenant.\r\n- Consider the impact on any related data before performing this operation.",
@@ -1593,6 +1840,142 @@
           }
         },
         "summary": "Deletes a practice scenario from the current tenant.",
+        "tags": [
+          "PublicPracticeScenario"
+        ]
+      }
+    },
+    "/api/public/v1/practice-scenario/{id}/status": {
+      "patch": {
+        "description": "Allows the caller to move a practice scenario between draft and published states.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n- Include the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Path Parameters\r\n- **id** (required, integer): Unique identifier of the practice scenario to update.\r\n            \r\n## Query Parameters\r\n- **status** (required, integer): Target status of the scenario.\r\n  - `0` - Published (scenario becomes available for practice)\r\n  - `1` - Draft (scenario is hidden from practice)\r\n            \r\n## Example Request\r\n```http\r\nPATCH /api/public/v1/practice-scenario/10/status?status=0\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Response Structure\r\nReturns the updated practice scenario object with all fields, including the new **status**.\r\n            \r\n## Notes\r\n- The scenario must exist and belong to the current tenant.\r\n- Publishing (`status` = `0`) re-syncs the scenario's voice agents.\r\n- If the scenario is already in the requested status, it is returned unchanged.",
+        "parameters": [
+          {
+            "description": "Unique identifier of the practice scenario to update.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The new status for the scenario.",
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "$ref": "#/components/schemas/Itero.TalkTrack.Domain.AggregatesModel.ScenarioAggregate.Enums.PracticeScenarioStatus"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.TalkTrack.Api.Application.Dtos.PublicApi.PublicPracticeScenarioDto"
+                }
+              }
+            },
+            "description": "Practice scenario status was successfully updated."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Bad request — the provided status is not a valid value."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Not found — the scenario does not exist for the current tenant."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Changes the publish status of an existing practice scenario for the current tenant.",
         "tags": [
           "PublicPracticeScenario"
         ]

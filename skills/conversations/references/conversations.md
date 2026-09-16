@@ -4,7 +4,7 @@
 
 This reference is generated from the committed OpenAPI 3.0.1 snapshots. Schema tables use only `paths` and `components.schemas`; curated behavior comes from the marked notes blocks below.
 
-Use the gateway host unless an operation is explicitly marked as using the practice host. Read the API key from `ITERO_API_KEY` and never print it.
+Use the gateway host unless an operation is explicitly marked with a different host in the endpoint map. Read the API key from `ITERO_API_KEY` and never print it.
 
 ## Verified guidance
 

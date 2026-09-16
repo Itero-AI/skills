@@ -1,0 +1,444 @@
+{
+  "components": {
+    "schemas": {
+      "Itero.Tenant.Api.Application.Dtos.PublicApi.Billing.PublicContractUsageStatusDto": {
+        "additionalProperties": false,
+        "properties": {
+          "contractId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "includedUnits": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "overageCost": {
+            "format": "double",
+            "type": "number"
+          },
+          "overageRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "overageUnits": {
+            "format": "double",
+            "type": "number"
+          },
+          "periodEnd": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "periodStart": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "planType": {
+            "$ref": "#/components/schemas/Itero.Tenant.Domain.AggregatesModel.BillingAggregate.Enums.PlanType"
+          },
+          "productType": {
+            "$ref": "#/components/schemas/Itero.Tenant.Domain.AggregatesModel.BillingAggregate.Enums.ProductType"
+          },
+          "remainingUnits": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "usedUnits": {
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Tenant.Api.Application.Dtos.PublicApi.PublicMonthlyContractBreakdownDto": {
+        "additionalProperties": false,
+        "properties": {
+          "contractId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "includedUnits": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "overageCost": {
+            "format": "double",
+            "type": "number"
+          },
+          "overageUnits": {
+            "format": "double",
+            "type": "number"
+          },
+          "periodEnd": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "periodStart": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "planType": {
+            "$ref": "#/components/schemas/Itero.Tenant.Domain.AggregatesModel.BillingAggregate.Enums.PlanType"
+          },
+          "productType": {
+            "$ref": "#/components/schemas/Itero.Tenant.Domain.AggregatesModel.BillingAggregate.Enums.ProductType"
+          },
+          "usedUnits": {
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Tenant.Api.Application.Dtos.PublicApi.PublicTenantMonthlyUsageHistoryDto": {
+        "additionalProperties": false,
+        "properties": {
+          "contracts": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.PublicMonthlyContractBreakdownDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "externalInvoiceId": {
+            "nullable": true,
+            "type": "string"
+          },
+          "invoiceId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "invoiceLink": {
+            "nullable": true,
+            "type": "string"
+          },
+          "invoiceStatus": {
+            "$ref": "#/components/schemas/Itero.Tenant.Domain.AggregatesModel.BillingAggregate.Enums.InvoiceStatus"
+          },
+          "periodEnd": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "periodStart": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "totalCost": {
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Tenant.Api.Application.Dtos.PublicApi.PublicUsageHistoryRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "monthsBack": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Tenant.Domain.AggregatesModel.BillingAggregate.Enums.InvoiceStatus": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "format": "int32",
+        "type": "integer"
+      },
+      "Itero.Tenant.Domain.AggregatesModel.BillingAggregate.Enums.PlanType": {
+        "enum": [
+          0,
+          1
+        ],
+        "format": "int32",
+        "type": "integer"
+      },
+      "Itero.Tenant.Domain.AggregatesModel.BillingAggregate.Enums.ProductType": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "format": "int32",
+        "type": "integer"
+      },
+      "Microsoft.AspNetCore.Mvc.ProblemDetails": {
+        "additionalProperties": {},
+        "properties": {
+          "detail": {
+            "nullable": true,
+            "type": "string"
+          },
+          "instance": {
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          },
+          "title": {
+            "nullable": true,
+            "type": "string"
+          },
+          "type": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "ApiKey": {
+        "description": "Please enter your API key",
+        "in": "header",
+        "name": "X-API-Key",
+        "type": "apiKey"
+      },
+      "Bearer": {
+        "bearerFormat": "JWT",
+        "description": "Please enter a valid token",
+        "scheme": "Bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "description": "Public endpoints exposed to clients",
+    "title": "Itero Public API",
+    "version": "v1"
+  },
+  "openapi": "3.0.1",
+  "paths": {
+    "/api/public/v1/usage/current-usage": {
+      "get": {
+        "description": "Returns one record per active contract of the tenant that owns the API key, with live\r\nconsumption for the contract's ongoing period and the limits that apply to it.\r\n            \r\n## Authorization\r\nRequires a valid tenant API key belonging to a user with the **Owner** role.\r\nThe tenant is resolved from the API key — there is no `tenantId` parameter.\r\n            \r\n## Example Request\r\n```\r\nGET /api/public/v1/usage/current-usage\r\n```\r\n            \r\n## Response Structure\r\nReturns an array of contract usage records. Each record contains:\r\n- **contractId**: Identifier of the contract.\r\n- **productType**: The metered product — see the table below.\r\n- **periodStart** / **periodEnd**: The contract's current billing period.\r\n- **planType**: The pricing plan — see the table below.\r\n- **includedUnits**: Units included by the plan (`null` when unlimited or pay-as-you-go).\r\n- **overageRate**: Price charged per unit beyond the included allowance.\r\n- **usedUnits**: Units consumed so far within the period.\r\n- **remainingUnits**: Units still available (`0` for pay-as-you-go plans).\r\n- **overageUnits**: Units already consumed beyond the included allowance.\r\n- **overageCost**: Cost accrued from overage so far.\r\n- **isActive**: `true` when the contract is active **and** the current time falls inside its period.\r\n            \r\n## Enums Used\r\n            \r\n### ProductType (`productType`)\r\n| Value | Name |\r\n|---|---|\r\n| `0` | ScoringEvaluations |\r\n| `1` | VoicePractice |\r\n| `2` | DataCapture |\r\n| `3` | QualitativeScoringEvaluation |\r\n| `4` | QaScoringEvaluation |\r\n| `5` | ChatPractice |\r\n| `6` | ScreenRecordingScoringEvaluation |\r\n            \r\n### PlanType (`planType`)\r\n| Value | Name |\r\n|---|---|\r\n| `0` | Prepaid |\r\n| `1` | PayAsYouGo |\r\n            \r\n## Example Response\r\n```json\r\n[\r\n  {\r\n    \"contractId\": 5,\r\n    \"productType\": 0,\r\n    \"periodStart\": \"2026-08-01T00:00:00Z\",\r\n    \"periodEnd\": \"2026-09-01T00:00:00Z\",\r\n    \"planType\": 0,\r\n    \"includedUnits\": 1000,\r\n    \"overageRate\": 0.25,\r\n    \"usedUnits\": 780,\r\n    \"remainingUnits\": 220,\r\n    \"overageUnits\": 0,\r\n    \"overageCost\": 0,\r\n    \"isActive\": true\r\n  }\r\n]\r\n```\r\n            \r\n## Notes\r\n- On **prepaid** plans `remainingUnits` is `includedUnits` minus consumption (never negative),\r\n  and overage starts accruing once the allowance is exhausted. On **pay-as-you-go** plans\r\n  `remainingUnits` is always `0` and every consumed unit is billed at `overageRate`.\r\n- Records are selected by contract status, while `isActive` additionally requires the current\r\n  time to fall inside `periodStart`/`periodEnd` — so a contract whose period has just rolled\r\n  over can appear with `isActive: false` until it is renewed.\r\n- A tenant with no active contracts gets an empty array.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.Billing.PublicContractUsageStatusDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.Billing.PublicContractUsageStatusDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.Billing.PublicContractUsageStatusDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Current usage was successfully retrieved."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — the API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — the caller lacks the required role."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves current usage and remaining limits for the current tenant.",
+        "tags": [
+          "PublicUsage"
+        ]
+      }
+    },
+    "/api/public/v1/usage/get-usage-history": {
+      "post": {
+        "description": "Returns the invoiced usage history of the tenant that owns the API key, newest period first.\r\nEach record covers one billing period and breaks the cost down per contract.\r\n            \r\n## Authorization\r\nRequires a valid tenant API key belonging to a user with the **Owner** role.\r\nThe tenant is resolved from the API key — there is no `tenantId` parameter.\r\n            \r\n## Request Body\r\n- **monthsBack** (optional): Only return periods invoiced within the last N months (1–60).\r\n  Omit the field, or send an empty object `{}`, to get every available period.\r\n            \r\n## Example Request\r\n```\r\nPOST /api/public/v1/usage/get-usage-history\r\nContent-Type: application/json\r\n            \r\n{\r\n  \"monthsBack\": 6\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns an array of monthly usage records. Each record contains:\r\n- **periodStart** / **periodEnd**: The billing period this record covers.\r\n- **totalCost**: Total invoiced cost for the period.\r\n- **invoiceId**: Identifier of the invoice.\r\n- **invoiceStatus**: Status of the invoice — see the table below.\r\n- **externalInvoiceId**: External billing system reference, when available.\r\n- **invoiceLink**: URL to the invoice, when available.\r\n- **contracts**: Array of per-contract breakdowns, each containing:\r\n  - **contractId**: Identifier of the contract.\r\n  - **productType**: The billed product — see the table below.\r\n  - **periodStart** / **periodEnd**: The contract's billing period.\r\n  - **planType**: The pricing plan — see the table below.\r\n  - **includedUnits**: Units included by the plan for the period (`null` when unlimited).\r\n  - **usedUnits**: Units consumed during the period.\r\n  - **overageUnits**: Units consumed beyond the included allowance.\r\n  - **overageCost**: Cost charged for the overage.\r\n            \r\n## Enums Used\r\n            \r\n### InvoiceStatus (`invoiceStatus`)\r\n| Value | Name |\r\n|---|---|\r\n| `0` | New |\r\n| `1` | Pending |\r\n| `2` | PaymentDue |\r\n| `3` | Paid |\r\n| `4` | Failed |\r\n| `5` | Legacy |\r\n            \r\n### ProductType (`contracts[].productType`)\r\n| Value | Name |\r\n|---|---|\r\n| `0` | ScoringEvaluations |\r\n| `1` | VoicePractice |\r\n| `2` | DataCapture |\r\n| `3` | QualitativeScoringEvaluation |\r\n| `4` | QaScoringEvaluation |\r\n| `5` | ChatPractice |\r\n| `6` | ScreenRecordingScoringEvaluation |\r\n            \r\n### PlanType (`contracts[].planType`)\r\n| Value | Name |\r\n|---|---|\r\n| `0` | Prepaid |\r\n| `1` | PayAsYouGo |\r\n            \r\n## Example Response\r\n```json\r\n[\r\n  {\r\n    \"periodStart\": \"2026-03-01T00:00:00Z\",\r\n    \"periodEnd\": \"2026-03-31T23:59:59Z\",\r\n    \"totalCost\": 150.00,\r\n    \"invoiceId\": 42,\r\n    \"invoiceStatus\": 3,\r\n    \"externalInvoiceId\": \"inv_abc123\",\r\n    \"invoiceLink\": \"https://billing.example.com/inv/abc123\",\r\n    \"contracts\": [\r\n      {\r\n        \"contractId\": 5,\r\n        \"productType\": 0,\r\n        \"periodStart\": \"2026-03-01T00:00:00Z\",\r\n        \"periodEnd\": \"2026-03-31T23:59:59Z\",\r\n        \"planType\": 1,\r\n        \"includedUnits\": 1000,\r\n        \"usedUnits\": 1200,\r\n        \"overageUnits\": 200,\r\n        \"overageCost\": 50.00\r\n      }\r\n    ]\r\n  }\r\n]\r\n```\r\n            \r\n## Notes\r\n- These are **historical, invoiced** figures. For live consumption against the current\r\n  allowance use `GET /api/public/v1/usage/current-usage`.\r\n- Periods with no invoice lines are omitted; a tenant with no invoices gets an empty array.",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.PublicUsageHistoryRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.PublicUsageHistoryRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.PublicUsageHistoryRequest"
+              }
+            }
+          },
+          "description": "Optional filter narrowing the history to the last N months."
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.PublicTenantMonthlyUsageHistoryDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.PublicTenantMonthlyUsageHistoryDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Tenant.Api.Application.Dtos.PublicApi.PublicTenantMonthlyUsageHistoryDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Usage history was successfully retrieved."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Invalid request — for example `monthsBack` outside the 1–60 range."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — the API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — the caller lacks the required role."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves monthly usage and billing history for the current tenant.",
+        "tags": [
+          "PublicUsage"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKey": [],
+      "Bearer": []
+    }
+  ]
+}

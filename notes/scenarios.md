@@ -1,4 +1,4 @@
-*Last Edited: 2026-08-27 12:00*
+*Last Edited: 2026-09-16 16:19*
 
 # Practice Scenario Notes
 
@@ -47,9 +47,67 @@ Include a block like this in `keyBehaviorsOpinions` for every scenario type exce
 - Difficulty is vagueness, not combat. Real held objections shrink over turns, stay polite through the no, and hide the real blocker until directly asked. Hostile personas do not match real calls.
 - One negative example beats three positive rules. When banning a behavior, quote the exact forbidden sentence.
 
+### Screen recording is an explicit opt-in
+
+`requiresScreenRecording` is a boolean on create, update, and the scenario GET — the Scenario Studio screen-recording toggle. When it is `true`, the rep's screen is captured during the practice session alongside the audio.
+
+Turn it on only when the user asks for it, and say so plainly in the confirmation preview: recording someone's screen is something they should be told about, not a field that changes silently. It is unset by default, and a verified tenant had it `false` on all 48 of its scenarios.
+
+Because updates are complete-object writes, carry the current value forward on every `PUT`. Omitting it on an update to a recorded scenario turns recording off.
+
+<!-- fact:scenario-update-requires-draft -->
+### Only draft scenarios can be updated
+
+`PUT /practice-scenario` rejects a published scenario with `400`. This is new in the September 2026 release — the previous specification carried no such restriction, so a fetch-modify-PUT that worked before now fails on any live scenario.
+
+Updating a published scenario takes three calls:
+
+1. `PATCH /api/public/v1/practice-scenario/{id}/status?status=1` — move it to draft.
+2. `PUT /api/public/v1/practice-scenario` — send the complete updated object.
+3. `PATCH /api/public/v1/practice-scenario/{id}/status?status=0` — publish it again.
+
+**Step 1 takes the scenario out of practice**, so reps cannot run it until step 3 completes. Say that in the confirmation before starting, and treat the three calls as one operation: if the update fails, republish rather than leaving a previously live scenario stranded in draft.
+
+The scenario stays in draft after a successful update — the update never republishes on its own. Publish-readiness is validated at the status endpoint, not at the update, so a payload the update accepted can still be rejected when publishing.
+
+A `400` on an update is therefore as likely to mean "this scenario is published" as it is to mean a bad field. Check the current status before rereading the payload.
+
 ### Treat updates as complete-object writes
 
 Fetch the current scenario before an update and carry forward fields that should remain unchanged. Review linked persona, call type, communication style, scorecard, dialogue-start setting, and persona override fields before sending the complete payload.
+
+Three fields default rather than erroring when omitted on a write: `practiceScenarioType` defaults to `0` (CommonScenario), `omitFromScoring` to `false`, and `dialogueStartSetting` to `0` (ProspectDynamic). Set them explicitly instead of relying on those defaults. The update is applied on top of the stored scenario, so fields outside the public contract — the default-template linkage, for instance — are preserved rather than cleared.
+
+<!-- fact:scenario-status-inverted -->
+### Scenario status is published at `0`, the reverse of scorecards
+
+`PATCH /practice-scenario/{id}/status` moves a scenario between published and draft. The target status is a query parameter, not a body: `PATCH /api/public/v1/practice-scenario/{id}/status?status=0`.
+
+The values run opposite to the scorecard template enum in the same API:
+
+| Resource | Draft | Published |
+|---|---|---|
+| Practice scenario | `1` | `0` |
+| Scorecard template | `0` | `1` |
+
+Sending the scorecard convention to a scenario does not fail — it quietly does the opposite of what was intended, hiding a live scenario or publishing an unfinished one. Name the intended state in words in the confirmation preview ("publish this scenario — `status=0`") so the user is confirming the outcome rather than the number.
+
+Two behaviors follow from the publish path: publishing (`status=0`) re-syncs the scenario's voice agents, and setting a scenario to the status it already holds returns it unchanged rather than erroring.
+
+`status` belongs to create, not update. **A `POST` that omits it creates a draft** — the default is `1`. Publishing at create time takes an explicit `status: 0`, and that is the stricter path: at `0` every field is validated and voice agents are provisioned, while at `1` only `practiceScenarioName` is required and no agents are created. Build in draft and publish as a separate step when a scenario is being assembled over several calls.
+
+`PUT` has no `status` field at all and never changes the publish state, so an update cannot publish a scenario and cannot accidentally unpublish one. Use the `PATCH` route for that. Two related update-only rules: `practiceScenarioCallTypeId` and `practiceScenarioCommunicationStyleId` are nullable on update, where `0` is treated as not set and stored as `null`; and `keyBehaviorsOpinions` is required on publish only for scenarios not based on a default template — template-based scenarios keep it `null` and update as the GET returns them.
+
+<!-- fact:scenario-duplicate-draft -->
+### Duplicating copies the scenario but not its files
+
+`POST /practice-scenario/duplicate` takes `{"practiceScenarioId": <id>, "name": "<new name>"}` and returns the complete new scenario, including its new `id`. Both fields are required in practice even though the schema marks `name` nullable — supply an explicit name rather than relying on a generated one.
+
+The copy carries over persona fields, agents, internal systems, and activity histories. **Attached files are not copied**, so a scenario that depends on an uploaded document is incomplete after duplication; re-attach the files before publishing it.
+
+The duplicate is always created as a draft (`status: 1`) and placed last in the tenant's ordering, whatever the source scenario's status was. Duplicating a published scenario therefore does not publish the copy — that takes a separate status call.
+
+Prefer duplicate-then-edit over building a near-identical scenario from scratch: it preserves the internal-system records and persona overrides that are easy to get wrong by hand.
 
 <!-- fact:scenario-roundtrip-overrides -->
 ### Do not round-trip synthesized persona overrides
