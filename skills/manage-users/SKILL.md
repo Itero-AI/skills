@@ -5,7 +5,7 @@ user-invocable: true
 license: MIT
 metadata:
   author: itero
-  version: "2.0.0"
+  version: "2.2.0"
   homepage: https://iteroapp.ai
   source: https://github.com/Itero-AI/skills
 inputs:
@@ -39,7 +39,7 @@ curl --fail-with-body --silent --show-error \
 
 | Goal | Operation | Guidance |
 |---|---|---|
-| List or filter users | `GET /api/public/v1/user` | Use `role` and `isActive`, then project fields. |
+| List or filter users | `GET /api/public/v1/user` | Use `role` and `isActive`, then project fields. Roles are `Owner`, `Coach`, `Manager`, `Representative`. |
 | List groups | `GET /api/public/v1/get-user-groups` | Copy exact group names. |
 | Create a user | `POST /api/public/v1/user` | Check the email and explain the invitation first. |
 | Update, deactivate, or reactivate | `PUT /api/public/v1/user` | Start from the complete current record. |
@@ -63,6 +63,8 @@ curl --fail-with-body --silent --show-error \
 | Sending a partial update | Carry forward fields that must not change. |
 | Silently creating a user | Explain that successful creation sends an invitation email. |
 | Deleting when deactivation meets the goal | Prefer the reversible update unless deletion is explicit. |
+| Assuming roles are only `Manager` and `Representative` | There are four: `Owner`, `Coach`, `Manager`, `Representative`. Filtering on the old pair silently drops users. |
+| Sending `Manager` to create an administrator | `Owner` is the administrative role; `Manager` is now a narrower front-line role. |
 | Guessing why a write returned `403` | Read the verified role note in the generated reference. |
 
 ## Error quick reference

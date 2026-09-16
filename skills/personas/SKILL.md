@@ -5,7 +5,7 @@ user-invocable: true
 license: MIT
 metadata:
   author: itero
-  version: "2.1.0"
+  version: "2.2.0"
   homepage: https://iteroapp.ai
   source: https://github.com/Itero-AI/skills
 inputs:
@@ -30,7 +30,7 @@ Keep collection responses small. Project the fields needed for selection instead
 curl --fail-with-body --silent --show-error \
   --header "X-API-Key: $ITERO_API_KEY" \
   "https://iterogatewayapi.azurewebsites.net/api/public/v1/persona" \
-  | jq '(.items? // .) | map({id, name, personaType, botName, voiceId})'
+  | jq '(.items? // .) | map({id, name, personaType, botName, voices})'
 ```
 
 ## What do you need?
@@ -38,7 +38,7 @@ curl --fail-with-body --silent --show-error \
 | Goal | Operation | Guidance |
 |---|---|---|
 | Find or reuse an archetype | `GET /api/public/v1/persona` | Project IDs and names before choosing. |
-| Choose a voice | `GET /api/public/v1/persona/voices` | Filter by `voiceName`, `gender`, or `age`. |
+| Choose a voice | `GET /api/public/v1/persona/voices` | Filter by `voiceName`, `gender`, or `age`, then write it as a `voices` entry. |
 | Create a persona | `POST /api/public/v1/persona` | List existing personas and voices first. |
 | Change a persona | `PUT /api/public/v1/persona` | Start from the current complete object. |
 | Remove a persona | `DELETE /api/public/v1/persona/{id}` | List its scenarios first; deletion affects them too. See the workflow below. |
@@ -47,7 +47,7 @@ curl --fail-with-body --silent --show-error \
 
 1. List existing personas and reuse one when its behavioral archetype fits.
 2. Read the relevant operation in [the generated reference](references/personas.md) for exact fields, types, and enums.
-3. Use `voiceId` from the voices endpoint in create and update payloads.
+3. Set the voice through the `voices` array in create and update payloads — one entry per provider, each pairing `provider` with that provider's `voiceId`, resolved from the voices endpoint. The bare `voiceId` and `elevenLabsVoiceId` fields are the deprecated older shape.
 4. Keep the persona reusable. Put prospect-specific facts, immediate objections, and one-off circumstances on the scenario.
 5. Show the exact request and wait for confirmation before sending a write.
 6. Before a delete: fetch `GET /practice-scenario`, project `id`, `practiceScenarioName`, and `personaId`, and list every scenario referencing this persona in the confirmation along with the persona's name and ID. Warn that those scenarios will be deleted with it or orphaned — documentation and field testing disagree on which (see the reference). After a confirmed delete, re-list scenarios and offer to clean up leftovers.
@@ -57,7 +57,9 @@ curl --fail-with-body --silent --show-error \
 
 | Mistake | Correct approach |
 |---|---|
-| Sending `elevenLabsVoiceId` | Send `voiceId`; the other field is returned for compatibility. |
+| Writing the deprecated scalar `voiceId` or `elevenLabsVoiceId` | Write the `voices` array instead; at least one entry is required. |
+| Reporting "no voice" from an empty `voiceId` | Read `voices` — a persona can have a working voice the scalar field cannot express. |
+| Repeating a provider in `voices` | Each provider may appear only once. |
 | Creating a persona for one named prospect | Create a reusable archetype and place instance details on the scenario. |
 | Inventing rich context | Ground behavior in the user's playbook or source material. |
 | A chatty or talkative trait in `generalCharacteristics` | Keep it flat and warm; talkative traits conflict with scenario reveal rules and cause info-dumping. |

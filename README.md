@@ -24,6 +24,7 @@ Seven skills talk to the Itero public API; two document-preparation skills run e
 | `manage-users` | List, create, update, activate, deactivate, and delete individual users. |
 | `upload-users` | Validate and bulk-import a CSV of users. |
 | `conversations` | Search calls, read transcripts and evaluation results, tag calls, and start evaluations. |
+| `usage` | Check plan usage, remaining limits, overage, and billing history. |
 | `doc-optimizer` | Turn one PDF, DOCX, or TXT file into chunk-independent Markdown for RAG. |
 | `doc-consolidator` | Collapse related documents into fewer topic-grouped Markdown files for RAG. |
 
@@ -42,7 +43,7 @@ Please install the Itero skills for me. Follow these steps in order and ask me b
 
 1. Identify which assistant you are (Claude Code, Cursor, OpenAI Codex, or Google Antigravity) and whether this is Mac or Windows. Confirm that with me.
 2. Download https://github.com/Itero-AI/skills/archive/refs/heads/main.zip and unzip it in a temporary location.
-3. Copy all nine folders from the downloaded `skills/` directory into the correct global skills directory, creating it if needed:
+3. Copy all ten folders from the downloaded `skills/` directory into the correct global skills directory, creating it if needed:
    - Claude Code: `~/.claude/skills/` on Mac or `%USERPROFILE%\.claude\skills\` on Windows
    - Cursor or Codex: `~/.agents/skills/` on Mac or `%USERPROFILE%\.agents\skills\` on Windows
    - Antigravity: `~/.gemini/antigravity/skills/` on Mac or `%USERPROFILE%\.gemini\antigravity\skills\` on Windows
@@ -54,7 +55,7 @@ Please install the Itero skills for me. Follow these steps in order and ask me b
    ```
 
    Tell me the full path and ask me to paste my Itero API key after the equals sign in my editor, save the file, and confirm when that is done.
-6. Verify that the destination contains these nine folders: `personas`, `scenarios`, `scorecards`, `learning-paths`, `manage-users`, `upload-users`, `conversations`, `doc-optimizer`, and `doc-consolidator`. Then ask me to restart the assistant and try: list my scorecards.
+6. Verify that the destination contains these ten folders: `personas`, `scenarios`, `scorecards`, `learning-paths`, `manage-users`, `upload-users`, `conversations`, `usage`, `doc-optimizer`, and `doc-consolidator`. Then ask me to restart the assistant and try: list my scorecards.
 ````
 
 ### Manual — drag folders
@@ -94,7 +95,7 @@ Delete your old Itero skill folders, then install v2 fresh. The folders contain 
 
 Delete these folders from your skills directory (`~/.claude/skills/`, `~/.agents/skills/`, or `~/.gemini/antigravity/skills/`):
 
-`personas`, `scenarios`, `scorecards`, `learning-paths`, `manage-users`, `upload-users`, `doc-optimizer`, `doc-consolidator`
+`personas`, `scenarios`, `scorecards`, `learning-paths`, `manage-users`, `upload-users`, `conversations`, `usage`, `doc-optimizer`, `doc-consolidator`
 
 Then follow [Install](#install). Do not copy v2 over v1 without deleting first — a folder merge leaves old v1 scripts behind.
 

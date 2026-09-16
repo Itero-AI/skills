@@ -4,7 +4,7 @@
 
 This reference is generated from the committed OpenAPI 3.0.1 snapshots. Schema tables use only `paths` and `components.schemas`; curated behavior comes from the marked notes blocks below.
 
-Use the gateway host unless an operation is explicitly marked as using the practice host. Read the API key from `ITERO_API_KEY` and never print it.
+Use the gateway host unless an operation is explicitly marked with a different host in the endpoint map. Read the API key from `ITERO_API_KEY` and never print it.
 
 ## Verified guidance
 
@@ -35,10 +35,21 @@ Apply the same rule to every list operation: filter on the server when possible,
 <!-- gotchas -->
 ## Persona gotchas
 
-<!-- fact:persona-voiceid -->
-### Send `voiceId`, not `elevenLabsVoiceId`
+<!-- fact:persona-voices-array -->
+### Set the voice through `voices`, not the deprecated scalar fields
 
-Use `voiceId` when creating or updating a persona. The verified tenant used `voiceId` on 19 of its 20 live personas. `elevenLabsVoiceId` is a returned compatibility field; do not send it in a write payload.
+Personas now carry a `voices` array, where each entry pairs a `provider` with that provider's `voiceId`: `[{"provider": 2, "voiceId": "voice-001"}]`. At least one entry is required on a write, and each provider may appear only once.
+
+The older scalar fields are deprecated. `voiceId` is the Retell id and `elevenLabsVoiceId` the ElevenLabs id; each is merged into `voices` as an entry for its provider, but only when that provider is not already present in the array. Sending both a scalar and a matching `voices` entry means the array wins and the scalar is silently ignored, so pick one — write `voices` and leave the scalars alone.
+
+Read the voice from `voices` too. A persona configured through the array can carry a provider the scalar fields cannot express, in which case `voiceId` is empty even though the persona has a working voice; reporting "no voice set" from the scalar alone is wrong.
+
+Providers are `0` Retell, `1` ElevenLabs, and `2` Itero. Resolve real IDs from `GET /api/public/v1/persona/voices` rather than guessing, and keep each `voiceId` with the provider it belongs to.
+
+<!-- fact:persona-voiceid -->
+### The scalar voice fields are the old shape
+
+Before the `voices` array existed, a persona's voice was the scalar `voiceId`, and the verified tenant used it on 19 of its 20 live personas. That remains what older personas carry, so expect to read it — but write through `voices` instead, as described above. `elevenLabsVoiceId` was never a write field; it is a returned compatibility value.
 
 On 2026-08-12, `GET /api/public/v1/persona/voices` returned 170 voices. Each voice item used these fields: `voiceId`, `elevenLabsVoiceId`, `voiceName`, `gender`, and `age`.
 
@@ -114,6 +125,9 @@ Status `200`:
 | `items[].practiceScenarioCommunicationStyleId` | `integer (int32)` | No | Yes | — |
 | `items[].title` | `string` | No | Yes | — |
 | `items[].voiceId` | `string` | No | Yes | — |
+| `items[].voices` | `array<PublicPersonaVoiceDto>` | No | Yes | — |
+| `items[].voices[].provider` | `integer enum` | No | No | `0` (Retell), `1` (ElevenLabs), `2` (Itero) |
+| `items[].voices[].voiceId` | `string` | No | Yes | — |
 
 #### Error responses
 
@@ -145,6 +159,9 @@ Status `200`:
 | `body: practiceScenarioCommunicationStyleId` | `integer (int32)` | No | Yes | — |
 | `body: title` | `string` | No | Yes | — |
 | `body: voiceId` | `string` | No | Yes | — |
+| `body: voices` | `array<PublicPersonaVoiceDto>` | No | Yes | — |
+| `body: voices[].provider` | `integer enum` | No | No | `0` (Retell), `1` (ElevenLabs), `2` (Itero) |
+| `body: voices[].voiceId` | `string` | No | Yes | — |
 
 Body media type: `application/json`.
 
@@ -189,6 +206,9 @@ Status `200`:
 | `practiceScenarioCommunicationStyleId` | `integer (int32)` | No | Yes | — |
 | `title` | `string` | No | Yes | — |
 | `voiceId` | `string` | No | Yes | — |
+| `voices` | `array<PublicPersonaVoiceDto>` | No | Yes | — |
+| `voices[].provider` | `integer enum` | No | No | `0` (Retell), `1` (ElevenLabs), `2` (Itero) |
+| `voices[].voiceId` | `string` | No | Yes | — |
 
 #### Error responses
 
@@ -221,6 +241,9 @@ Status `200`:
 | `body: practiceScenarioCommunicationStyleId` | `integer (int32)` | No | Yes | — |
 | `body: title` | `string` | No | Yes | — |
 | `body: voiceId` | `string` | No | Yes | — |
+| `body: voices` | `array<PublicPersonaVoiceDto>` | No | Yes | — |
+| `body: voices[].provider` | `integer enum` | No | No | `0` (Retell), `1` (ElevenLabs), `2` (Itero) |
+| `body: voices[].voiceId` | `string` | No | Yes | — |
 
 Body media type: `application/json`.
 
@@ -265,6 +288,9 @@ Status `200`:
 | `practiceScenarioCommunicationStyleId` | `integer (int32)` | No | Yes | — |
 | `title` | `string` | No | Yes | — |
 | `voiceId` | `string` | No | Yes | — |
+| `voices` | `array<PublicPersonaVoiceDto>` | No | Yes | — |
+| `voices[].provider` | `integer enum` | No | No | `0` (Retell), `1` (ElevenLabs), `2` (Itero) |
+| `voices[].voiceId` | `string` | No | Yes | — |
 
 #### Error responses
 

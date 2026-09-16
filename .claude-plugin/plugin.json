@@ -1,7 +1,7 @@
 {
   "name": "itero",
-  "version": "2.1.0",
-  "description": "Manage Itero scenarios, scorecards, personas, users, learning paths, and conversations from Claude Code, including transcripts and evaluation results, plus document preparation for RAG and vector stores.",
+  "version": "2.2.0",
+  "description": "Manage Itero scenarios, scorecards, personas, users, learning paths, conversations, and plan usage from Claude Code, including transcripts and evaluation results, plus document preparation for RAG and vector stores.",
   "author": {
     "name": "Itero",
     "email": "support@iteroapp.ai",
@@ -19,6 +19,8 @@
     "personas",
     "conversations",
     "transcripts",
+    "usage",
+    "billing",
     "doc-prep",
     "rag",
     "vector-store"

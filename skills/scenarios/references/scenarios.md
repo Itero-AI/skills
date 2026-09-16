@@ -4,7 +4,7 @@
 
 This reference is generated from the committed OpenAPI 3.0.1 snapshots. Schema tables use only `paths` and `components.schemas`; curated behavior comes from the marked notes blocks below.
 
-Use the gateway host unless an operation is explicitly marked as using the practice host. Read the API key from `ITERO_API_KEY` and never print it.
+Use the gateway host unless an operation is explicitly marked with a different host in the endpoint map. Read the API key from `ITERO_API_KEY` and never print it.
 
 ## Verified guidance
 
@@ -77,9 +77,44 @@ Include a block like this in `keyBehaviorsOpinions` for every scenario type exce
 - Difficulty is vagueness, not combat. Real held objections shrink over turns, stay polite through the no, and hide the real blocker until directly asked. Hostile personas do not match real calls.
 - One negative example beats three positive rules. When banning a behavior, quote the exact forbidden sentence.
 
+### Screen recording is an explicit opt-in
+
+`requiresScreenRecording` is a boolean on create, update, and the scenario GET — the Scenario Studio screen-recording toggle. When it is `true`, the rep's screen is captured during the practice session alongside the audio.
+
+Turn it on only when the user asks for it, and say so plainly in the confirmation preview: recording someone's screen is something they should be told about, not a field that changes silently. It is unset by default, and a verified tenant had it `false` on all 48 of its scenarios.
+
+Because updates are complete-object writes, carry the current value forward on every `PUT`. Omitting it on an update to a recorded scenario turns recording off.
+
 ### Treat updates as complete-object writes
 
 Fetch the current scenario before an update and carry forward fields that should remain unchanged. Review linked persona, call type, communication style, scorecard, dialogue-start setting, and persona override fields before sending the complete payload.
+
+<!-- fact:scenario-status-inverted -->
+### Scenario status is published at `0`, the reverse of scorecards
+
+`PATCH /practice-scenario/{id}/status` moves a scenario between published and draft. The target status is a query parameter, not a body: `PATCH /api/public/v1/practice-scenario/{id}/status?status=0`.
+
+The values run opposite to the scorecard template enum in the same API:
+
+| Resource | Draft | Published |
+|---|---|---|
+| Practice scenario | `1` | `0` |
+| Scorecard template | `0` | `1` |
+
+Sending the scorecard convention to a scenario does not fail — it quietly does the opposite of what was intended, hiding a live scenario or publishing an unfinished one. Name the intended state in words in the confirmation preview ("publish this scenario — `status=0`") so the user is confirming the outcome rather than the number.
+
+Two behaviors follow from the publish path: publishing (`status=0`) re-syncs the scenario's voice agents, and setting a scenario to the status it already holds returns it unchanged rather than erroring. `status` can also be set on create, so a scenario built through `POST` is published immediately unless it is created at `1`.
+
+<!-- fact:scenario-duplicate-draft -->
+### Duplicating copies the scenario but not its files
+
+`POST /practice-scenario/duplicate` takes `{"practiceScenarioId": <id>, "name": "<new name>"}` and returns the complete new scenario, including its new `id`. Both fields are required in practice even though the schema marks `name` nullable — supply an explicit name rather than relying on a generated one.
+
+The copy carries over persona fields, agents, internal systems, and activity histories. **Attached files are not copied**, so a scenario that depends on an uploaded document is incomplete after duplication; re-attach the files before publishing it.
+
+The duplicate is always created as a draft (`status: 1`) and placed last in the tenant's ordering, whatever the source scenario's status was. Duplicating a published scenario therefore does not publish the copy — that takes a separate status call.
+
+Prefer duplicate-then-edit over building a near-identical scenario from scratch: it preserves the internal-system records and persona overrides that are easy to get wrong by hand.
 
 <!-- fact:scenario-roundtrip-overrides -->
 ### Do not round-trip synthesized persona overrides
@@ -100,7 +135,9 @@ List responses can be very large. Follow the shared context-safety rule: project
 | `PUT` | `/api/public/v1/practice-scenario` | Gateway | `200` |
 | `GET` | `/api/public/v1/practice-scenario/call-types` | Gateway | `200` |
 | `GET` | `/api/public/v1/practice-scenario/communication-styles` | Gateway | `200` |
+| `POST` | `/api/public/v1/practice-scenario/duplicate` | Gateway | `200` |
 | `DELETE` | `/api/public/v1/practice-scenario/{id}` | Gateway | `200` |
+| `PATCH` | `/api/public/v1/practice-scenario/{id}/status` | Gateway | `200` |
 
 ## Operations
 
@@ -152,8 +189,10 @@ Status `200`:
 | `items[].practiceScenarioDescription` | `string` | No | Yes | — |
 | `items[].practiceScenarioName` | `string` | No | Yes | — |
 | `items[].practiceScenarioType` | `integer enum` | No | No | `0` (CommonScenario), `1` (ObjectionHandling), `2` (LiveCallSimulation), `3` (FocusScenario) |
+| `items[].requiresScreenRecording` | `boolean` | No | No | — |
 | `items[].scorecardTemplateId` | `integer (int32)` | No | Yes | — |
 | `items[].starterLine` | `string` | No | Yes | — |
+| `items[].status` | `integer enum` | No | No | `0` (Published), `1` (Draft) |
 | `items[].transcript` | `string` | No | Yes | — |
 
 #### Error responses
@@ -195,8 +234,10 @@ Status `200`:
 | `body: practiceScenarioDescription` | `string` | No | Yes | — |
 | `body: practiceScenarioName` | `string` | No | Yes | — |
 | `body: practiceScenarioType` | `integer enum` | No | No | `0` (CommonScenario), `1` (ObjectionHandling), `2` (LiveCallSimulation), `3` (FocusScenario) |
+| `body: requiresScreenRecording` | `boolean` | No | No | — |
 | `body: scorecardTemplateId` | `integer (int32)` | No | Yes | — |
 | `body: starterLine` | `string` | No | Yes | — |
+| `body: status` | `integer enum` | No | No | `0` (Published), `1` (Draft) |
 | `body: transcript` | `string` | No | Yes | — |
 
 Body media type: `application/json`.
@@ -211,6 +252,7 @@ curl --fail-with-body --silent --show-error \
   --header "X-API-Key: $ITERO_API_KEY" \
   --header "Content-Type: application/json" \
   --data '{
+  "status": 0,
   "activityHistories": [
     {
       "id": 123,
@@ -231,8 +273,7 @@ curl --fail-with-body --silent --show-error \
       ],
       "systemName": "Example"
     }
-  ],
-  "keyBehaviorsOpinions": "string"
+  ]
 }' \
   "https://iterogatewayapi.azurewebsites.net/api/public/v1/practice-scenario"
 ```
@@ -267,8 +308,10 @@ Status `200`:
 | `practiceScenarioDescription` | `string` | No | Yes | — |
 | `practiceScenarioName` | `string` | No | Yes | — |
 | `practiceScenarioType` | `integer enum` | No | No | `0` (CommonScenario), `1` (ObjectionHandling), `2` (LiveCallSimulation), `3` (FocusScenario) |
+| `requiresScreenRecording` | `boolean` | No | No | — |
 | `scorecardTemplateId` | `integer (int32)` | No | Yes | — |
 | `starterLine` | `string` | No | Yes | — |
+| `status` | `integer enum` | No | No | `0` (Published), `1` (Draft) |
 | `transcript` | `string` | No | Yes | — |
 
 #### Error responses
@@ -311,6 +354,7 @@ Status `200`:
 | `body: practiceScenarioDescription` | `string` | No | Yes | — |
 | `body: practiceScenarioName` | `string` | No | Yes | — |
 | `body: practiceScenarioType` | `integer enum` | No | No | `0` (CommonScenario), `1` (ObjectionHandling), `2` (LiveCallSimulation), `3` (FocusScenario) |
+| `body: requiresScreenRecording` | `boolean` | No | No | — |
 | `body: scorecardTemplateId` | `integer (int32)` | No | Yes | — |
 | `body: starterLine` | `string` | No | Yes | — |
 | `body: transcript` | `string` | No | Yes | — |
@@ -383,8 +427,10 @@ Status `200`:
 | `practiceScenarioDescription` | `string` | No | Yes | — |
 | `practiceScenarioName` | `string` | No | Yes | — |
 | `practiceScenarioType` | `integer enum` | No | No | `0` (CommonScenario), `1` (ObjectionHandling), `2` (LiveCallSimulation), `3` (FocusScenario) |
+| `requiresScreenRecording` | `boolean` | No | No | — |
 | `scorecardTemplateId` | `integer (int32)` | No | Yes | — |
 | `starterLine` | `string` | No | Yes | — |
+| `status` | `integer enum` | No | No | `0` (Published), `1` (Draft) |
 | `transcript` | `string` | No | Yes | — |
 
 #### Error responses
@@ -475,6 +521,80 @@ Status `200`:
 
 ---
 
+### `POST /api/public/v1/practice-scenario/duplicate`
+
+#### Request schema
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `body: name` | `string` | No | Yes | — |
+| `body: practiceScenarioId` | `integer (int32)` | No | No | — |
+
+Body media type: `application/json`.
+
+#### Example
+
+Show this exact payload to the user and wait for explicit confirmation before running the request.
+
+```bash
+curl --fail-with-body --silent --show-error \
+  --request POST \
+  --header "X-API-Key: $ITERO_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+  "name": "Example",
+  "practiceScenarioId": 123
+}' \
+  "https://iterogatewayapi.azurewebsites.net/api/public/v1/practice-scenario/duplicate"
+```
+
+#### Success response schema
+
+Status `200`:
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `activityHistories` | `array<PracticeScenarioActivityHistoryDto>` | No | Yes | — |
+| `activityHistories[].activity` | `string` | No | Yes | — |
+| `activityHistories[].date` | `string (date-time)` | No | No | — |
+| `activityHistories[].id` | `integer (int32)` | No | No | — |
+| `dialogueStartSetting` | `integer enum` | No | No | `0`, `1`, `2` |
+| `endCallFunctionExpression` | `string` | No | Yes | — |
+| `id` | `integer (int32)` | No | No | — |
+| `internalSystems` | `array<PracticeScenarioInternalSystemDto>` | No | Yes | — |
+| `internalSystems[].attributes` | `array<PracticeScenarionInternalSystemAttributeDto>` | No | Yes | — |
+| `internalSystems[].attributes[].attribute` | `string` | No | Yes | — |
+| `internalSystems[].attributes[].id` | `integer (int32)` | No | No | — |
+| `internalSystems[].attributes[].value` | `string` | No | Yes | — |
+| `internalSystems[].systemName` | `string` | No | Yes | — |
+| `keyBehaviorsOpinions` | `string` | No | Yes | — |
+| `omitFromScoring` | `boolean` | No | No | — |
+| `personaBotName` | `string` | No | Yes | — |
+| `personaCompany` | `string` | No | Yes | — |
+| `personaId` | `integer (int32)` | No | No | — |
+| `personaTitle` | `string` | No | Yes | — |
+| `practiceScenarioCallTypeId` | `integer (int32)` | No | Yes | — |
+| `practiceScenarioCommunicationStyleId` | `integer (int32)` | No | Yes | — |
+| `practiceScenarioDescription` | `string` | No | Yes | — |
+| `practiceScenarioName` | `string` | No | Yes | — |
+| `practiceScenarioType` | `integer enum` | No | No | `0` (CommonScenario), `1` (ObjectionHandling), `2` (LiveCallSimulation), `3` (FocusScenario) |
+| `requiresScreenRecording` | `boolean` | No | No | — |
+| `scorecardTemplateId` | `integer (int32)` | No | Yes | — |
+| `starterLine` | `string` | No | Yes | — |
+| `status` | `integer enum` | No | No | `0` (Published), `1` (Draft) |
+| `transcript` | `string` | No | Yes | — |
+
+#### Error responses
+
+| Status | Meaning |
+|---:|---|
+| `400` | The request failed validation. Check field names, types, and values. |
+| `401` | The API key is missing or invalid. |
+| `403` | The API key does not have permission for this operation. |
+| `500` | The service returned an internal error. |
+
+---
+
 ### `DELETE /api/public/v1/practice-scenario/{id}`
 
 #### Request schema
@@ -506,4 +626,72 @@ The response has no body.
 |---:|---|
 | `401` | The API key is missing or invalid. |
 | `403` | The API key does not have permission for this operation. |
+| `500` | The service returned an internal error. |
+
+---
+
+### `PATCH /api/public/v1/practice-scenario/{id}/status`
+
+#### Request schema
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `path: id` | `integer (int32)` | Yes | No | — |
+| `query: status` | `integer enum` | No | No | `0` (Published), `1` (Draft) |
+
+#### Example
+
+Show this exact payload to the user and wait for explicit confirmation before running the request.
+
+```bash
+curl --fail-with-body --silent --show-error \
+  --request PATCH \
+  --header "X-API-Key: $ITERO_API_KEY" \
+  "https://iterogatewayapi.azurewebsites.net/api/public/v1/practice-scenario/123/status?status=0"
+```
+
+#### Success response schema
+
+Status `200`:
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `activityHistories` | `array<PracticeScenarioActivityHistoryDto>` | No | Yes | — |
+| `activityHistories[].activity` | `string` | No | Yes | — |
+| `activityHistories[].date` | `string (date-time)` | No | No | — |
+| `activityHistories[].id` | `integer (int32)` | No | No | — |
+| `dialogueStartSetting` | `integer enum` | No | No | `0`, `1`, `2` |
+| `endCallFunctionExpression` | `string` | No | Yes | — |
+| `id` | `integer (int32)` | No | No | — |
+| `internalSystems` | `array<PracticeScenarioInternalSystemDto>` | No | Yes | — |
+| `internalSystems[].attributes` | `array<PracticeScenarionInternalSystemAttributeDto>` | No | Yes | — |
+| `internalSystems[].attributes[].attribute` | `string` | No | Yes | — |
+| `internalSystems[].attributes[].id` | `integer (int32)` | No | No | — |
+| `internalSystems[].attributes[].value` | `string` | No | Yes | — |
+| `internalSystems[].systemName` | `string` | No | Yes | — |
+| `keyBehaviorsOpinions` | `string` | No | Yes | — |
+| `omitFromScoring` | `boolean` | No | No | — |
+| `personaBotName` | `string` | No | Yes | — |
+| `personaCompany` | `string` | No | Yes | — |
+| `personaId` | `integer (int32)` | No | No | — |
+| `personaTitle` | `string` | No | Yes | — |
+| `practiceScenarioCallTypeId` | `integer (int32)` | No | Yes | — |
+| `practiceScenarioCommunicationStyleId` | `integer (int32)` | No | Yes | — |
+| `practiceScenarioDescription` | `string` | No | Yes | — |
+| `practiceScenarioName` | `string` | No | Yes | — |
+| `practiceScenarioType` | `integer enum` | No | No | `0` (CommonScenario), `1` (ObjectionHandling), `2` (LiveCallSimulation), `3` (FocusScenario) |
+| `requiresScreenRecording` | `boolean` | No | No | — |
+| `scorecardTemplateId` | `integer (int32)` | No | Yes | — |
+| `starterLine` | `string` | No | Yes | — |
+| `status` | `integer enum` | No | No | `0` (Published), `1` (Draft) |
+| `transcript` | `string` | No | Yes | — |
+
+#### Error responses
+
+| Status | Meaning |
+|---:|---|
+| `400` | The request failed validation. Check field names, types, and values. |
+| `401` | The API key is missing or invalid. |
+| `403` | The API key does not have permission for this operation. |
+| `404` | The requested resource was not found. |
 | `500` | The service returned an internal error. |

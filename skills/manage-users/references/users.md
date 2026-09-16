@@ -4,7 +4,7 @@
 
 This reference is generated from the committed OpenAPI 3.0.1 snapshots. Schema tables use only `paths` and `components.schemas`; curated behavior comes from the marked notes blocks below.
 
-Use the gateway host unless an operation is explicitly marked as using the practice host. Read the API key from `ITERO_API_KEY` and never print it.
+Use the gateway host unless an operation is explicitly marked with a different host in the endpoint map. Read the API key from `ITERO_API_KEY` and never print it.
 
 ## Verified guidance
 
@@ -34,6 +34,25 @@ Apply the same rule to every list operation: filter on the server when possible,
 
 <!-- gotchas -->
 ## User gotchas
+
+<!-- fact:user-role-enum -->
+### The role field accepts exactly four values
+
+`role` is typed as a bare nullable `string` everywhere it appears — request schemas, response DTOs, and the `role` query filter — and the specification enumerates nothing. The API accepts exactly these four values, spelled and capitalized this way:
+
+| Value | Who it is |
+|---|---|
+| `Owner` | Full administrative access. This is what the old `Manager` role was renamed to. |
+| `Coach` | Added in the September 2026 release. |
+| `Manager` | Now a narrower front-line role, not the former administrative one. |
+| `Representative` | The practising rep. |
+
+Two consequences follow, and both have already caused real bugs:
+
+- **Never assume the old two-value `{Manager, Representative}` set.** Code that filters or switches on those two silently drops every `Owner` and every `Coach`. One tool lost 212 users across 9 tenants this way before anyone noticed, because the users simply did not appear rather than erroring.
+- **`Manager` no longer means administrator.** Creating an administrator means sending `Owner`. Code carrying the old meaning refuses to create one, or creates a front-line user while reporting success.
+
+Because the field is an open string, a misspelled or retired role does not necessarily fail loudly. Verify the role on the returned record after a write instead of trusting the request. To see which roles a tenant actually uses, project the field from `GET /api/public/v1/user` rather than assuming. (Field-verified 2026-09-16: a live tenant returned all four values across 40 users.)
 
 <!-- fact:user-write-owner-role -->
 ### User writes can require the Owner role

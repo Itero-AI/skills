@@ -1,4 +1,4 @@
-*Last Edited: 2026-08-27 12:00*
+*Last Edited: 2026-09-16 16:08*
 
 # Practice Scenario Notes
 
@@ -47,9 +47,44 @@ Include a block like this in `keyBehaviorsOpinions` for every scenario type exce
 - Difficulty is vagueness, not combat. Real held objections shrink over turns, stay polite through the no, and hide the real blocker until directly asked. Hostile personas do not match real calls.
 - One negative example beats three positive rules. When banning a behavior, quote the exact forbidden sentence.
 
+### Screen recording is an explicit opt-in
+
+`requiresScreenRecording` is a boolean on create, update, and the scenario GET — the Scenario Studio screen-recording toggle. When it is `true`, the rep's screen is captured during the practice session alongside the audio.
+
+Turn it on only when the user asks for it, and say so plainly in the confirmation preview: recording someone's screen is something they should be told about, not a field that changes silently. It is unset by default, and a verified tenant had it `false` on all 48 of its scenarios.
+
+Because updates are complete-object writes, carry the current value forward on every `PUT`. Omitting it on an update to a recorded scenario turns recording off.
+
 ### Treat updates as complete-object writes
 
 Fetch the current scenario before an update and carry forward fields that should remain unchanged. Review linked persona, call type, communication style, scorecard, dialogue-start setting, and persona override fields before sending the complete payload.
+
+<!-- fact:scenario-status-inverted -->
+### Scenario status is published at `0`, the reverse of scorecards
+
+`PATCH /practice-scenario/{id}/status` moves a scenario between published and draft. The target status is a query parameter, not a body: `PATCH /api/public/v1/practice-scenario/{id}/status?status=0`.
+
+The values run opposite to the scorecard template enum in the same API:
+
+| Resource | Draft | Published |
+|---|---|---|
+| Practice scenario | `1` | `0` |
+| Scorecard template | `0` | `1` |
+
+Sending the scorecard convention to a scenario does not fail — it quietly does the opposite of what was intended, hiding a live scenario or publishing an unfinished one. Name the intended state in words in the confirmation preview ("publish this scenario — `status=0`") so the user is confirming the outcome rather than the number.
+
+Two behaviors follow from the publish path: publishing (`status=0`) re-syncs the scenario's voice agents, and setting a scenario to the status it already holds returns it unchanged rather than erroring. `status` can also be set on create, so a scenario built through `POST` is published immediately unless it is created at `1`.
+
+<!-- fact:scenario-duplicate-draft -->
+### Duplicating copies the scenario but not its files
+
+`POST /practice-scenario/duplicate` takes `{"practiceScenarioId": <id>, "name": "<new name>"}` and returns the complete new scenario, including its new `id`. Both fields are required in practice even though the schema marks `name` nullable — supply an explicit name rather than relying on a generated one.
+
+The copy carries over persona fields, agents, internal systems, and activity histories. **Attached files are not copied**, so a scenario that depends on an uploaded document is incomplete after duplication; re-attach the files before publishing it.
+
+The duplicate is always created as a draft (`status: 1`) and placed last in the tenant's ordering, whatever the source scenario's status was. Duplicating a published scenario therefore does not publish the copy — that takes a separate status call.
+
+Prefer duplicate-then-edit over building a near-identical scenario from scratch: it preserves the internal-system records and persona overrides that are easy to get wrong by hand.
 
 <!-- fact:scenario-roundtrip-overrides -->
 ### Do not round-trip synthesized persona overrides

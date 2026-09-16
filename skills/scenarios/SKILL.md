@@ -1,11 +1,11 @@
 ---
 name: scenarios
-description: Manage Itero practice scenarios through the public API. Use when someone asks to list, create, update, connect a scorecard to, or delete a practice scenario, or needs call types or communication styles. Triggers include "create a scenario," "build a roleplay," "make an objection-handling drill," "attach this scorecard," "update the scenario," "delete the scenario," and "list communication styles."
+description: Manage Itero practice scenarios through the public API. Use when someone asks to list, create, update, duplicate, publish, unpublish, connect a scorecard to, or delete a practice scenario, turn screen recording on or off, or needs call types or communication styles. Triggers include "create a scenario," "build a roleplay," "make an objection-handling drill," "copy this scenario," "publish the scenario," "put it back to draft," "attach this scorecard," "update the scenario," "delete the scenario," and "list communication styles."
 user-invocable: true
 license: MIT
 metadata:
   author: itero
-  version: "2.1.0"
+  version: "2.2.0"
   homepage: https://iteroapp.ai
   source: https://github.com/Itero-AI/skills
 inputs:
@@ -42,6 +42,8 @@ curl --fail-with-body --silent --show-error \
 | List communication styles | `GET /api/public/v1/practice-scenario/communication-styles` | Use the returned IDs in payloads. |
 | Create a scenario | `POST /api/public/v1/practice-scenario` | Resolve persona and related IDs first. |
 | Update or attach a scorecard | `PUT /api/public/v1/practice-scenario` | Start from the complete current record. |
+| Copy an existing scenario | `POST /api/public/v1/practice-scenario/duplicate` | Faster and safer than rebuilding by hand. The copy is a draft. |
+| Publish or unpublish | `PATCH /api/public/v1/practice-scenario/{id}/status` | `status=0` publishes, `status=1` returns it to draft. |
 | Delete a scenario | `DELETE /api/public/v1/practice-scenario/{id}` | Confirm the name and ID. |
 
 ## Workflow
@@ -52,6 +54,8 @@ curl --fail-with-body --silent --show-error \
 4. Write `keyBehaviorsOpinions` from the simulated person's point of view, following the authoring rules in [the generated reference](references/scenarios.md): conversation-discipline template, fact-block design, and behavior-rule design.
 5. Fetch the complete object for an update and change only what the user requested — but never trust the fetched persona overrides: GET can return synthesized `personaBotName`, `personaCompany`, and `personaTitle` values that were never stored. Set `personaBotName` to the intended value and null `personaCompany`/`personaTitle` unless a B2B override is genuinely wanted.
 6. Show the exact request — including those three override fields — and wait for confirmation before sending it.
+7. When building a variant of something that already works, duplicate it and edit the copy instead of writing a new scenario from scratch. Re-attach any files, which duplication does not copy.
+8. Publish deliberately. State the outcome in words when confirming a status change, because `0` means published and `1` means draft — the reverse of scorecards.
 
 ## Common Mistakes
 
@@ -65,6 +69,10 @@ curl --fail-with-body --silent --show-error \
 | Numeric dates or ungrouped digit strings in facts | Write dates in words and long numbers in comma-separated spoken groups. |
 | Judgment-based break conditions ("a genuine reason") | Use generous triggers: "when they make a reasonable attempt, let it go." |
 | Round-tripping fetched persona overrides in a PUT | GET can synthesize `personaBotName`/`personaCompany`/`personaTitle`; set them deliberately, nulling company/title unless intended. |
+| Assuming `status: 1` publishes a scenario | Scenario status is inverted: `0` is published, `1` is draft. |
+| Expecting a duplicate to be live | Duplicates are always drafts, and their attached files are not copied. |
+| Flipping `requiresScreenRecording` silently | Recording someone's screen is an explicit choice; name it in the confirmation. |
+| Dropping `requiresScreenRecording` from a `PUT` | Carry it forward, or the update turns recording off. |
 | Guessing related IDs or enum values | Read the list endpoints and generated schema first. |
 | Sending a partial `PUT` | Carry forward all fields that should remain unchanged. |
 

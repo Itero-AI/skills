@@ -5,7 +5,7 @@ user-invocable: true
 license: MIT
 metadata:
   author: itero
-  version: "2.0.0"
+  version: "2.2.0"
   homepage: https://iteroapp.ai
   source: https://github.com/Itero-AI/skills
 inputs:
@@ -52,7 +52,7 @@ Add `--tenant NAME` to use `ITERO_API_KEY_<NAME>`. Never print the resolved key.
 - Accept only `.csv`; ask the user to export a spreadsheet as CSV when needed.
 - Reject files over 1 MB.
 - Run `inspect`; never modify the original CSV.
-- Resolve missing columns or values, malformed email addresses, unsupported roles, invalid active flags, and values over 100 characters in the generated plan.
+- Resolve missing columns or values, malformed email addresses, unsupported roles, invalid active flags, and values over 100 characters in the generated plan. The four valid roles are `Owner`, `Coach`, `Manager`, and `Representative`; `Owner` is the administrative one.
 
 ### 2. Review user groups
 
