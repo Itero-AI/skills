@@ -956,31 +956,16 @@ def response_rows(
             raise ReferenceBuildError(
                 f"response {status} must be an object for {operation.method.upper()} {operation.path}"
             )
-        if (
-            operation.method == "get"
-            and operation.path == "/api/public/v1/persona/voices"
-            and str(status).startswith("2")
-        ):
-            # fact:persona-voiceid overrides the incorrect PublicPersonaDto
-            # response reference in the snapshot. The verified fact establishes
-            # field names, but not types or nullability, so those remain unknown.
-            rows = [
-                SchemaRow(field, "value", None, None, "—")
-                for field in (
-                    "items[].voiceId",
-                    "items[].elevenLabsVoiceId",
-                    "items[].voiceName",
-                    "items[].gender",
-                    "items[].age",
-                )
-            ]
-        else:
-            schema = response_content(response)
-            rows = (
-                flatten_schema(operation.document, schema, enum_tables)
-                if schema is not None
-                else []
-            )
+        # The voices response used to reference PublicPersonaDto by mistake, which
+        # a hand-written override worked around. The snapshot now references
+        # PublicVoiceDto correctly, so the schema is the better source — and the
+        # override hid `voices`, the very field callers are told to write.
+        schema = response_content(response)
+        rows = (
+            flatten_schema(operation.document, schema, enum_tables)
+            if schema is not None
+            else []
+        )
         rendered.append((str(status), rows))
     return rendered
 
@@ -1114,8 +1099,17 @@ def sample_request_body(operation: Operation, schema: Mapping[str, Any]) -> Any:
         and operation.method in {"post", "put"}
         and isinstance(sample, dict)
     ):
-        # Keep the worked payload aligned with fact:persona-voiceid too.
+        # fact:persona-voices-array: `voices` is required on a persona write but
+        # the schema does not mark it required, so the structural sampler drops it
+        # and the example would be rejected. The deprecated scalars go the other
+        # way — valid in the schema, but no longer what a caller should send.
         sample.pop("elevenLabsVoiceId", None)
+        sample.pop("voiceId", None)
+        properties = resolve_schema(operation.document, schema).get("properties", {})
+        if "voices" in properties:
+            sample["voices"] = sample_value(
+                operation.document, properties["voices"], field_name="voices"
+            )
     return sample
 
 

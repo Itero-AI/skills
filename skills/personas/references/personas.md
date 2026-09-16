@@ -51,7 +51,7 @@ Providers are `0` Retell, `1` ElevenLabs, and `2` Itero. Resolve real IDs from `
 
 Before the `voices` array existed, a persona's voice was the scalar `voiceId`, and the verified tenant used it on 19 of its 20 live personas. That remains what older personas carry, so expect to read it — but write through `voices` instead, as described above. `elevenLabsVoiceId` was never a write field; it is a returned compatibility value.
 
-On 2026-08-12, `GET /api/public/v1/persona/voices` returned 170 voices. Each voice item used these fields: `voiceId`, `elevenLabsVoiceId`, `voiceName`, `gender`, and `age`.
+On 2026-08-12, `GET /api/public/v1/persona/voices` returned 170 voices, each carrying `voiceId`, `elevenLabsVoiceId`, `voiceName`, `gender`, and `age`. Voice items now also carry a `voices` array of their own, so a catalogue entry describes the same providers the persona write accepts. The snapshot used to reference the wrong response type here, which is why older guidance listed only the five scalars.
 
 <!-- fact:persona-delete-side-effects -->
 ### Deleting a persona affects more than the persona
@@ -179,7 +179,13 @@ curl --fail-with-body --silent --show-error \
   "title": "Example",
   "email": "rep@example.com",
   "botName": "Example",
-  "companyName": "Example"
+  "companyName": "Example",
+  "voices": [
+    {
+      "provider": 0,
+      "voiceId": "string"
+    }
+  ]
 }' \
   "https://iterogatewayapi.azurewebsites.net/api/public/v1/persona"
 ```
@@ -261,7 +267,13 @@ curl --fail-with-body --silent --show-error \
   "name": "Example",
   "title": "Example",
   "email": "rep@example.com",
-  "botName": "Example"
+  "botName": "Example",
+  "voices": [
+    {
+      "provider": 0,
+      "voiceId": "string"
+    }
+  ]
 }' \
   "https://iterogatewayapi.azurewebsites.net/api/public/v1/persona"
 ```
@@ -328,11 +340,14 @@ Verified-fact override: the snapshot incorrectly points this response to the per
 
 | Field | Type | Required | Nullable | Allowed values |
 |---|---|:---:|:---:|---|
-| `items[].voiceId` | `value` | Unknown | Unknown | — |
-| `items[].elevenLabsVoiceId` | `value` | Unknown | Unknown | — |
-| `items[].voiceName` | `value` | Unknown | Unknown | — |
-| `items[].gender` | `value` | Unknown | Unknown | — |
-| `items[].age` | `value` | Unknown | Unknown | — |
+| `items[].age` | `string` | No | Yes | — |
+| `items[].elevenLabsVoiceId` | `string` | No | Yes | — |
+| `items[].gender` | `string` | No | Yes | — |
+| `items[].voiceId` | `string` | No | Yes | — |
+| `items[].voiceName` | `string` | No | Yes | — |
+| `items[].voices` | `array<PublicPersonaVoiceDto>` | No | Yes | — |
+| `items[].voices[].provider` | `integer enum` | No | No | `0` (Retell), `1` (ElevenLabs), `2` (Itero) |
+| `items[].voices[].voiceId` | `string` | No | Yes | — |
 
 #### Error responses
 

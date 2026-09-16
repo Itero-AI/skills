@@ -69,7 +69,9 @@ Never treat the array length as a month count, and never key records by `periodS
 
 Pick the endpoint by the question. "How much is left this month?" is `current-usage` — live consumption against the open period's allowance. "What were we billed?" is `get-usage-history` — closed periods that have been invoiced. The two never cover the same period: history excludes the month still in progress, so `monthsBack: 1` returns last month, not this one.
 
-Both endpoints return one row per contract, and a tenant normally holds several contracts at once — one per metered product. Report the product from `productType` rather than collapsing the rows into a single number, because the plans differ: a `Prepaid` contract counts `remainingUnits` down from `includedUnits`, while a `PayAsYouGo` contract always reports `remainingUnits: 0` and bills every unit at `overageRate`. `includedUnits` is `null` when the plan is unlimited or pay-as-you-go.
+The two endpoints do not share a shape. `current-usage` returns a flat array with **one row per contract**. `get-usage-history` returns **one row per invoice**, each carrying its own `periodStart`, `totalCost`, and `invoiceStatus`, with the per-contract figures nested underneath in `contracts[]` — so `productType` and `planType` live one level down there, not on the top-level row.
+
+A tenant normally holds several contracts at once, one per metered product. Report the product from `productType` rather than collapsing the rows into a single number, because the plans differ: a `Prepaid` contract counts `remainingUnits` down from `includedUnits`, while a `PayAsYouGo` contract always reports `remainingUnits: 0` and bills every unit at `overageRate`. `includedUnits` is `null` when the plan is unlimited or pay-as-you-go.
 
 `monthsBack` accepts 1 through 60. Sending `0` fails validation with `400 GreaterThanValidator`. Omit the field, or send `{}`, for every available period — a verified tenant returned 30 records reaching back to March 2024, so bound the request when the user asked about a specific window.
 

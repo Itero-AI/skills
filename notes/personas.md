@@ -1,4 +1,4 @@
-*Last Edited: 2026-09-16 16:08*
+*Last Edited: 2026-09-16 16:16*
 
 # Persona Notes
 
@@ -21,7 +21,7 @@ Providers are `0` Retell, `1` ElevenLabs, and `2` Itero. Resolve real IDs from `
 
 Before the `voices` array existed, a persona's voice was the scalar `voiceId`, and the verified tenant used it on 19 of its 20 live personas. That remains what older personas carry, so expect to read it — but write through `voices` instead, as described above. `elevenLabsVoiceId` was never a write field; it is a returned compatibility value.
 
-On 2026-08-12, `GET /api/public/v1/persona/voices` returned 170 voices. Each voice item used these fields: `voiceId`, `elevenLabsVoiceId`, `voiceName`, `gender`, and `age`.
+On 2026-08-12, `GET /api/public/v1/persona/voices` returned 170 voices, each carrying `voiceId`, `elevenLabsVoiceId`, `voiceName`, `gender`, and `age`. Voice items now also carry a `voices` array of their own, so a catalogue entry describes the same providers the persona write accepts. The snapshot used to reference the wrong response type here, which is why older guidance listed only the five scalars.
 
 <!-- fact:persona-delete-side-effects -->
 ### Deleting a persona affects more than the persona

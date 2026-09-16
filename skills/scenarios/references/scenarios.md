@@ -103,7 +103,11 @@ The values run opposite to the scorecard template enum in the same API:
 
 Sending the scorecard convention to a scenario does not fail — it quietly does the opposite of what was intended, hiding a live scenario or publishing an unfinished one. Name the intended state in words in the confirmation preview ("publish this scenario — `status=0`") so the user is confirming the outcome rather than the number.
 
-Two behaviors follow from the publish path: publishing (`status=0`) re-syncs the scenario's voice agents, and setting a scenario to the status it already holds returns it unchanged rather than erroring. `status` can also be set on create, so a scenario built through `POST` is published immediately unless it is created at `1`.
+Two behaviors follow from the publish path: publishing (`status=0`) re-syncs the scenario's voice agents, and setting a scenario to the status it already holds returns it unchanged rather than erroring.
+
+`status` belongs to create, not update. **A `POST` that omits it creates a draft** — the default is `1`. Publishing at create time takes an explicit `status: 0`, and that is the stricter path: at `0` every field is validated and voice agents are provisioned, while at `1` only `practiceScenarioName` is required and no agents are created. Build in draft and publish as a separate step when a scenario is being assembled over several calls.
+
+`PUT` has no `status` field at all and never changes the publish state, so an update cannot publish a scenario and cannot accidentally unpublish one. Use the `PATCH` route for that. Two related update-only rules: `practiceScenarioCallTypeId` and `practiceScenarioCommunicationStyleId` are nullable on update, where `0` is treated as not set and stored as `null`; and `keyBehaviorsOpinions` is required on publish only for scenarios not based on a default template — template-based scenarios keep it `null` and update as the GET returns them.
 
 <!-- fact:scenario-duplicate-draft -->
 ### Duplicating copies the scenario but not its files
