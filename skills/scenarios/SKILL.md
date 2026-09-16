@@ -41,7 +41,7 @@ curl --fail-with-body --silent --show-error \
 | List call types | `GET /api/public/v1/practice-scenario/call-types` | Use the returned IDs rather than guessing. |
 | List communication styles | `GET /api/public/v1/practice-scenario/communication-styles` | Use the returned IDs in payloads. |
 | Create a scenario | `POST /api/public/v1/practice-scenario` | Resolve persona and related IDs first. |
-| Update or attach a scorecard | `PUT /api/public/v1/practice-scenario` | Start from the complete current record. |
+| Update or attach a scorecard | `PUT /api/public/v1/practice-scenario` | Start from the complete current record. The scenario must be a draft. |
 | Copy an existing scenario | `POST /api/public/v1/practice-scenario/duplicate` | Faster and safer than rebuilding by hand. The copy is a draft. |
 | Publish or unpublish | `PATCH /api/public/v1/practice-scenario/{id}/status` | `status=0` publishes, `status=1` returns it to draft. |
 | Delete a scenario | `DELETE /api/public/v1/practice-scenario/{id}` | Confirm the name and ID. |
@@ -52,10 +52,11 @@ curl --fail-with-body --silent --show-error \
 2. Resolve the persona, call type, communication style, and scorecard IDs before drafting.
 3. Read the exact operation in [the generated reference](references/scenarios.md).
 4. Write `keyBehaviorsOpinions` from the simulated person's point of view, following the authoring rules in [the generated reference](references/scenarios.md): conversation-discipline template, fact-block design, and behavior-rule design.
-5. Fetch the complete object for an update and change only what the user requested — but never trust the fetched persona overrides: GET can return synthesized `personaBotName`, `personaCompany`, and `personaTitle` values that were never stored. Set `personaBotName` to the intended value and null `personaCompany`/`personaTitle` unless a B2B override is genuinely wanted.
-6. Show the exact request — including those three override fields — and wait for confirmation before sending it.
-7. When building a variant of something that already works, duplicate it and edit the copy instead of writing a new scenario from scratch. Re-attach any files, which duplication does not copy.
-8. Publish deliberately. State the outcome in words when confirming a status change, because `0` means published and `1` means draft — the reverse of scorecards.
+5. Check the scenario's status before updating. A published scenario must be moved to draft first (`?status=1`), updated, then republished (`?status=0`) — three calls, and it is out of practice in between, so confirm that before starting.
+6. Fetch the complete object for an update and change only what the user requested — but never trust the fetched persona overrides: GET can return synthesized `personaBotName`, `personaCompany`, and `personaTitle` values that were never stored. Set `personaBotName` to the intended value and null `personaCompany`/`personaTitle` unless a B2B override is genuinely wanted.
+7. Show the exact request — including those three override fields — and wait for confirmation before sending it.
+8. When building a variant of something that already works, duplicate it and edit the copy instead of writing a new scenario from scratch. Re-attach any files, which duplication does not copy.
+9. Publish deliberately. State the outcome in words when confirming a status change, because `0` means published and `1` means draft — the reverse of scorecards. An update never republishes on its own; the scenario stays in draft until you publish it.
 
 ## Common Mistakes
 
@@ -69,6 +70,8 @@ curl --fail-with-body --silent --show-error \
 | Numeric dates or ungrouped digit strings in facts | Write dates in words and long numbers in comma-separated spoken groups. |
 | Judgment-based break conditions ("a genuine reason") | Use generous triggers: "when they make a reasonable attempt, let it go." |
 | Round-tripping fetched persona overrides in a PUT | GET can synthesize `personaBotName`/`personaCompany`/`personaTitle`; set them deliberately, nulling company/title unless intended. |
+| `PUT`-ing a published scenario | Only drafts can be updated. Unpublish, update, republish — and say that it goes dark in between. |
+| Leaving a scenario in draft after a failed update | It was live before you started. Republish it rather than stranding it. |
 | Assuming `status: 1` publishes a scenario | Scenario status is inverted: `0` is published, `1` is draft. |
 | Expecting a duplicate to be live | Duplicates are always drafts, and their attached files are not copied. |
 | Flipping `requiresScreenRecording` silently | Recording someone's screen is an explicit choice; name it in the confirmation. |
@@ -80,6 +83,7 @@ curl --fail-with-body --silent --show-error \
 
 | Response | What to do |
 |---|---|
+| `400` on an update | Most likely the scenario is published — only drafts can be updated. Check its status before rereading the payload. |
 | `400` | Check required fields, enum values, and referenced persona or scorecard IDs. |
 | `401` | Confirm the key is available and valid without printing it. |
 | `403` | Explain that the key lacks permission; do not retry unchanged. |

@@ -54,7 +54,7 @@ Both usage operations require a key belonging to a user with the `Owner` role. T
 
 Do not read `[]` as "this tenant has no contract" or "this tenant has no usage" — it means neither. A verified tenant returned `[]` from `get-usage-history` while `GET /usage/current-usage` returned an active contract (`isActive: true`) with 150.28 units already consumed in the open period. The tenant was on contract and actively consuming; it simply had no closed period that had been invoiced yet.
 
-When history is empty, say that no invoiced periods exist yet and answer the usage question from `current-usage` instead. (Field-verified across two tenants 2026-09-16.)
+Scope the wording to what was actually asked. `monthsBack` filters the result, so `[]` from a bounded request only means *no invoiced periods in that window* — the tenant may well have older invoices. Say "nothing invoiced in the last N months" there, and reserve "no invoiced periods yet" for an unfiltered request that also came back empty. Either way, answer the usage question from `current-usage`. (Field-verified across two tenants 2026-09-16.)
 
 <!-- fact:usage-history-per-invoice -->
 ### History rows are per invoice, not per month

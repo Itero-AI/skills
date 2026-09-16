@@ -191,6 +191,13 @@
       "outputs": [
         "skills/personas/references/personas.md"
       ]
+    },
+    {
+      "id": "fact:scenario-update-requires-draft",
+      "notes": "notes/scenarios.md",
+      "outputs": [
+        "skills/scenarios/references/scenarios.md"
+      ]
     }
   ]
 }

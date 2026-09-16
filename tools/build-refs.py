@@ -59,6 +59,7 @@ EXPECTED_FACT_IDS = {
     "fact:usage-history-empty",
     "fact:usage-history-per-invoice",
     "fact:persona-voices-array",
+    "fact:scenario-update-requires-draft",
 }
 
 

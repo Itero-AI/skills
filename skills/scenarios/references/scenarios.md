@@ -85,9 +85,28 @@ Turn it on only when the user asks for it, and say so plainly in the confirmatio
 
 Because updates are complete-object writes, carry the current value forward on every `PUT`. Omitting it on an update to a recorded scenario turns recording off.
 
+<!-- fact:scenario-update-requires-draft -->
+### Only draft scenarios can be updated
+
+`PUT /practice-scenario` rejects a published scenario with `400`. This is new in the September 2026 release — the previous specification carried no such restriction, so a fetch-modify-PUT that worked before now fails on any live scenario.
+
+Updating a published scenario takes three calls:
+
+1. `PATCH /api/public/v1/practice-scenario/{id}/status?status=1` — move it to draft.
+2. `PUT /api/public/v1/practice-scenario` — send the complete updated object.
+3. `PATCH /api/public/v1/practice-scenario/{id}/status?status=0` — publish it again.
+
+**Step 1 takes the scenario out of practice**, so reps cannot run it until step 3 completes. Say that in the confirmation before starting, and treat the three calls as one operation: if the update fails, republish rather than leaving a previously live scenario stranded in draft.
+
+The scenario stays in draft after a successful update — the update never republishes on its own. Publish-readiness is validated at the status endpoint, not at the update, so a payload the update accepted can still be rejected when publishing.
+
+A `400` on an update is therefore as likely to mean "this scenario is published" as it is to mean a bad field. Check the current status before rereading the payload.
+
 ### Treat updates as complete-object writes
 
 Fetch the current scenario before an update and carry forward fields that should remain unchanged. Review linked persona, call type, communication style, scorecard, dialogue-start setting, and persona override fields before sending the complete payload.
+
+Three fields default rather than erroring when omitted on a write: `practiceScenarioType` defaults to `0` (CommonScenario), `omitFromScoring` to `false`, and `dialogueStartSetting` to `0` (ProspectDynamic). Set them explicitly instead of relying on those defaults. The update is applied on top of the stored scenario, so fields outside the public contract — the default-template linkage, for instance — are preserved rather than cleared.
 
 <!-- fact:scenario-status-inverted -->
 ### Scenario status is published at `0`, the reverse of scorecards

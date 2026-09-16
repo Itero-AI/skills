@@ -60,7 +60,7 @@ curl --fail-with-body --silent --show-error \
 | `planType: 1` (PayAsYouGo) | `remainingUnits` is always `0`. That is not "exhausted" — every unit simply bills at `overageRate`. |
 | `includedUnits: null` | The plan is unlimited or pay-as-you-go. Do not render it as zero included units. |
 | `isActive: false` | The contract's period may have just rolled over and not yet renewed. Not necessarily cancelled. |
-| `[]` from history | No invoiced periods yet. Not an error, and not "no usage" — check current usage instead. |
+| `[]` from history | No invoiced periods **in the requested window**. Not an error, and not "no usage" — check current usage instead. |
 
 ## Common Mistakes
 
@@ -68,6 +68,7 @@ curl --fail-with-body --silent --show-error \
 |---|---|
 | Sending usage requests to the gateway | Use `https://iterotenantapi.azurewebsites.net` for these two operations only. |
 | Reading `[]` as "no contract" or "no usage" | It means no invoiced periods; answer from `current-usage`. |
+| Saying "never invoiced" after a bounded request | `monthsBack` filters; `[]` there covers only that window. |
 | Counting history rows as months | Rows are per invoice; one month can appear twice. Group by `periodStart`. |
 | Reporting `remainingUnits: 0` as "out of credit" | On pay-as-you-go that is the normal steady state. |
 | Reporting raw enum integers | Translate `productType`, `planType`, and `invoiceStatus` into names. |
