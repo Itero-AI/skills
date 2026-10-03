@@ -5,7 +5,7 @@ user-invocable: true
 license: MIT
 metadata:
   author: itero
-  version: "2.2.0"
+  version: "2.3.0"
   homepage: https://iteroapp.ai
   source: https://github.com/Itero-AI/skills
 inputs:
@@ -16,7 +16,7 @@ references:
   - references/users.md
 ---
 
-> **Mandatory API confirmation:** Before every `POST`, `PUT`, `PATCH`, or `DELETE`, show the exact method, URL, and complete payload (`no body` when applicable), then wait for explicit confirmation. For a delete, also show the user's name, email, and stable ID and require the user to confirm that target. Creating a user can send an invitation email, so include that effect in the confirmation.
+> **Mandatory API confirmation:** Before every `POST`, `PUT`, `PATCH`, or `DELETE`, show the exact method, URL, and complete payload (`no body` when applicable), then wait for explicit confirmation. For a delete, also show the user's name, email, and stable ID and require the user to confirm that target. State that deletion is permanent and cannot be undone, and offer the reversible alternative: PUT the complete record with `isActive: false`. Creating a user can send an invitation email, so include that effect in the confirmation.
 
 # Manage Users
 
@@ -42,8 +42,8 @@ curl --fail-with-body --silent --show-error \
 | List or filter users | `GET /api/public/v1/user` | Use `role` and `isActive`, then project fields. Roles are `Owner`, `Coach`, `Manager`, `Representative`. |
 | List groups | `GET /api/public/v1/get-user-groups` | Copy exact group names. |
 | Create a user | `POST /api/public/v1/user` | Check the email and explain the invitation first. |
-| Update, deactivate, or reactivate | `PUT /api/public/v1/user` | Start from the complete current record. |
-| Delete a user | `DELETE /api/public/v1/user/{id}` | Prefer reversible deactivation unless deletion is explicit. |
+| Update, deactivate, or reactivate | `PUT /api/public/v1/user` | Start from the complete current record and send tenantUserId as id. Deactivation preserves the record, role and groups; reactivation consumes a seat and can fail with NotEnoughSeats. |
+| Delete a user | `DELETE /api/public/v1/user/{id}` | Send tenantUserId as {id}. Deletion is permanent and frees an active Representative or Manager seat immediately; offer reversible deactivation. |
 
 ## Workflow
 
@@ -59,7 +59,7 @@ curl --fail-with-body --silent --show-error \
 | Mistake | Correct approach |
 |---|---|
 | Using a duplicate list route | Use only `GET /api/public/v1/user`. |
-| Treating `id` and `tenantUserId` as interchangeable | Follow the identifier required by the specific operation. |
+| Sending the global id to PUT or DELETE | Send tenantUserId as PUT id or DELETE {id}; these are spec-documented, not live-tested. |
 | Sending a partial update | Carry forward fields that must not change. |
 | Silently creating a user | Explain that successful creation sends an invitation email. |
 | Deleting when deactivation meets the goal | Prefer the reversible update unless deletion is explicit. |

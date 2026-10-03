@@ -198,6 +198,49 @@
       "outputs": [
         "skills/scenarios/references/scenarios.md"
       ]
+    },
+    {
+      "id": "fact:usage-practice-per-day-unordered",
+      "notes": "notes/usage.md",
+      "outputs": [
+        "skills/usage/references/usage.md"
+      ]
+    },
+    {
+      "id": "fact:usage-evaluation-per-day-sentinel",
+      "notes": "notes/usage.md",
+      "outputs": [
+        "skills/usage/references/usage.md"
+      ]
+    },
+    {
+      "id": "fact:usage-duration-timespan-string",
+      "notes": "notes/usage.md",
+      "outputs": [
+        "skills/usage/references/usage.md"
+      ]
+    },
+    {
+      "id": "fact:scorecard-v2-create",
+      "notes": "notes/scorecards.md",
+      "outputs": [
+        "skills/scorecards/references/scorecards.md"
+      ]
+    },
+    {
+      "id": "fact:scorecard-agent-selection",
+      "notes": "notes/scorecards.md",
+      "outputs": [
+        "skills/scorecards/references/scorecards.md"
+      ]
+    },
+    {
+      "id": "fact:user-delete-permanent",
+      "notes": "notes/users.md",
+      "outputs": [
+        "skills/manage-users/references/users.md",
+        "skills/upload-users/references/upload-users.md"
+      ]
     }
   ]
 }

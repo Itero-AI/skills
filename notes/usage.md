@@ -1,4 +1,4 @@
-*Last Edited: 2026-09-16 16:19*
+*Last Edited: 2026-10-02 20:00*
 
 # Usage and Billing Notes
 
@@ -6,16 +6,14 @@
 ## Usage gotchas
 
 <!-- fact:usage-host-exception -->
-### Call usage on the tenant host, not the gateway
+### Choose the host for the operation
 
-The usage endpoints are the second verified exception to the gateway rule. They are not published in the gateway's aggregated specification and the gateway does not proxy them: `GET https://iterogatewayapi.azurewebsites.net/api/public/v1/usage/current-usage` returns `404`, while the same path on `https://iterotenantapi.azurewebsites.net` returns `200` with the same key.
-
-Send both usage operations to `https://iterotenantapi.azurewebsites.net` with the usual `X-API-Key` header. Every other tenant operation — users, groups, agents — stays on the gateway. (Host-verified 2026-09-16.)
+The two billing operations, `GET /api/public/v1/usage/current-usage` and `POST /api/public/v1/usage/get-usage-history`, use `https://iterotenantapi.azurewebsites.net` and return 404 on the gateway. The six practice and evaluation summary, by-user and per-day report operations use `https://iterogatewayapi.azurewebsites.net` and return 404 on the tenant host. A 404 means the wrong host for that operation. (Host-verified 2026-09-29.)
 
 <!-- fact:usage-owner-role -->
-### Usage reads require an Owner-role key
+### All eight usage reads require an Owner-role key
 
-Both usage operations require a key belonging to a user with the `Owner` role. The tenant is resolved from the key itself; there is no `tenantId` parameter and no way to read another tenant's usage. A key for a `Coach`, `Manager`, or `Representative` cannot read billing data, so treat `403` here as a role problem rather than a bad key, and do not retry unchanged.
+The tenant is resolved from the key itself; there is no tenantId parameter or way to read another tenant's usage. Both billing operations require Owner. The Owner requirement for the six report operations is spec-documented, and all six returned 200 with an Owner key on 2026-10-02. Treat 403 as a role problem and do not retry unchanged.
 
 <!-- fact:usage-history-empty -->
 ### An empty history means no invoices, not no usage
@@ -32,10 +30,31 @@ Scope the wording to what was actually asked. `monthsBack` filters the result, s
 The history array carries one record per invoice, and a single billing period can be invoiced more than once. A verified tenant asked for `monthsBack: 13` and received 14 records covering 13 distinct months, because March 2026 appeared twice under two separate invoice IDs.
 
 Never treat the array length as a month count, and never key records by `periodStart` alone. Group by `periodStart` and sum across the group when reporting a month's cost, or report each invoice separately with its `invoiceId`. (Field-verified 2026-09-16.)
+
+<!-- fact:usage-practice-per-day-unordered -->
+### Fetch the complete practice page and sort dates
+
+Practice per-day is paged and zero-based, with default page size 10. Rows are not date-ordered: sort by `date` after fetching. Fetch in one page with `pageSize` at least `totalCount`, or narrow with `from`/`to`. A request with pageNumber 0 and pageSize 1000 returned all totalCount rows on 2026-10-02. Days with no practice are omitted, and dates carry no time-zone suffix.
+
+<!-- fact:usage-evaluation-per-day-sentinel -->
+### Drop the evaluation sentinel row
+
+Evaluation per-day is unpaged and newest first. It ends with a junk row dated `0001-01-01`; drop that row before totals or charts. (Live-verified 2026-10-02.)
+
+<!-- fact:usage-duration-timespan-string -->
+### Parse summary durations as strings
+
+The evaluation summary's `averageQaEvaluationDuration` and `averageQualitativeEvaluationDuration` are strings such as `00:00:08.5990566`, or null, even though the schema shows a TimeSpan object. Do not access object fields or treat null as zero. (Live-verified 2026-10-02.)
 <!-- /gotchas -->
 
 <!-- lifecycle -->
-## Reading usage correctly
+## Choose activity reports or billing
+
+Use the practice and evaluation summary, by-user and per-day reports for activity. `from`/`to` are optional and inclusive. Practice reports count only call type Practice. By-user reports exclude unlinked sessions and identify people only by `userId`: the specification does not say whether that is `id` or `tenantUserId`, so confirm an unambiguous match in `GET /api/public/v1/user` before naming anyone.
+
+Practice minutes come back whole; sub-minute sessions show 0. Activity counts are not billing units. Answer billing questions from `current-usage`. Save by-user and per-day responses to a file, then project only the fields needed.
+
+## Reading billing correctly
 
 Pick the endpoint by the question. "How much is left this month?" is `current-usage` — live consumption against the open period's allowance. "What were we billed?" is `get-usage-history` — closed periods that have been invoiced. The two never cover the same period: history excludes the month still in progress, so `monthsBack: 1` returns last month, not this one.
 

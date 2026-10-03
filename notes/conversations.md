@@ -1,4 +1,4 @@
-*Last Edited: 2026-08-12 15:08*
+*Last Edited: 2026-10-02 20:00*
 
 # Conversation and Evaluation Notes
 
@@ -8,7 +8,7 @@
 <!-- fact:pagination-zero-indexed -->
 ### Call-search pages start at zero
 
-`pageNumber` on `POST /api/public/v1/call/get-calls` is 0-indexed. The specification prose says it is 1-based, but that prose is wrong. Pages 0, 1, and 2 returned disjoint results in live verification; starting at `pageNumber: 1` silently skips the newest page. Use `pageNumber: 0` for the first page and read `totalCount` to plan later pages.
+`pageNumber` on `POST /api/public/v1/call/get-calls` is 0-indexed. The specification now agrees. Pages 0, 1, and 2 returned disjoint results in live verification; starting at `pageNumber: 1` silently skips the newest page. Use `pageNumber: 0` for the first page and read `totalCount` to plan later pages. Omitting the defaults returned page 0 and size 10 (verified 2026-09-29).
 
 <!-- fact:evaluation-host-exception -->
 ### Use the practice host for two evaluation operations
@@ -36,6 +36,10 @@ To append instead of replace, fetch each selected call's current tags first and 
 ### Know which call-search filters are fuzzy
 
 The `callTags` filter uses case-insensitive substring matching. Prospect and company filters use exact matching. Use a precise tag fragment when broad matches would be surprising, and do not expect partial prospect or company names to match.
+
+### Read tag fields in their context
+
+Call records list tags by name only. The CallTagDto on scorecard `callTags` also carries `color` (optional nullable hex string) and `order` (tenant display position assigned at creation; no public endpoint changes it).
 
 ### Keep transcripts out of the main context
 

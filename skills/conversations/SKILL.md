@@ -5,7 +5,7 @@ user-invocable: true
 license: MIT
 metadata:
   author: itero
-  version: "2.0.0"
+  version: "2.3.0"
   homepage: https://iteroapp.ai
   source: https://github.com/Itero-AI/skills
 inputs:
@@ -47,7 +47,7 @@ curl --fail-with-body --silent --show-error \
 ## Search and fetch workflow
 
 1. Build a call-search payload. The endpoint supports 16 filters plus pagination and sorting; read the field table in [the generated reference](references/conversations.md#post-apipublicv1callget-calls).
-2. Use `pageNumber: 0` for the first page. It is 0-indexed despite incorrect specification prose. Read `totalCount` before requesting more pages.
+2. Use `pageNumber: 0` for the first page. It is 0-indexed, as the specification states. Read `totalCount` before requesting more pages.
 3. Know the matching rules: `callTags` is a case-insensitive substring filter, while prospect and company filters are exact.
 4. Show the exact search payload and wait for confirmation because the read uses `POST`.
 5. Project the results to IDs, title, owner, date, source, tags, and evaluation summaries.

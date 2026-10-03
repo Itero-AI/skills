@@ -1,4 +1,4 @@
-*Last Edited: 2026-09-16 16:08*
+*Last Edited: 2026-10-02 20:00*
 
 # Shared Itero API Notes
 
@@ -91,6 +91,27 @@ There is no value `1` in the schema.
 |---:|---|---|
 | 0 | Qualitative | Supported by the canonical enum. |
 | 1 | QA | Supported by the canonical enum. |
+| 2 | ScreenRecording | Voice scorecards only; chat scorecards reject it (ScreenRecordingNotAllowedForChat). |
+
+### AgentType
+
+| Value | Name | Notes |
+|---:|---|---|
+| 0 | Coaching | Specification label; voice interactionType 0. |
+| 1 | Ask Itero | Specification label; interactionType is null. |
+| 2 | Data Capture | Specification label; interactionType is null. |
+| 3 | QA | Voice interactionType 0; field-verified 2026-10-02 on one tenant. |
+| 4 | Chat Coaching | Chat interactionType 1; field-verified 2026-10-02 on one tenant. |
+| 5 | Chat QA | Chat interactionType 1; field-verified 2026-10-02 on one tenant. |
+| 6 | | present in the schema; neither the specification nor field data identifies it |
+
+### ScorecardFeedbackLanguage
+
+| Value | Name | Notes |
+|---:|---|---|
+| 0 | Same as transcript | The specification name is Criterion. |
+| 1 | English | Feedback in English. |
+| 2 | Spanish | Feedback in Spanish. |
 
 ### EvaluationStatus
 

@@ -26,10 +26,32 @@
         },
         "type": "object"
       },
+      "Itero.Core.Domain.Models.PagedModel`1[[Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.PracticeUsagePerDayByTenantDto, Itero.Practice.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.PracticeUsagePerDayByTenantDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "totalCount": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
       "Itero.Practice.Api.Application.Dtos.CallTagDto": {
         "additionalProperties": false,
         "description": "Represents a call tag in the system.",
         "properties": {
+          "color": {
+            "description": "Optional hex color identifier for the tag.\r\nExample: \"#FF8800\"",
+            "nullable": true,
+            "type": "string"
+          },
           "id": {
             "description": "The unique identifier of the call tag.",
             "format": "int32",
@@ -39,6 +61,11 @@
             "description": "The name of the call tag.\r\nExample: \"Important\", \"Follow-Up\"",
             "nullable": true,
             "type": "string"
+          },
+          "order": {
+            "description": "Tenant-scoped display order. Assigned automatically on creation and changed via the reorder endpoint.",
+            "format": "int32",
+            "type": "integer"
           }
         },
         "type": "object"
@@ -1123,6 +1150,9 @@
             "nullable": true,
             "type": "string"
           },
+          "outputLanguageForScorecardFeedback": {
+            "$ref": "#/components/schemas/Itero.Practice.Domain.AggregatesModel.ScorecardAggregate.Enums.ScorecardFeedbackLanguage"
+          },
           "practiceScenarioCallTypeIds": {
             "items": {
               "format": "int32",
@@ -1136,6 +1166,10 @@
             "type": "integer"
           },
           "qualitiveAgentId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "screenRecordingAgentId": {
             "format": "int32",
             "type": "integer"
           },
@@ -1195,6 +1229,9 @@
             "nullable": true,
             "type": "string"
           },
+          "outputLanguageForScorecardFeedback": {
+            "$ref": "#/components/schemas/Itero.Practice.Domain.AggregatesModel.ScorecardAggregate.Enums.ScorecardFeedbackLanguage"
+          },
           "practiceScenarioCallTypeIds": {
             "items": {
               "format": "int32",
@@ -1208,6 +1245,10 @@
             "type": "integer"
           },
           "qualitiveAgentId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "screenRecordingAgentId": {
             "format": "int32",
             "type": "integer"
           },
@@ -1270,6 +1311,9 @@
             "nullable": true,
             "type": "string"
           },
+          "outputLanguageForScorecardFeedback": {
+            "$ref": "#/components/schemas/Itero.Practice.Domain.AggregatesModel.ScorecardAggregate.Enums.ScorecardFeedbackLanguage"
+          },
           "practiceScenarioCallTypeIds": {
             "items": {
               "format": "int32",
@@ -1283,6 +1327,10 @@
             "type": "integer"
           },
           "qualitiveAgentId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "screenRecordingAgentId": {
             "format": "int32",
             "type": "integer"
           },
@@ -1430,6 +1478,27 @@
         },
         "type": "object"
       },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V1.Scorecards.TemplatesCriteria.PublicScorecardTemplateCriteriaRubricDto": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "rubrikScale": {
+            "$ref": "#/components/schemas/Itero.Practice.Domain.AggregatesModel.ScorecardAggregate.Enums.RubrikScale"
+          },
+          "scorecardTemplateCriteriaId": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
       "Itero.Practice.Api.Application.Dtos.PublicApi.V1.Scorecards.TemplatesCriteria.PublicScorecardTemplateCriteriaUpdateRequest": {
         "additionalProperties": false,
         "properties": {
@@ -1444,6 +1513,552 @@
           "title": {
             "nullable": true,
             "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.EvaluationUsageByUsersAggregatedDto": {
+        "additionalProperties": false,
+        "properties": {
+          "totalConversationCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalConversationCountWithEvaluation": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalEvaluationAttemptCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalEvaluationSuccessCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalQaEvaluationCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalQualitativeEvaluationCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalSuccessQaEvaluationCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalSuccessQualitativeEvaluationCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "userId": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.EvaluationUsagePerDayByTenantDto": {
+        "additionalProperties": false,
+        "properties": {
+          "conversationCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "conversationCountWithEvaluation": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "evaluationAttemptCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "evaluationSuccessCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "qaEvaluationCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "qualitativeEvaluationCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "successQaEvaluationCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "successQualitativeEvaluationCount": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.EvaluationUsageSummaryDto": {
+        "additionalProperties": false,
+        "properties": {
+          "averageQaEvaluationDuration": {
+            "$ref": "#/components/schemas/System.TimeSpan"
+          },
+          "averageQualitativeEvaluationDuration": {
+            "$ref": "#/components/schemas/System.TimeSpan"
+          },
+          "totalConversationCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalConversationCountWithEvaluation": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalEvaluationAttemptCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalEvaluationSuccessCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalQaEvaluationCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalQualitativeEvaluationCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalSuccessQaEvaluationCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalSuccessQualitativeEvaluationCount": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.PracticeUsageByUsersAggregatedDto": {
+        "additionalProperties": false,
+        "properties": {
+          "averagePracticeDurationInMinutes": {
+            "format": "double",
+            "type": "number"
+          },
+          "longestPracticeDurationInMinutes": {
+            "format": "double",
+            "type": "number"
+          },
+          "shortestPracticeDurationInMinutes": {
+            "format": "double",
+            "type": "number"
+          },
+          "totalPracticeCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalPracticeDurationInMinutes": {
+            "format": "double",
+            "type": "number"
+          },
+          "userId": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.PracticeUsagePerDayByTenantDto": {
+        "additionalProperties": false,
+        "properties": {
+          "averagePracticeDurationInMinutes": {
+            "format": "double",
+            "type": "number"
+          },
+          "date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "longestPracticeDurationInMinutes": {
+            "format": "double",
+            "type": "number"
+          },
+          "practiceCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "practiceDurationInMinutes": {
+            "format": "double",
+            "type": "number"
+          },
+          "shortestPracticeDurationInMinutes": {
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.PracticeUsageSummaryDto": {
+        "additionalProperties": false,
+        "properties": {
+          "averagePracticeDurationInMinutes": {
+            "format": "double",
+            "type": "number"
+          },
+          "longestPracticeDurationInMinutes": {
+            "format": "double",
+            "type": "number"
+          },
+          "shortestPracticeDurationInMinutes": {
+            "format": "double",
+            "type": "number"
+          },
+          "totalPracticeCount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalPracticeDurationInMinutes": {
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "to": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataWithPagiantionRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "pageNumber": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "pageSize": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "to": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardCategoryCreateItem": {
+        "additionalProperties": false,
+        "properties": {
+          "criteria": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardCriteriaCreateItem"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "scorecardType": {
+            "$ref": "#/components/schemas/Itero.Practice.Domain.AggregatesModel.ScorecardAggregate.Enums.ScorecardType"
+          },
+          "weight": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardCategoryDto": {
+        "additionalProperties": false,
+        "properties": {
+          "criteria": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardCriteriaDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "scorecardTemplateId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "scorecardType": {
+            "$ref": "#/components/schemas/Itero.Practice.Domain.AggregatesModel.ScorecardAggregate.Enums.ScorecardType"
+          },
+          "weight": {
+            "format": "int32",
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardCreateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "callTags": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.CallTagDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "callTypes": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.Practice.Domain.AggregatesModel.ConversationAggregate.Enums.CallType"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardCategoryCreateItem"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "interactionType": {
+            "$ref": "#/components/schemas/Itero.Core.Domain.Enums.InteractionType"
+          },
+          "maxCallDurationSeconds": {
+            "format": "double",
+            "nullable": true,
+            "type": "number"
+          },
+          "meetingKeywords": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "minCallDurationSeconds": {
+            "format": "double",
+            "nullable": true,
+            "type": "number"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "outputLanguageForScorecardFeedback": {
+            "$ref": "#/components/schemas/Itero.Practice.Domain.AggregatesModel.ScorecardAggregate.Enums.ScorecardFeedbackLanguage"
+          },
+          "practiceScenarioCallTypeIds": {
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "qaAgentId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "qualitiveAgentId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "screenRecordingAgentId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "userGroupIds": {
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "nullable": true,
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardCriteriaCreateItem": {
+        "additionalProperties": false,
+        "properties": {
+          "criteria": {
+            "nullable": true,
+            "type": "string"
+          },
+          "rubrics": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardRubricItem"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "title": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardCriteriaDto": {
+        "additionalProperties": false,
+        "properties": {
+          "criteria": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "rubrics": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.Scorecards.TemplatesCriteria.PublicScorecardTemplateCriteriaRubricDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "scorecardTemplateCategoryId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "title": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardDto": {
+        "additionalProperties": false,
+        "properties": {
+          "callTags": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.CallTagDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "callTypes": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.Practice.Domain.AggregatesModel.ConversationAggregate.Enums.CallType"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardCategoryDto"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "interactionType": {
+            "$ref": "#/components/schemas/Itero.Core.Domain.Enums.InteractionType"
+          },
+          "maxCallDurationSeconds": {
+            "format": "double",
+            "nullable": true,
+            "type": "number"
+          },
+          "meetingKeywords": {
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "minCallDurationSeconds": {
+            "format": "double",
+            "nullable": true,
+            "type": "number"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "outputLanguageForScorecardFeedback": {
+            "$ref": "#/components/schemas/Itero.Practice.Domain.AggregatesModel.ScorecardAggregate.Enums.ScorecardFeedbackLanguage"
+          },
+          "practiceScenarioCallTypeIds": {
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "nullable": true,
+            "type": "array"
+          },
+          "qaAgentId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "qualitiveAgentId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "screenRecordingAgentId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Itero.Practice.Domain.AggregatesModel.ScorecardAggregate.Enums.ScorecardTemplateStatus"
+          },
+          "userGroupIds": {
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "nullable": true,
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardRubricItem": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "rubrikScale": {
+            "$ref": "#/components/schemas/Itero.Practice.Domain.AggregatesModel.ScorecardAggregate.Enums.RubrikScale"
           }
         },
         "type": "object"
@@ -1535,6 +2150,15 @@
         "format": "int32",
         "type": "integer"
       },
+      "Itero.Practice.Domain.AggregatesModel.ScorecardAggregate.Enums.ScorecardFeedbackLanguage": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "format": "int32",
+        "type": "integer"
+      },
       "Itero.Practice.Domain.AggregatesModel.ScorecardAggregate.Enums.ScorecardTemplateStatus": {
         "enum": [
           0,
@@ -1546,7 +2170,8 @@
       "Itero.Practice.Domain.AggregatesModel.ScorecardAggregate.Enums.ScorecardType": {
         "enum": [
           0,
-          1
+          1,
+          2
         ],
         "format": "int32",
         "type": "integer"
@@ -1574,6 +2199,86 @@
           "type": {
             "nullable": true,
             "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "System.TimeSpan": {
+        "additionalProperties": false,
+        "properties": {
+          "days": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer"
+          },
+          "hours": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer"
+          },
+          "microseconds": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer"
+          },
+          "milliseconds": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer"
+          },
+          "minutes": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer"
+          },
+          "nanoseconds": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer"
+          },
+          "seconds": {
+            "format": "int32",
+            "readOnly": true,
+            "type": "integer"
+          },
+          "ticks": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalDays": {
+            "format": "double",
+            "readOnly": true,
+            "type": "number"
+          },
+          "totalHours": {
+            "format": "double",
+            "readOnly": true,
+            "type": "number"
+          },
+          "totalMicroseconds": {
+            "format": "double",
+            "readOnly": true,
+            "type": "number"
+          },
+          "totalMilliseconds": {
+            "format": "double",
+            "readOnly": true,
+            "type": "number"
+          },
+          "totalMinutes": {
+            "format": "double",
+            "readOnly": true,
+            "type": "number"
+          },
+          "totalNanoseconds": {
+            "format": "double",
+            "readOnly": true,
+            "type": "number"
+          },
+          "totalSeconds": {
+            "format": "double",
+            "readOnly": true,
+            "type": "number"
           }
         },
         "type": "object"
@@ -2039,7 +2744,7 @@
     },
     "/api/public/v1/call/get-calls": {
       "post": {
-        "description": "Retrieves a paginated list of calls\r\nassociated with the current tenant, with optional filtering and sorting.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n            \r\nInclude the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\nThe request supports pagination, filtering, and sorting.\r\n            \r\n### Pagination\r\n- **pageNumber** (required): Page number (1-based).\r\n- **pageSize** (optional): Number of items per page. Default is `10`.\r\n            \r\n### Filters\r\n- **from** (optional): Start date (inclusive) for call creation date.\r\n- **to** (optional): End date (inclusive) for call creation date.\r\n- **callType** (optional): Filters calls by call type.\r\n- **source** (optional): Filters calls by integration source.\r\n- **prospectCompanies** (optional): Filters by prospect company names (exact match).\r\n- **prospects** (optional): Filters by prospect names (exact match).\r\n- **ownerUserEmails** (optional): Filters by call owner email(s).\r\n- **userIds** (optional): Filters by call owner user id(s).\r\n- **callTags** (optional): Filters by call tag **name**. A call matches when any of its tag\r\n  names contains a provided value (case-insensitive substring match).\r\n- **conversationStatuses** (optional): Filters by conversation status.\r\n- **scorecardTemplateId** (optional): Returns only calls that have an evaluation for this template.\r\n- **scorecardAppliedStatus** (optional): `1` – Applied (has a successful evaluation),\r\n  `0` – NotApplied (no evaluations or all failed).\r\n- **evaluationType** (optional): Returns only calls that have a successfully completed evaluation\r\n  of the given scorecard type (`0` – Qualitative, `1` – QA, `2` – ScreenRecording). All of a\r\n  matched call's evaluations are still returned, regardless of type.\r\n- **scoreFrom** / **scoreTo** (optional): Filters by overall evaluation score range.\r\n- **interactionType** (optional): `0` – Voice, `1` – Chat.\r\n            \r\n### Sorting\r\n- **sortAsc** (optional):\r\n  - `true` → Sort by creation date ascending\r\n  - `false` → Sort by creation date descending (default)\r\n            \r\n## Call Types\r\nNumeric enum values representing call types:\r\n- `0` – Activity\r\n- `1` – Meeting\r\n- `2` – Practice\r\n            \r\n## Source\r\nNumeric enum values representing call sources:\r\n- `0` – None\r\n- `1` – Outreach\r\n- `2` – Gong\r\n- `3` – Frontspin\r\n            \r\n## Conversation Status\r\n- `0` – Informational: logged for reference; no specific sales outcome.\r\n- `2` – PositiveOutcome: positive result (interest confirmed / meeting booked / deal advanced).\r\n- `3` – NoAnswer: the prospect did not answer; no conversation took place.\r\n- `4` – NegativeOutcome: negative result (not interested / rejected).\r\n- `5` – FollowUpRequired: a follow-up action / next touch is needed.\r\n- `6` – Transferred: transferred to another person or department.\r\n- `7` – Abandoned: dropped or abandoned before completion.\r\n- `8` – InvalidData: could not be processed due to invalid / insufficient data.\r\n- `9` – DoNotContact: the prospect asked not to be contacted again.\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"pageNumber\": 1,\r\n  \"pageSize\": 10,\r\n  \"from\": \"2024-12-01T00:00:00Z\",\r\n  \"to\": \"2024-12-31T23:59:59Z\",\r\n  \"callType\": 1,\r\n  \"source\": 1,\r\n  \"sortAsc\": false,\r\n  \"prospectCompanies\": [ \"Itero\" ],\r\n  \"prospects\": [ \"Aaron\" ],\r\n  \"ownerUserEmails\": [ \"manager@example.com\" ],\r\n  \"userIds\": [ 10, 11 ],\r\n  \"callTags\": [ \"onboarding\", \"priority\" ],\r\n  \"conversationStatuses\": [ 2 ],\r\n  \"scorecardTemplateId\": 7,\r\n  \"scorecardAppliedStatus\": 1,\r\n  \"evaluationType\": 1,\r\n  \"scoreFrom\": 50,\r\n  \"scoreTo\": 100,\r\n  \"interactionType\": 0\r\n}\r\n```\r\n            \r\n## Response Structure\r\nThe response is a paged result containing:\r\n- **items**: List of calls for the requested page.\r\n- **totalCount**: Total number of calls matching the filters.\r\n            \r\nEach call contains:\r\n- **id** (required): Unique identifier of the call.\r\n- **date** (required): Call creation date (UTC).\r\n- **callType** (required): Type of the call.\r\n- **title** (optional): Call title or name.\r\n- **duration** (required): Call duration in seconds.\r\n- **ownerUserEmail** (required): Email of the call owner.\r\n- **source** (required): Integration source of the call.\r\n- **externalId** (optional): External system identifier.\r\n- **prospectName** / **prospectCompany** (optional): Prospect and prospect company.\r\n- **conversationStatus** / **interactionType** (required): Conversation outcome and channel.\r\n- **tags** (optional): Tag names associated with the call.\r\n- **evaluations** (optional): Summary of every scorecard applied to the call (see `get-call`).\r\n            \r\n## Example Response\r\n```json\r\n{\r\n  \"items\": [\r\n    {\r\n      \"id\": 123,\r\n      \"date\": \"2024-12-15T10:45:00Z\",\r\n      \"callType\": 1,\r\n      \"title\": \"Discovery Call\",\r\n      \"duration\": 1800,\r\n      \"ownerUserEmail\": \"manager@example.com\",\r\n      \"source\": 1,\r\n      \"externalId\": \"gong-call-456\",\r\n      \"prospectName\": \"Aaron\",\r\n      \"prospectCompany\": \"Itero\",\r\n      \"conversationStatus\": 2,\r\n      \"interactionType\": 0,\r\n      \"tags\": [ \"onboarding\", \"priority\" ],\r\n      \"evaluations\": [\r\n        {\r\n          \"evaluationId\": 42,\r\n          \"scorecardTemplateId\": 7,\r\n          \"scorecardTemplateName\": \"Sales Calls Scorecard\",\r\n          \"scorecardType\": 1,\r\n          \"status\": 2,\r\n          \"overallScore\": 80,\r\n          \"overallRubrikScale\": 3,\r\n          \"evaluationDate\": \"2024-12-15T11:16:00Z\"\r\n        }\r\n      ]\r\n    },\r\n    {\r\n      \"id\": 124,\r\n      \"date\": \"2024-12-14T09:30:00Z\",\r\n      \"callType\": 2,\r\n      \"title\": \"Practice Review\",\r\n      \"duration\": 900,\r\n      \"ownerUserEmail\": \"rep@example.com\",\r\n      \"source\": 2,\r\n      \"externalId\": \"outreach-789\",\r\n      \"prospectName\": \"Jamie\",\r\n      \"prospectCompany\": \"Contoso Ltd.\",\r\n      \"conversationStatus\": 0,\r\n      \"interactionType\": 0,\r\n      \"tags\": [],\r\n      \"evaluations\": []\r\n    }\r\n  ],\r\n  \"totalCount\": 42\r\n}\r\n```\r\n            \r\n## Notes\r\n- Only calls belonging to the current tenant are returned.\r\n- All filters are optional and can be combined.\r\n- Results are sorted by creation date.\r\n- Pagination is applied after filtering and sorting.",
+        "description": "Retrieves a paginated list of calls\r\nassociated with the current tenant, with optional filtering and sorting.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key:\r\n- Access is secured using a public API key.\r\n            \r\nInclude the API key in the request headers:\r\n```http\r\nX-API-Key: your-public-api-key\r\n```\r\n            \r\n## Request Body\r\nThe request supports pagination, filtering, and sorting.\r\n            \r\n### Pagination\r\n- **pageNumber** (optional, default: 0): Zero-based page index (the first page is `0`).\r\n- **pageSize** (optional, default: 10): Number of items per page.\r\n            \r\n### Filters\r\n- **from** (optional): Start date (inclusive) for call creation date.\r\n- **to** (optional): End date (inclusive) for call creation date.\r\n- **callType** (optional): Filters calls by call type.\r\n- **source** (optional): Filters calls by integration source.\r\n- **prospectCompanies** (optional): Filters by prospect company names (exact match).\r\n- **prospects** (optional): Filters by prospect names (exact match).\r\n- **ownerUserEmails** (optional): Filters by call owner email(s).\r\n- **userIds** (optional): Filters by call owner user id(s).\r\n- **callTags** (optional): Filters by call tag **name**. A call matches when any of its tag\r\n  names contains a provided value (case-insensitive substring match).\r\n- **conversationStatuses** (optional): Filters by conversation status.\r\n- **scorecardTemplateId** (optional): Returns only calls that have an evaluation for this template.\r\n- **scorecardAppliedStatus** (optional): `1` – Applied (has a successful evaluation),\r\n  `0` – NotApplied (no evaluations or all failed).\r\n- **evaluationType** (optional): Returns only calls that have a successfully completed evaluation\r\n  of the given scorecard type (`0` – Qualitative, `1` – QA, `2` – ScreenRecording). All of a\r\n  matched call's evaluations are still returned, regardless of type.\r\n- **scoreFrom** / **scoreTo** (optional): Filters by overall evaluation score range.\r\n- **interactionType** (optional): `0` – Voice, `1` – Chat.\r\n            \r\n### Sorting\r\n- **sortAsc** (optional):\r\n  - `true` → Sort by creation date ascending\r\n  - `false` → Sort by creation date descending (default)\r\n            \r\n## Call Types\r\nNumeric enum values representing call types:\r\n- `0` – Activity\r\n- `1` – Meeting\r\n- `2` – Practice\r\n            \r\n## Source\r\nNumeric enum values representing call sources:\r\n- `0` – None\r\n- `1` – Outreach\r\n- `2` – Gong\r\n- `3` – Frontspin\r\n            \r\n## Conversation Status\r\n- `0` – Informational: logged for reference; no specific sales outcome.\r\n- `2` – PositiveOutcome: positive result (interest confirmed / meeting booked / deal advanced).\r\n- `3` – NoAnswer: the prospect did not answer; no conversation took place.\r\n- `4` – NegativeOutcome: negative result (not interested / rejected).\r\n- `5` – FollowUpRequired: a follow-up action / next touch is needed.\r\n- `6` – Transferred: transferred to another person or department.\r\n- `7` – Abandoned: dropped or abandoned before completion.\r\n- `8` – InvalidData: could not be processed due to invalid / insufficient data.\r\n- `9` – DoNotContact: the prospect asked not to be contacted again.\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"pageNumber\": 0,\r\n  \"pageSize\": 10,\r\n  \"from\": \"2024-12-01T00:00:00Z\",\r\n  \"to\": \"2024-12-31T23:59:59Z\",\r\n  \"callType\": 1,\r\n  \"source\": 1,\r\n  \"sortAsc\": false,\r\n  \"prospectCompanies\": [ \"Itero\" ],\r\n  \"prospects\": [ \"Aaron\" ],\r\n  \"ownerUserEmails\": [ \"manager@example.com\" ],\r\n  \"userIds\": [ 10, 11 ],\r\n  \"callTags\": [ \"onboarding\", \"priority\" ],\r\n  \"conversationStatuses\": [ 2 ],\r\n  \"scorecardTemplateId\": 7,\r\n  \"scorecardAppliedStatus\": 1,\r\n  \"evaluationType\": 1,\r\n  \"scoreFrom\": 50,\r\n  \"scoreTo\": 100,\r\n  \"interactionType\": 0\r\n}\r\n```\r\n            \r\n## Response Structure\r\nThe response is a paged result containing:\r\n- **items**: List of calls for the requested page.\r\n- **totalCount**: Total number of calls matching the filters.\r\n            \r\nEach call contains:\r\n- **id** (required): Unique identifier of the call.\r\n- **date** (required): Call creation date (UTC).\r\n- **callType** (required): Type of the call.\r\n- **title** (optional): Call title or name.\r\n- **duration** (required): Call duration in seconds.\r\n- **ownerUserEmail** (required): Email of the call owner.\r\n- **source** (required): Integration source of the call.\r\n- **externalId** (optional): External system identifier.\r\n- **prospectName** / **prospectCompany** (optional): Prospect and prospect company.\r\n- **conversationStatus** / **interactionType** (required): Conversation outcome and channel.\r\n- **tags** (optional): Tag names associated with the call.\r\n- **evaluations** (optional): Summary of every scorecard applied to the call (see `get-call`).\r\n            \r\n## Example Response\r\n```json\r\n{\r\n  \"items\": [\r\n    {\r\n      \"id\": 123,\r\n      \"date\": \"2024-12-15T10:45:00Z\",\r\n      \"callType\": 1,\r\n      \"title\": \"Discovery Call\",\r\n      \"duration\": 1800,\r\n      \"ownerUserEmail\": \"manager@example.com\",\r\n      \"source\": 1,\r\n      \"externalId\": \"gong-call-456\",\r\n      \"prospectName\": \"Aaron\",\r\n      \"prospectCompany\": \"Itero\",\r\n      \"conversationStatus\": 2,\r\n      \"interactionType\": 0,\r\n      \"tags\": [ \"onboarding\", \"priority\" ],\r\n      \"evaluations\": [\r\n        {\r\n          \"evaluationId\": 42,\r\n          \"scorecardTemplateId\": 7,\r\n          \"scorecardTemplateName\": \"Sales Calls Scorecard\",\r\n          \"scorecardType\": 1,\r\n          \"status\": 2,\r\n          \"overallScore\": 80,\r\n          \"overallRubrikScale\": 3,\r\n          \"evaluationDate\": \"2024-12-15T11:16:00Z\"\r\n        }\r\n      ]\r\n    },\r\n    {\r\n      \"id\": 124,\r\n      \"date\": \"2024-12-14T09:30:00Z\",\r\n      \"callType\": 2,\r\n      \"title\": \"Practice Review\",\r\n      \"duration\": 900,\r\n      \"ownerUserEmail\": \"rep@example.com\",\r\n      \"source\": 2,\r\n      \"externalId\": \"outreach-789\",\r\n      \"prospectName\": \"Jamie\",\r\n      \"prospectCompany\": \"Contoso Ltd.\",\r\n      \"conversationStatus\": 0,\r\n      \"interactionType\": 0,\r\n      \"tags\": [],\r\n      \"evaluations\": []\r\n    }\r\n  ],\r\n  \"totalCount\": 42\r\n}\r\n```\r\n            \r\n## Notes\r\n- Only calls belonging to the current tenant are returned.\r\n- All filters are optional and can be combined.\r\n- Results are sorted by creation date.\r\n- Pagination is applied after filtering and sorting.",
         "requestBody": {
           "content": {
             "application/*+json": {
@@ -5084,6 +5789,838 @@
         "summary": "Changes the status (Draft / Published) of a scorecard template.",
         "tags": [
           "PublicScorecardTemplate"
+        ]
+      }
+    },
+    "/api/public/v1/usage/get-evaluation-usage-data-by-user": {
+      "post": {
+        "description": "Returns evaluation and conversation metrics grouped by user within the tenant that owns the API key.\r\nUseful for understanding individual user adoption and activity levels.\r\n            \r\n## Authorization\r\nRequires a valid tenant API key belonging to a user with the **Owner** role.\r\nThe tenant is resolved from the API key — there is no `tenantId` parameter.\r\n            \r\n## Request Body\r\n- **from** (optional): Start date filter (inclusive), ISO 8601 format.\r\n- **to** (optional): End date filter (inclusive), ISO 8601 format.\r\n            \r\n## Example Request\r\n```\r\nPOST /api/public/v1/usage/get-evaluation-usage-data-by-user\r\nContent-Type: application/json\r\n            \r\n{\r\n  \"from\": \"2026-04-01T00:00:00Z\",\r\n  \"to\": \"2026-04-30T23:59:59Z\"\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns an array of aggregated evaluation records per user. Each item contains:\r\n- **userId**: The user identifier.\r\n- **totalConversationCount**: Total number of conversations for this user.\r\n- **totalConversationCountWithEvaluation**: Conversations with at least one evaluation.\r\n- **totalEvaluationAttemptCount**: Total evaluation attempts.\r\n- **totalEvaluationSuccessCount**: Successful evaluations.\r\n- **totalQualitativeEvaluationCount**: Total qualitative evaluation attempts.\r\n- **totalSuccessQualitativeEvaluationCount**: Successful qualitative evaluations.\r\n- **totalQaEvaluationCount**: Total QA evaluation attempts.\r\n- **totalSuccessQaEvaluationCount**: Successful QA evaluations.\r\n            \r\n## Example Response\r\n```json\r\n[\r\n  {\r\n    \"userId\": 42,\r\n    \"totalConversationCount\": 30,\r\n    \"totalConversationCountWithEvaluation\": 25,\r\n    \"totalEvaluationAttemptCount\": 50,\r\n    \"totalEvaluationSuccessCount\": 48,\r\n    \"totalQualitativeEvaluationCount\": 25,\r\n    \"totalSuccessQualitativeEvaluationCount\": 24,\r\n    \"totalQaEvaluationCount\": 25,\r\n    \"totalSuccessQaEvaluationCount\": 24\r\n  }\r\n]\r\n```\r\n            \r\n## Notes\r\nConversations that are not linked to a user are excluded.",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            }
+          },
+          "description": "Request body with optional date range filters.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.EvaluationUsageByUsersAggregatedDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.EvaluationUsageByUsersAggregatedDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.EvaluationUsageByUsersAggregatedDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "User-level evaluation usage data was successfully retrieved."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Invalid request — for example `from` is later than `to`."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — the API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — the caller lacks the required role."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves aggregated evaluation usage data per user for your tenant.",
+        "tags": [
+          "PublicUsage"
+        ]
+      }
+    },
+    "/api/public/v1/usage/get-evaluation-usage-data-per-day": {
+      "post": {
+        "description": "Returns evaluation and conversation metrics grouped by day for the tenant that owns the API key.\r\nUseful for trend analysis and identifying usage patterns over time. Results are ordered by date, newest first.\r\n            \r\n## Authorization\r\nRequires a valid tenant API key belonging to a user with the **Owner** role.\r\nThe tenant is resolved from the API key — there is no `tenantId` parameter.\r\n            \r\n## Request Body\r\n- **from** (optional): Start date filter (inclusive), ISO 8601 format.\r\n- **to** (optional): End date filter (inclusive), ISO 8601 format.\r\n            \r\n## Example Request\r\n```\r\nPOST /api/public/v1/usage/get-evaluation-usage-data-per-day\r\nContent-Type: application/json\r\n            \r\n{\r\n  \"from\": \"2026-04-01T00:00:00Z\",\r\n  \"to\": \"2026-04-07T23:59:59Z\"\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns an array of daily evaluation records. Each item contains:\r\n- **date**: The date for this record.\r\n- **conversationCount**: Number of conversations on this day.\r\n- **conversationCountWithEvaluation**: Conversations with at least one evaluation.\r\n- **evaluationAttemptCount**: Total evaluation attempts on this day.\r\n- **evaluationSuccessCount**: Successful evaluations.\r\n- **qualitativeEvaluationCount**: Qualitative evaluation attempts.\r\n- **successQualitativeEvaluationCount**: Successful qualitative evaluations.\r\n- **qaEvaluationCount**: QA evaluation attempts.\r\n- **successQaEvaluationCount**: Successful QA evaluations.\r\n            \r\n## Example Response\r\n```json\r\n[\r\n  {\r\n    \"date\": \"2026-04-01T00:00:00Z\",\r\n    \"conversationCount\": 20,\r\n    \"conversationCountWithEvaluation\": 18,\r\n    \"evaluationAttemptCount\": 36,\r\n    \"evaluationSuccessCount\": 34,\r\n    \"qualitativeEvaluationCount\": 18,\r\n    \"successQualitativeEvaluationCount\": 17,\r\n    \"qaEvaluationCount\": 18,\r\n    \"successQaEvaluationCount\": 17\r\n  }\r\n]\r\n```\r\n            \r\n## Notes\r\nDays with no conversations are omitted from the response.",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            }
+          },
+          "description": "Request body with optional date range filters.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.EvaluationUsagePerDayByTenantDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.EvaluationUsagePerDayByTenantDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.EvaluationUsagePerDayByTenantDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Daily evaluation usage data was successfully retrieved."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Invalid request — for example `from` is later than `to`."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — the API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — the caller lacks the required role."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves daily evaluation usage data for your tenant.",
+        "tags": [
+          "PublicUsage"
+        ]
+      }
+    },
+    "/api/public/v1/usage/get-evaluation-usage-summary": {
+      "post": {
+        "description": "Returns a single summary of evaluation and conversation metrics for the tenant that owns the\r\nAPI key used for the request. Useful for a high-level view of evaluation adoption and throughput.\r\n            \r\n## Authorization\r\nRequires a valid tenant API key belonging to a user with the **Owner** role.\r\nThe tenant is resolved from the API key — there is no `tenantId` parameter.\r\n            \r\n## Request Body\r\n- **from** (optional): Start date filter (inclusive), ISO 8601 format.\r\n- **to** (optional): End date filter (inclusive), ISO 8601 format.\r\n            \r\n## Example Request\r\n```\r\nPOST /api/public/v1/usage/get-evaluation-usage-summary\r\nContent-Type: application/json\r\n            \r\n{\r\n  \"from\": \"2026-04-01T00:00:00Z\",\r\n  \"to\": \"2026-04-30T23:59:59Z\"\r\n}\r\n```\r\n            \r\n## Response Structure\r\n- **totalConversationCount**: Total number of conversations.\r\n- **totalConversationCountWithEvaluation**: Conversations that have at least one evaluation.\r\n- **totalEvaluationAttemptCount**: Total evaluation attempts (all statuses).\r\n- **totalEvaluationSuccessCount**: Evaluations that completed successfully.\r\n- **totalQualitativeEvaluationCount**: Total qualitative evaluation attempts.\r\n- **totalSuccessQualitativeEvaluationCount**: Successful qualitative evaluations.\r\n- **totalQaEvaluationCount**: Total QA evaluation attempts.\r\n- **totalSuccessQaEvaluationCount**: Successful QA evaluations.\r\n- **averageQaEvaluationDuration**: Average time to complete a QA evaluation (HH:mm:ss), `null` when unknown.\r\n- **averageQualitativeEvaluationDuration**: Average time to complete a qualitative evaluation (HH:mm:ss), `null` when unknown.\r\n            \r\n## Example Response\r\n```json\r\n{\r\n  \"totalConversationCount\": 150,\r\n  \"totalConversationCountWithEvaluation\": 120,\r\n  \"totalEvaluationAttemptCount\": 240,\r\n  \"totalEvaluationSuccessCount\": 230,\r\n  \"totalQualitativeEvaluationCount\": 120,\r\n  \"totalSuccessQualitativeEvaluationCount\": 115,\r\n  \"totalQaEvaluationCount\": 120,\r\n  \"totalSuccessQaEvaluationCount\": 115,\r\n  \"averageQaEvaluationDuration\": \"00:00:45\",\r\n  \"averageQualitativeEvaluationDuration\": \"00:01:12\"\r\n}\r\n```\r\n            \r\n## Notes\r\nWhen there is no data in the requested period, all counters are `0` and both averages are `null`.",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            }
+          },
+          "description": "Request body with optional date range filters.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.EvaluationUsageSummaryDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.EvaluationUsageSummaryDto"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.EvaluationUsageSummaryDto"
+                }
+              }
+            },
+            "description": "Aggregated evaluation usage data was successfully retrieved."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Invalid request — for example `from` is later than `to`."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — the API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — the caller lacks the required role."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves aggregated evaluation usage data for your tenant.",
+        "tags": [
+          "PublicUsage"
+        ]
+      }
+    },
+    "/api/public/v1/usage/get-practice-usage-data-by-user": {
+      "post": {
+        "description": "Returns practice session metrics grouped by user within the tenant that owns the API key.\r\nUseful for understanding individual practice engagement — who is practicing, how often, and for how long.\r\n            \r\n## Authorization\r\nRequires a valid tenant API key belonging to a user with the **Owner** role.\r\nThe tenant is resolved from the API key — there is no `tenantId` parameter.\r\n            \r\n## Request Body\r\n- **from** (optional): Start date filter (inclusive), ISO 8601 format.\r\n- **to** (optional): End date filter (inclusive), ISO 8601 format.\r\n            \r\n## Example Request\r\n```\r\nPOST /api/public/v1/usage/get-practice-usage-data-by-user\r\nContent-Type: application/json\r\n            \r\n{\r\n  \"from\": \"2026-04-01T00:00:00Z\",\r\n  \"to\": \"2026-04-30T23:59:59Z\"\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns an array of aggregated practice records per user. Each item contains:\r\n- **userId**: The user identifier.\r\n- **totalPracticeCount**: Total number of practice sessions for this user.\r\n- **totalPracticeDurationInMinutes**: Sum of all practice durations in minutes.\r\n- **longestPracticeDurationInMinutes**: Longest session duration in minutes.\r\n- **shortestPracticeDurationInMinutes**: Shortest session duration in minutes.\r\n- **averagePracticeDurationInMinutes**: Average session duration in minutes.\r\n            \r\n## Example Response\r\n```json\r\n[\r\n  {\r\n    \"userId\": 42,\r\n    \"totalPracticeCount\": 15,\r\n    \"totalPracticeDurationInMinutes\": 63,\r\n    \"longestPracticeDurationInMinutes\": 10,\r\n    \"shortestPracticeDurationInMinutes\": 2,\r\n    \"averagePracticeDurationInMinutes\": 4\r\n  }\r\n]\r\n```\r\n            \r\n## Notes\r\nOnly conversations of call type **Practice** are counted. Sessions that are not linked to a user are excluded.",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            }
+          },
+          "description": "Request body with optional date range filters.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.PracticeUsageByUsersAggregatedDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.PracticeUsageByUsersAggregatedDto"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.PracticeUsageByUsersAggregatedDto"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "User-level practice usage data was successfully retrieved."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Invalid request — for example `from` is later than `to`."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — the API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — the caller lacks the required role."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves aggregated practice usage data per user for your tenant.",
+        "tags": [
+          "PublicUsage"
+        ]
+      }
+    },
+    "/api/public/v1/usage/get-practice-usage-data-per-day": {
+      "post": {
+        "description": "Returns practice session metrics grouped by day for the tenant that owns the API key, with\r\npagination support. Useful for tracking daily practice engagement and trends.\r\n            \r\n## Authorization\r\nRequires a valid tenant API key belonging to a user with the **Owner** role.\r\nThe tenant is resolved from the API key — there is no `tenantId` parameter.\r\n            \r\n## Request Body\r\n- **from** (optional): Start date filter (inclusive), ISO 8601 format.\r\n- **to** (optional): End date filter (inclusive), ISO 8601 format.\r\n- **pageNumber** (optional, default: 0): Zero-based page index.\r\n- **pageSize** (optional, default: 10): Number of records per page.\r\n            \r\n## Example Request\r\n```\r\nPOST /api/public/v1/usage/get-practice-usage-data-per-day\r\nContent-Type: application/json\r\n            \r\n{\r\n  \"from\": \"2026-04-01T00:00:00Z\",\r\n  \"to\": \"2026-04-30T23:59:59Z\",\r\n  \"pageNumber\": 0,\r\n  \"pageSize\": 10\r\n}\r\n```\r\n            \r\n## Response Structure\r\nReturns a paged model containing daily practice records.\r\n- **items**: Array of daily records, each containing:\r\n  - **date**: The date for this record.\r\n  - **practiceCount**: Number of practice sessions on this day.\r\n  - **practiceDurationInMinutes**: Total practice duration in minutes for this day.\r\n  - **longestPracticeDurationInMinutes**: Longest session duration in minutes.\r\n  - **shortestPracticeDurationInMinutes**: Shortest session duration in minutes.\r\n  - **averagePracticeDurationInMinutes**: Average session duration in minutes.\r\n- **totalCount**: Total number of records matching the filters (across all pages).\r\n            \r\n## Example Response\r\n```json\r\n{\r\n  \"items\": [\r\n    {\r\n      \"date\": \"2026-04-01T00:00:00Z\",\r\n      \"practiceCount\": 12,\r\n      \"practiceDurationInMinutes\": 48,\r\n      \"longestPracticeDurationInMinutes\": 9,\r\n      \"shortestPracticeDurationInMinutes\": 1,\r\n      \"averagePracticeDurationInMinutes\": 4\r\n    }\r\n  ],\r\n  \"totalCount\": 30\r\n}\r\n```\r\n            \r\n## Notes\r\nOnly conversations of call type **Practice** are counted. Days with no practice sessions are omitted.",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataWithPagiantionRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataWithPagiantionRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataWithPagiantionRequest"
+              }
+            }
+          },
+          "description": "Request body with optional date range filters and pagination.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Core.Domain.Models.PagedModel`1[[Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.PracticeUsagePerDayByTenantDto, Itero.Practice.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Core.Domain.Models.PagedModel`1[[Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.PracticeUsagePerDayByTenantDto, Itero.Practice.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Core.Domain.Models.PagedModel`1[[Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.PracticeUsagePerDayByTenantDto, Itero.Practice.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+                }
+              }
+            },
+            "description": "Daily practice usage data was successfully retrieved."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Invalid request — for example `from` is later than `to`."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — the API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — the caller lacks the required role."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves paginated daily practice usage data for your tenant.",
+        "tags": [
+          "PublicUsage"
+        ]
+      }
+    },
+    "/api/public/v1/usage/get-practice-usage-summary": {
+      "post": {
+        "description": "Returns a single summary of practice session metrics for the tenant that owns the API key,\r\nincluding total count and duration statistics.\r\n            \r\n## Authorization\r\nRequires a valid tenant API key belonging to a user with the **Owner** role.\r\nThe tenant is resolved from the API key — there is no `tenantId` parameter.\r\n            \r\n## Request Body\r\n- **from** (optional): Start date filter (inclusive), ISO 8601 format.\r\n- **to** (optional): End date filter (inclusive), ISO 8601 format.\r\n            \r\n## Example Request\r\n```\r\nPOST /api/public/v1/usage/get-practice-usage-summary\r\nContent-Type: application/json\r\n            \r\n{\r\n  \"from\": \"2026-04-01T00:00:00Z\",\r\n  \"to\": \"2026-04-30T23:59:59Z\"\r\n}\r\n```\r\n            \r\n## Response Structure\r\n- **totalPracticeCount**: Total number of practice sessions.\r\n- **totalPracticeDurationInMinutes**: Sum of all practice session durations in minutes.\r\n- **longestPracticeDurationInMinutes**: Duration of the longest practice session in minutes.\r\n- **shortestPracticeDurationInMinutes**: Duration of the shortest practice session in minutes.\r\n- **averagePracticeDurationInMinutes**: Average practice session duration in minutes.\r\n            \r\n## Example Response\r\n```json\r\n{\r\n  \"totalPracticeCount\": 85,\r\n  \"totalPracticeDurationInMinutes\": 341,\r\n  \"longestPracticeDurationInMinutes\": 12,\r\n  \"shortestPracticeDurationInMinutes\": 1,\r\n  \"averagePracticeDurationInMinutes\": 4\r\n}\r\n```\r\n            \r\n## Notes\r\nOnly conversations of call type **Practice** are counted. When there is no data in the requested\r\nperiod, all values are `0`.",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.UsageDataRequest"
+              }
+            }
+          },
+          "description": "Request body with optional date range filters.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.PracticeUsageSummaryDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.PracticeUsageSummaryDto"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V1.UsageData.PracticeUsageSummaryDto"
+                }
+              }
+            },
+            "description": "Aggregated practice usage data was successfully retrieved."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Invalid request — for example `from` is later than `to`."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — the API key is missing or invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — the caller lacks the required role."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Retrieves aggregated practice usage data for your tenant.",
+        "tags": [
+          "PublicUsage"
+        ]
+      }
+    },
+    "/api/public/v2/scorecard": {
+      "post": {
+        "description": "Replaces the multi-step V1 flow (create template → category → criteria → edit rubrics) with one request.\r\nThe entire graph is persisted inside a single database transaction: if any part fails, nothing is saved.\r\nThe scorecard is created in **Draft** status.\r\n            \r\n## Authorization\r\nAccess is secured using a public API key.\r\n            \r\n## Required Fields\r\n- **name**: Display name of the scorecard.\r\n- **qualitiveAgentId**: ID of the agent responsible for qualitative evaluation.\r\n- **qaAgentId**: ID of the agent responsible for QA evaluation.\r\n- **interactionType**: Type of interaction this scorecard applies to.\r\n  - `0` – Voice\r\n  - `1` – Chat\r\n- **categories**: At least one category. Each category requires **name** and **scorecardType**, plus at least one **criteria** entry (**title** + **criteria**).\r\n            \r\n## Optional Fields\r\n- **callTypes**: List of call types this scorecard applies to.\r\n  - `0` – Activity\r\n  - `1` – Meeting\r\n  - `2` – Practice\r\n- **practiceScenarioCallTypeIds**: List of practice scenario call type identifiers.\r\n- **meetingKeywords**: Keywords associated with meeting calls (only when `callTypes` includes Meeting).\r\n- **callTags**: List of call tags to associate. Each tag has `id` and `name`.\r\n- **maxCallDurationSeconds** / **minCallDurationSeconds**: Call duration filters in seconds. **Voice only** — must be omitted when `interactionType` is `1` (Chat).\r\n- **userGroupIds**: List of user group IDs that can use this scorecard.\r\n- **outputLanguageForScorecardFeedback**: Language of AI-generated feedback.\r\n  - `0` – Criterion (same as transcript)\r\n  - `1` – English\r\n  - `2` – Spanish\r\n- **categories[].weight**: Category weight (Qualitative only), 0–1000.\r\n- **categories[].criteria[].rubrics**: Explicit rubric levels (Qualitative only). All-or-nothing: either omit the field (rubrics are AI-generated) or supply the complete set of all 5 scale levels (Poor…Excellent), exactly one each. A partial set is rejected with 400. QA criteria never have rubrics.\r\n            \r\n## Enum Value Tables\r\n            \r\n### ScorecardType (`categories[].scorecardType`)\r\n| Value | Name |\r\n|---|---|\r\n| `0` | Qualitative |\r\n| `1` | Qa |\r\n| `2` | ScreenRecording *(Voice only — not allowed on Chat scorecards)* |\r\n            \r\n### RubrikScale (`categories[].criteria[].rubrics[].rubrikScale`)\r\n| Value | Name |\r\n|---|---|\r\n| `0` | Poor |\r\n| `1` | NeedsImprovement |\r\n| `2` | Neutral |\r\n| `3` | Good |\r\n| `4` | Excellent |\r\n| `5` | NotApplicable |\r\n            \r\n## Example Request\r\n```json\r\n{\r\n  \"name\": \"Sales Call Scorecard\",\r\n  \"interactionType\": 0,\r\n  \"callTypes\": [0, 1],\r\n  \"meetingKeywords\": [\"sales\", \"follow-up\"],\r\n  \"callTags\": [{ \"id\": 1, \"name\": \"priority\" }],\r\n  \"qualitiveAgentId\": 1,\r\n  \"qaAgentId\": 2,\r\n  \"userGroupIds\": [1, 2],\r\n  \"outputLanguageForScorecardFeedback\": 1,\r\n  \"categories\": [\r\n    {\r\n      \"name\": \"Compliance\",\r\n      \"scorecardType\": 1,\r\n      \"criteria\": [\r\n        { \"title\": \"Disclosed recording\", \"criteria\": \"Did the rep state the call is recorded?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"name\": \"Discovery\",\r\n      \"scorecardType\": 0,\r\n      \"weight\": 500,\r\n      \"criteria\": [\r\n        {\r\n          \"title\": \"Identified pain points\",\r\n          \"criteria\": \"How well did the rep uncover the prospect's pain points?\",\r\n          \"rubrics\": [\r\n            { \"rubrikScale\": 0, \"description\": \"No pain points identified.\" },\r\n            { \"rubrikScale\": 1, \"description\": \"One pain point touched on but not explored.\" },\r\n            { \"rubrikScale\": 2, \"description\": \"Some pain points surfaced.\" },\r\n            { \"rubrikScale\": 3, \"description\": \"Most pain points surfaced and explored.\" },\r\n            { \"rubrikScale\": 4, \"description\": \"All key pain points clearly identified.\" }\r\n          ]\r\n        },\r\n        {\r\n          \"title\": \"Established next steps\",\r\n          \"criteria\": \"Did the rep agree concrete next steps?\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n```\r\n            \r\n## Example Response\r\n```json\r\n{\r\n  \"id\": 10,\r\n  \"name\": \"Sales Call Scorecard\",\r\n  \"interactionType\": 0,\r\n  \"status\": 0,\r\n  \"qualitiveAgentId\": 1,\r\n  \"qaAgentId\": 2,\r\n  \"categories\": [\r\n    {\r\n      \"id\": 21,\r\n      \"name\": \"Compliance\",\r\n      \"scorecardTemplateId\": 10,\r\n      \"scorecardType\": 1,\r\n      \"criteria\": [\r\n        { \"id\": 31, \"title\": \"Disclosed recording\", \"criteria\": \"Did the rep state the call is recorded?\", \"scorecardTemplateCategoryId\": 21, \"rubrics\": [] }\r\n      ]\r\n    },\r\n    {\r\n      \"id\": 22,\r\n      \"name\": \"Discovery\",\r\n      \"scorecardTemplateId\": 10,\r\n      \"weight\": 500,\r\n      \"scorecardType\": 0,\r\n      \"criteria\": [\r\n        {\r\n          \"id\": 32,\r\n          \"title\": \"Identified pain points\",\r\n          \"criteria\": \"How well did the rep uncover the prospect's pain points?\",\r\n          \"scorecardTemplateCategoryId\": 22,\r\n          \"rubrics\": [\r\n            { \"id\": 41, \"description\": \"No pain points identified.\", \"rubrikScale\": 0, \"scorecardTemplateCriteriaId\": 32 },\r\n            { \"id\": 42, \"description\": \"One pain point touched on but not explored.\", \"rubrikScale\": 1, \"scorecardTemplateCriteriaId\": 32 },\r\n            { \"id\": 43, \"description\": \"Some pain points surfaced.\", \"rubrikScale\": 2, \"scorecardTemplateCriteriaId\": 32 },\r\n            { \"id\": 44, \"description\": \"Most pain points surfaced and explored.\", \"rubrikScale\": 3, \"scorecardTemplateCriteriaId\": 32 },\r\n            { \"id\": 45, \"description\": \"All key pain points clearly identified.\", \"rubrikScale\": 4, \"scorecardTemplateCriteriaId\": 32 }\r\n          ]\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n```\r\n            \r\n## Notes\r\n- The whole scorecard is created atomically — a failure at any level rolls back the entire request.\r\n- For **Qualitative** criteria, omitting `rubrics` triggers AI generation of all 5 rubric levels; supplying `rubrics` uses them as-is but the set must be **complete** — exactly one rubric for each of the 5 scales (Poor, NeedsImprovement, Neutral, Good, Excellent). A partial, duplicated, or `NotApplicable`-containing set returns **400** and nothing is saved.\r\n- **QA** criteria never carry rubrics.\r\n- **Chat scorecards** (`interactionType` `1`) must **not** set `maxCallDurationSeconds` or `minCallDurationSeconds` — a chat has no call duration. Returns **400** with error code `CallDurationNotAllowedForChat`.\r\n- **Chat scorecards** must **not** contain **ScreenRecording** categories (`categories[].scorecardType` `2`), nor their criteria — chat interactions have no screen recording. Returns **400** with error code `ScreenRecordingNotAllowedForChat`.\r\n- **Important:** `interactionType` must match the interaction type supported by the assigned agents (Voice agents with Voice scorecards, Chat agents with Chat scorecards).",
+        "requestBody": {
+          "content": {
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardCreateRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardCreateRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardCreateRequest"
+              }
+            }
+          },
+          "description": "The full scorecard graph to create. See Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardCreateRequest for the full schema.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardDto"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Itero.Practice.Api.Application.Dtos.PublicApi.V2.Scorecards.PublicScorecardDto"
+                }
+              }
+            },
+            "description": "Scorecard was successfully created. Returns the full nested scorecard."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Invalid input — e.g., missing required fields, invalid agent IDs, rubrics supplied on a non-qualitative criterion, or call duration / ScreenRecording categories supplied on a chat scorecard."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Unauthorized — user is not authenticated."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            },
+            "description": "Forbidden — API key does not have sufficient permissions."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Creates a complete scorecard (template, categories, criteria and rubrics) in a single atomic call.",
+        "tags": [
+          "PublicScorecard"
         ]
       }
     }
