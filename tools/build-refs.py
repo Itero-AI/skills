@@ -1098,6 +1098,9 @@ def sample_value(
                 break
             if name not in selected:
                 selected.append(name)
+        if component == "Itero.Practice.Api.Application.Dtos.CallTagDto":
+            # Scorecard callTags sends only id and name; omit display metadata.
+            selected = [name for name in selected if name not in {"color", "order"}]
         return {
             name: sample_value(
                 document,

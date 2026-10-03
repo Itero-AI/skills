@@ -246,9 +246,7 @@ curl --fail-with-body --silent --show-error \
   "callTags": [
     {
       "id": 123,
-      "name": "Example",
-      "color": "string",
-      "order": 0
+      "name": "Example"
     }
   ],
   "callTypes": [
@@ -339,9 +337,7 @@ curl --fail-with-body --silent --show-error \
   "callTags": [
     {
       "id": 123,
-      "name": "Example",
-      "color": "string",
-      "order": 0
+      "name": "Example"
     }
   ],
   "callTypes": [

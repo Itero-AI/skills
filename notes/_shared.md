@@ -1,4 +1,4 @@
-*Last Edited: 2026-10-02 20:00*
+*Last Edited: 2026-10-02 19:24*
 
 # Shared Itero API Notes
 
@@ -97,12 +97,12 @@ There is no value `1` in the schema.
 
 | Value | Name | Notes |
 |---:|---|---|
-| 0 | Coaching | Specification label; voice interactionType 0. |
-| 1 | Ask Itero | Specification label; interactionType is null. |
-| 2 | Data Capture | Specification label; interactionType is null. |
-| 3 | QA | Voice interactionType 0; field-verified 2026-10-02 on one tenant. |
-| 4 | Chat Coaching | Chat interactionType 1; field-verified 2026-10-02 on one tenant. |
-| 5 | Chat QA | Chat interactionType 1; field-verified 2026-10-02 on one tenant. |
+| 0 | Coaching | Specification label for the name only; voice interactionType 0 was field-observed 2026-10-02 on one tenant. |
+| 1 | Ask Itero | Specification label for the name only; null interactionType was field-observed 2026-10-02 on one tenant. |
+| 2 | Data Capture | Specification label for the name only; null interactionType was field-observed 2026-10-02 on one tenant. |
+| 3 | QA | Name and voice interactionType 0 were field-observed 2026-10-02 on one tenant. |
+| 4 | Chat Coaching | Name and chat interactionType 1 were field-observed 2026-10-02 on one tenant. |
+| 5 | Chat QA | Name and chat interactionType 1 were field-observed 2026-10-02 on one tenant. |
 | 6 | | present in the schema; neither the specification nor field data identifies it |
 
 ### ScorecardFeedbackLanguage

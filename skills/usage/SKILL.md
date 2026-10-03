@@ -81,9 +81,9 @@ curl --fail-with-body --silent --show-error \
 
 ## Read activity reports correctly
 
-`from`/`to` are optional and inclusive. Practice reports count only call type Practice, and minutes are whole: sub-minute sessions show 0. By-user reports exclude unlinked sessions and return only `userId`. The spec does not identify it as global `id` or `tenantUserId`; confirm an unambiguous match in `GET /api/public/v1/user` before naming someone. Save every by-user and per-day response to a file.
+`from`/`to` are optional and inclusive. Practice reports count only call type Practice. Practice minute values were whole numbers in the saved summary, by-user and per-day responses, although the schema allows `number (double)` values. (Live-verified 2026-10-02.) By-user reports exclude unlinked sessions and return only `userId`. The spec does not identify it as global `id` or `tenantUserId`; confirm an unambiguous match in `GET /api/public/v1/user` before naming someone. Save every by-user and per-day response to a file.
 
-Practice per-day is paged, zero-based, and defaults to size 10. Rows are unordered; fetch all rows in one page with `pageSize` at least `totalCount`, or narrow the inclusive `from`/`to` window, then sort by `date`. A pageSize 1000 request returned every row on 2026-10-02. Days without practice are omitted and dates have no time-zone suffix.
+Practice per-day is paged, zero-based, and defaults to size 10. Rows are unordered; fetch all rows in one page with `pageSize` at least `totalCount`, or narrow the inclusive `from`/`to` window, then sort by `date`. A pageSize 1000 request returned every row on 2026-10-02. Days without practice are omitted. Returned dates have no time-zone suffix, unlike the specification's example ending in `Z`. (Live-verified 2026-10-02.)
 
 ```bash
 curl --fail-with-body --silent --show-error --request POST \

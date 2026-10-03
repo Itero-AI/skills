@@ -1,4 +1,4 @@
-*Last Edited: 2026-10-02 20:00*
+*Last Edited: 2026-10-02 19:24*
 
 # Usage and Billing Notes
 
@@ -34,7 +34,7 @@ Never treat the array length as a month count, and never key records by `periodS
 <!-- fact:usage-practice-per-day-unordered -->
 ### Fetch the complete practice page and sort dates
 
-Practice per-day is paged and zero-based, with default page size 10. Rows are not date-ordered: sort by `date` after fetching. Fetch in one page with `pageSize` at least `totalCount`, or narrow with `from`/`to`. A request with pageNumber 0 and pageSize 1000 returned all totalCount rows on 2026-10-02. Days with no practice are omitted, and dates carry no time-zone suffix.
+Practice per-day is paged and zero-based, with default page size 10. Rows are not date-ordered: sort by `date` after fetching. Fetch in one page with `pageSize` at least `totalCount`, or narrow with `from`/`to`. A request with pageNumber 0 and pageSize 1000 returned all totalCount rows on 2026-10-02. Days with no practice are omitted. Returned dates have no time-zone suffix, unlike the specification's example ending in `Z`. (Live-verified 2026-10-02.)
 
 <!-- fact:usage-evaluation-per-day-sentinel -->
 ### Drop the evaluation sentinel row
@@ -52,7 +52,7 @@ The evaluation summary's `averageQaEvaluationDuration` and `averageQualitativeEv
 
 Use the practice and evaluation summary, by-user and per-day reports for activity. `from`/`to` are optional and inclusive. Practice reports count only call type Practice. By-user reports exclude unlinked sessions and identify people only by `userId`: the specification does not say whether that is `id` or `tenantUserId`, so confirm an unambiguous match in `GET /api/public/v1/user` before naming anyone.
 
-Practice minutes come back whole; sub-minute sessions show 0. Activity counts are not billing units. Answer billing questions from `current-usage`. Save by-user and per-day responses to a file, then project only the fields needed.
+Practice minute values were whole numbers in the saved summary, by-user and per-day responses, although the schema allows `number (double)` values. (Live-verified 2026-10-02.) Activity counts are not billing units. Answer billing questions from `current-usage`. Save by-user and per-day responses to a file, then project only the fields needed.
 
 ## Reading billing correctly
 
