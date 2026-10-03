@@ -36,16 +36,14 @@ Apply the same rule to every list operation: filter on the server when possible,
 ## Usage gotchas
 
 <!-- fact:usage-host-exception -->
-### Call usage on the tenant host, not the gateway
+### Choose the host for the operation
 
-The usage endpoints are the second verified exception to the gateway rule. They are not published in the gateway's aggregated specification and the gateway does not proxy them: `GET https://iterogatewayapi.azurewebsites.net/api/public/v1/usage/current-usage` returns `404`, while the same path on `https://iterotenantapi.azurewebsites.net` returns `200` with the same key.
-
-Send both usage operations to `https://iterotenantapi.azurewebsites.net` with the usual `X-API-Key` header. Every other tenant operation — users, groups, agents — stays on the gateway. (Host-verified 2026-09-16.)
+The two billing operations, `GET /api/public/v1/usage/current-usage` and `POST /api/public/v1/usage/get-usage-history`, use `https://iterotenantapi.azurewebsites.net` and return 404 on the gateway. The six practice and evaluation summary, by-user and per-day report operations use `https://iterogatewayapi.azurewebsites.net` and return 404 on the tenant host. A 404 means the wrong host for that operation. (Host-verified 2026-09-29.)
 
 <!-- fact:usage-owner-role -->
-### Usage reads require an Owner-role key
+### All eight usage reads require an Owner-role key
 
-Both usage operations require a key belonging to a user with the `Owner` role. The tenant is resolved from the key itself; there is no `tenantId` parameter and no way to read another tenant's usage. A key for a `Coach`, `Manager`, or `Representative` cannot read billing data, so treat `403` here as a role problem rather than a bad key, and do not retry unchanged.
+The tenant is resolved from the key itself; there is no tenantId parameter or way to read another tenant's usage. Both billing operations require Owner. The Owner requirement for the six report operations is spec-documented, and all six returned 200 with an Owner key on 2026-10-02. Treat 403 as a role problem and do not retry unchanged.
 
 <!-- fact:usage-history-empty -->
 ### An empty history means no invoices, not no usage
@@ -62,10 +60,31 @@ Scope the wording to what was actually asked. `monthsBack` filters the result, s
 The history array carries one record per invoice, and a single billing period can be invoiced more than once. A verified tenant asked for `monthsBack: 13` and received 14 records covering 13 distinct months, because March 2026 appeared twice under two separate invoice IDs.
 
 Never treat the array length as a month count, and never key records by `periodStart` alone. Group by `periodStart` and sum across the group when reporting a month's cost, or report each invoice separately with its `invoiceId`. (Field-verified 2026-09-16.)
+
+<!-- fact:usage-practice-per-day-unordered -->
+### Fetch the complete practice page and sort dates
+
+Practice per-day is paged and zero-based, with default page size 10. Rows are not date-ordered: sort by `date` after fetching. Fetch in one page with `pageSize` at least `totalCount`, or narrow with `from`/`to`. A request with pageNumber 0 and pageSize 1000 returned all totalCount rows on 2026-10-02. Days with no practice are omitted. Returned dates have no time-zone suffix, unlike the specification's example ending in `Z`. (Live-verified 2026-10-02.)
+
+<!-- fact:usage-evaluation-per-day-sentinel -->
+### Drop the evaluation sentinel row
+
+Evaluation per-day is unpaged and newest first. It ends with a junk row dated `0001-01-01`; drop that row before totals or charts. (Live-verified 2026-10-02.)
+
+<!-- fact:usage-duration-timespan-string -->
+### Parse summary durations as strings
+
+The evaluation summary's `averageQaEvaluationDuration` and `averageQualitativeEvaluationDuration` are strings such as `00:00:08.5990566`, or null, even though the schema shows a TimeSpan object. Do not access object fields or treat null as zero. (Live-verified 2026-10-02.)
 <!-- /gotchas -->
 
 <!-- lifecycle -->
-## Reading usage correctly
+## Choose activity reports or billing
+
+Use the practice and evaluation summary, by-user and per-day reports for activity. `from`/`to` are optional and inclusive. Practice reports count only call type Practice. By-user reports exclude unlinked sessions and identify people only by `userId`: the specification does not say whether that is `id` or `tenantUserId`, so confirm an unambiguous match in `GET /api/public/v1/user` before naming anyone.
+
+Practice minute values were whole numbers in the saved summary, by-user and per-day responses, although the schema allows `number (double)` values. (Live-verified 2026-10-02.) Activity counts are not billing units. Answer billing questions from `current-usage`. Save by-user and per-day responses to a file, then project only the fields needed.
+
+## Reading billing correctly
 
 Pick the endpoint by the question. "How much is left this month?" is `current-usage` — live consumption against the open period's allowance. "What were we billed?" is `get-usage-history` — closed periods that have been invoiced. The two never cover the same period: history excludes the month still in progress, so `monthsBack: 1` returns last month, not this one.
 
@@ -85,6 +104,12 @@ Usage responses contain billing figures and invoice links. Report the figures th
 | Method | Path | Host | Success |
 |---|---|---|---|
 | `GET` | `/api/public/v1/usage/current-usage` | Tenant host | `200` |
+| `POST` | `/api/public/v1/usage/get-evaluation-usage-data-by-user` | Gateway | `200` |
+| `POST` | `/api/public/v1/usage/get-evaluation-usage-data-per-day` | Gateway | `200` |
+| `POST` | `/api/public/v1/usage/get-evaluation-usage-summary` | Gateway | `200` |
+| `POST` | `/api/public/v1/usage/get-practice-usage-data-by-user` | Gateway | `200` |
+| `POST` | `/api/public/v1/usage/get-practice-usage-data-per-day` | Gateway | `200` |
+| `POST` | `/api/public/v1/usage/get-practice-usage-summary` | Gateway | `200` |
 | `POST` | `/api/public/v1/usage/get-usage-history` | Tenant host | `200` |
 
 ## Operations
@@ -129,6 +154,361 @@ Status `200`:
 
 | Status | Meaning |
 |---:|---|
+| `401` | The API key is missing or invalid. |
+| `403` | The API key does not have permission for this operation. |
+| `500` | The service returned an internal error. |
+
+---
+
+### `POST /api/public/v1/usage/get-evaluation-usage-data-by-user`
+
+#### Request schema
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `body: from` | `string (date-time)` | No | Yes | — |
+| `body: to` | `string (date-time)` | No | Yes | — |
+
+Body media type: `application/json`.
+
+#### Example
+
+Show this exact payload to the user and wait for explicit confirmation before running the request. The raw response is saved to `evaluation-usage-by-user.json`; project only the fields you need before bringing any result into the conversation.
+
+```bash
+curl --fail-with-body --silent --show-error \
+  --request POST \
+  --header "X-API-Key: $ITERO_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+  "from": "2026-08-12T14:00:00Z",
+  "to": "2026-08-12T15:00:00Z"
+}' \
+  "https://iterogatewayapi.azurewebsites.net/api/public/v1/usage/get-evaluation-usage-data-by-user" \
+  --output "evaluation-usage-by-user.json"
+```
+
+#### Success response schema
+
+Status `200`:
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `items[].totalConversationCount` | `integer (int32)` | No | No | — |
+| `items[].totalConversationCountWithEvaluation` | `integer (int32)` | No | No | — |
+| `items[].totalEvaluationAttemptCount` | `integer (int32)` | No | No | — |
+| `items[].totalEvaluationSuccessCount` | `integer (int32)` | No | No | — |
+| `items[].totalQaEvaluationCount` | `integer (int32)` | No | No | — |
+| `items[].totalQualitativeEvaluationCount` | `integer (int32)` | No | No | — |
+| `items[].totalSuccessQaEvaluationCount` | `integer (int32)` | No | No | — |
+| `items[].totalSuccessQualitativeEvaluationCount` | `integer (int32)` | No | No | — |
+| `items[].userId` | `integer (int32)` | No | No | — |
+
+#### Error responses
+
+| Status | Meaning |
+|---:|---|
+| `400` | The request failed validation. Check field names, types, and values. |
+| `401` | The API key is missing or invalid. |
+| `403` | The API key does not have permission for this operation. |
+| `500` | The service returned an internal error. |
+
+---
+
+### `POST /api/public/v1/usage/get-evaluation-usage-data-per-day`
+
+#### Request schema
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `body: from` | `string (date-time)` | No | Yes | — |
+| `body: to` | `string (date-time)` | No | Yes | — |
+
+Body media type: `application/json`.
+
+#### Example
+
+Show this exact payload to the user and wait for explicit confirmation before running the request. The raw response is saved to `evaluation-usage-per-day.json`; project only the fields you need before bringing any result into the conversation.
+
+```bash
+curl --fail-with-body --silent --show-error \
+  --request POST \
+  --header "X-API-Key: $ITERO_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+  "from": "2026-08-12T14:00:00Z",
+  "to": "2026-08-12T15:00:00Z"
+}' \
+  "https://iterogatewayapi.azurewebsites.net/api/public/v1/usage/get-evaluation-usage-data-per-day" \
+  --output "evaluation-usage-per-day.json"
+```
+
+#### Success response schema
+
+Status `200`:
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `items[].conversationCount` | `integer (int32)` | No | No | — |
+| `items[].conversationCountWithEvaluation` | `integer (int32)` | No | No | — |
+| `items[].date` | `string (date-time)` | No | No | — |
+| `items[].evaluationAttemptCount` | `integer (int32)` | No | No | — |
+| `items[].evaluationSuccessCount` | `integer (int32)` | No | No | — |
+| `items[].qaEvaluationCount` | `integer (int32)` | No | No | — |
+| `items[].qualitativeEvaluationCount` | `integer (int32)` | No | No | — |
+| `items[].successQaEvaluationCount` | `integer (int32)` | No | No | — |
+| `items[].successQualitativeEvaluationCount` | `integer (int32)` | No | No | — |
+
+#### Error responses
+
+| Status | Meaning |
+|---:|---|
+| `400` | The request failed validation. Check field names, types, and values. |
+| `401` | The API key is missing or invalid. |
+| `403` | The API key does not have permission for this operation. |
+| `500` | The service returned an internal error. |
+
+---
+
+### `POST /api/public/v1/usage/get-evaluation-usage-summary`
+
+#### Request schema
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `body: from` | `string (date-time)` | No | Yes | — |
+| `body: to` | `string (date-time)` | No | Yes | — |
+
+Body media type: `application/json`.
+
+#### Example
+
+Show this exact payload to the user and wait for explicit confirmation before running the request.
+
+```bash
+curl --fail-with-body --silent --show-error \
+  --request POST \
+  --header "X-API-Key: $ITERO_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+  "from": "2026-08-12T14:00:00Z",
+  "to": "2026-08-12T15:00:00Z"
+}' \
+  "https://iterogatewayapi.azurewebsites.net/api/public/v1/usage/get-evaluation-usage-summary"
+```
+
+#### Success response schema
+
+Status `200`:
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `averageQaEvaluationDuration` | `TimeSpan` | No | No | — |
+| `averageQaEvaluationDuration.days` | `integer (int32)` | No | No | — |
+| `averageQaEvaluationDuration.hours` | `integer (int32)` | No | No | — |
+| `averageQaEvaluationDuration.microseconds` | `integer (int32)` | No | No | — |
+| `averageQaEvaluationDuration.milliseconds` | `integer (int32)` | No | No | — |
+| `averageQaEvaluationDuration.minutes` | `integer (int32)` | No | No | — |
+| `averageQaEvaluationDuration.nanoseconds` | `integer (int32)` | No | No | — |
+| `averageQaEvaluationDuration.seconds` | `integer (int32)` | No | No | — |
+| `averageQaEvaluationDuration.ticks` | `integer (int64)` | No | No | — |
+| `averageQaEvaluationDuration.totalDays` | `number (double)` | No | No | — |
+| `averageQaEvaluationDuration.totalHours` | `number (double)` | No | No | — |
+| `averageQaEvaluationDuration.totalMicroseconds` | `number (double)` | No | No | — |
+| `averageQaEvaluationDuration.totalMilliseconds` | `number (double)` | No | No | — |
+| `averageQaEvaluationDuration.totalMinutes` | `number (double)` | No | No | — |
+| `averageQaEvaluationDuration.totalNanoseconds` | `number (double)` | No | No | — |
+| `averageQaEvaluationDuration.totalSeconds` | `number (double)` | No | No | — |
+| `averageQualitativeEvaluationDuration` | `TimeSpan` | No | No | — |
+| `averageQualitativeEvaluationDuration.days` | `integer (int32)` | No | No | — |
+| `averageQualitativeEvaluationDuration.hours` | `integer (int32)` | No | No | — |
+| `averageQualitativeEvaluationDuration.microseconds` | `integer (int32)` | No | No | — |
+| `averageQualitativeEvaluationDuration.milliseconds` | `integer (int32)` | No | No | — |
+| `averageQualitativeEvaluationDuration.minutes` | `integer (int32)` | No | No | — |
+| `averageQualitativeEvaluationDuration.nanoseconds` | `integer (int32)` | No | No | — |
+| `averageQualitativeEvaluationDuration.seconds` | `integer (int32)` | No | No | — |
+| `averageQualitativeEvaluationDuration.ticks` | `integer (int64)` | No | No | — |
+| `averageQualitativeEvaluationDuration.totalDays` | `number (double)` | No | No | — |
+| `averageQualitativeEvaluationDuration.totalHours` | `number (double)` | No | No | — |
+| `averageQualitativeEvaluationDuration.totalMicroseconds` | `number (double)` | No | No | — |
+| `averageQualitativeEvaluationDuration.totalMilliseconds` | `number (double)` | No | No | — |
+| `averageQualitativeEvaluationDuration.totalMinutes` | `number (double)` | No | No | — |
+| `averageQualitativeEvaluationDuration.totalNanoseconds` | `number (double)` | No | No | — |
+| `averageQualitativeEvaluationDuration.totalSeconds` | `number (double)` | No | No | — |
+| `totalConversationCount` | `integer (int32)` | No | No | — |
+| `totalConversationCountWithEvaluation` | `integer (int32)` | No | No | — |
+| `totalEvaluationAttemptCount` | `integer (int32)` | No | No | — |
+| `totalEvaluationSuccessCount` | `integer (int32)` | No | No | — |
+| `totalQaEvaluationCount` | `integer (int32)` | No | No | — |
+| `totalQualitativeEvaluationCount` | `integer (int32)` | No | No | — |
+| `totalSuccessQaEvaluationCount` | `integer (int32)` | No | No | — |
+| `totalSuccessQualitativeEvaluationCount` | `integer (int32)` | No | No | — |
+
+#### Error responses
+
+| Status | Meaning |
+|---:|---|
+| `400` | The request failed validation. Check field names, types, and values. |
+| `401` | The API key is missing or invalid. |
+| `403` | The API key does not have permission for this operation. |
+| `500` | The service returned an internal error. |
+
+---
+
+### `POST /api/public/v1/usage/get-practice-usage-data-by-user`
+
+#### Request schema
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `body: from` | `string (date-time)` | No | Yes | — |
+| `body: to` | `string (date-time)` | No | Yes | — |
+
+Body media type: `application/json`.
+
+#### Example
+
+Show this exact payload to the user and wait for explicit confirmation before running the request. The raw response is saved to `practice-usage-by-user.json`; project only the fields you need before bringing any result into the conversation.
+
+```bash
+curl --fail-with-body --silent --show-error \
+  --request POST \
+  --header "X-API-Key: $ITERO_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+  "from": "2026-08-12T14:00:00Z",
+  "to": "2026-08-12T15:00:00Z"
+}' \
+  "https://iterogatewayapi.azurewebsites.net/api/public/v1/usage/get-practice-usage-data-by-user" \
+  --output "practice-usage-by-user.json"
+```
+
+#### Success response schema
+
+Status `200`:
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `items[].averagePracticeDurationInMinutes` | `number (double)` | No | No | — |
+| `items[].longestPracticeDurationInMinutes` | `number (double)` | No | No | — |
+| `items[].shortestPracticeDurationInMinutes` | `number (double)` | No | No | — |
+| `items[].totalPracticeCount` | `integer (int32)` | No | No | — |
+| `items[].totalPracticeDurationInMinutes` | `number (double)` | No | No | — |
+| `items[].userId` | `integer (int32)` | No | No | — |
+
+#### Error responses
+
+| Status | Meaning |
+|---:|---|
+| `400` | The request failed validation. Check field names, types, and values. |
+| `401` | The API key is missing or invalid. |
+| `403` | The API key does not have permission for this operation. |
+| `500` | The service returned an internal error. |
+
+---
+
+### `POST /api/public/v1/usage/get-practice-usage-data-per-day`
+
+#### Request schema
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `body: from` | `string (date-time)` | No | Yes | — |
+| `body: pageNumber` | `integer (int32)` | No | No | — |
+| `body: pageSize` | `integer (int32)` | No | No | — |
+| `body: to` | `string (date-time)` | No | Yes | — |
+
+Body media type: `application/json`.
+
+#### Example
+
+Show this exact payload to the user and wait for explicit confirmation before running the request. The raw response is saved to `practice-usage-per-day.json`; project only the fields you need before bringing any result into the conversation.
+
+```bash
+curl --fail-with-body --silent --show-error \
+  --request POST \
+  --header "X-API-Key: $ITERO_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+  "pageNumber": 0,
+  "pageSize": 25,
+  "from": "2026-08-12T14:00:00Z",
+  "to": "2026-08-12T15:00:00Z"
+}' \
+  "https://iterogatewayapi.azurewebsites.net/api/public/v1/usage/get-practice-usage-data-per-day" \
+  --output "practice-usage-per-day.json"
+```
+
+#### Success response schema
+
+Status `200`:
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `items` | `array<PracticeUsagePerDayByTenantDto>` | No | Yes | — |
+| `items[].averagePracticeDurationInMinutes` | `number (double)` | No | No | — |
+| `items[].date` | `string (date-time)` | No | No | — |
+| `items[].longestPracticeDurationInMinutes` | `number (double)` | No | No | — |
+| `items[].practiceCount` | `integer (int32)` | No | No | — |
+| `items[].practiceDurationInMinutes` | `number (double)` | No | No | — |
+| `items[].shortestPracticeDurationInMinutes` | `number (double)` | No | No | — |
+| `totalCount` | `integer (int32)` | No | No | — |
+
+#### Error responses
+
+| Status | Meaning |
+|---:|---|
+| `400` | The request failed validation. Check field names, types, and values. |
+| `401` | The API key is missing or invalid. |
+| `403` | The API key does not have permission for this operation. |
+| `500` | The service returned an internal error. |
+
+---
+
+### `POST /api/public/v1/usage/get-practice-usage-summary`
+
+#### Request schema
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `body: from` | `string (date-time)` | No | Yes | — |
+| `body: to` | `string (date-time)` | No | Yes | — |
+
+Body media type: `application/json`.
+
+#### Example
+
+Show this exact payload to the user and wait for explicit confirmation before running the request.
+
+```bash
+curl --fail-with-body --silent --show-error \
+  --request POST \
+  --header "X-API-Key: $ITERO_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+  "from": "2026-08-12T14:00:00Z",
+  "to": "2026-08-12T15:00:00Z"
+}' \
+  "https://iterogatewayapi.azurewebsites.net/api/public/v1/usage/get-practice-usage-summary"
+```
+
+#### Success response schema
+
+Status `200`:
+
+| Field | Type | Required | Nullable | Allowed values |
+|---|---|:---:|:---:|---|
+| `averagePracticeDurationInMinutes` | `number (double)` | No | No | — |
+| `longestPracticeDurationInMinutes` | `number (double)` | No | No | — |
+| `shortestPracticeDurationInMinutes` | `number (double)` | No | No | — |
+| `totalPracticeCount` | `integer (int32)` | No | No | — |
+| `totalPracticeDurationInMinutes` | `number (double)` | No | No | — |
+
+#### Error responses
+
+| Status | Meaning |
+|---:|---|
+| `400` | The request failed validation. Check field names, types, and values. |
 | `401` | The API key is missing or invalid. |
 | `403` | The API key does not have permission for this operation. |
 | `500` | The service returned an internal error. |

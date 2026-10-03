@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import argparse
+import difflib
 import json
 import os
 import sys
@@ -38,7 +39,7 @@ SPEC_SOURCES = {
     "practice.json": SpecSource(f"{GATEWAY_BASE_URL}/practice"),
     "talk-track.json": SpecSource(f"{GATEWAY_BASE_URL}/talk-track"),
     "tenant.json": SpecSource(f"{GATEWAY_BASE_URL}/tenant"),
-    # The usage endpoints are not published through the gateway aggregator, so this
+    # The billing endpoints are not published through the gateway aggregator, so this
     # snapshot is narrowed to them from the tenant service's own document. Every
     # other tenant path is already covered by tenant.json above.
     "usage.json": SpecSource(TENANT_API_SPEC_URL, ("/api/public/v1/usage",)),
@@ -229,6 +230,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
             f"Choices: {', '.join(sorted(SPEC_SOURCES))}."
         ),
     )
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="compare live specifications without writing snapshots",
+    )
     return parser.parse_args(argv)
 
 
@@ -245,6 +251,39 @@ def main(argv: Sequence[str] | None = None) -> int:
             if source.path_prefixes is not None:
                 document = narrow_spec(filename, document, source.path_prefixes)
             documents[filename] = document
+        if arguments.check:
+            drifted = []
+            for filename, document in documents.items():
+                destination = OUTPUT_DIR / filename
+                committed = destination.read_bytes() if destination.exists() else b""
+                live = serialize_spec(document)
+                if destination.exists() and committed == live:
+                    print(f"unchanged: {filename}")
+                    continue
+                drifted.append(filename)
+                diff = list(
+                    difflib.unified_diff(
+                        committed.decode().splitlines(keepends=True),
+                        live.decode().splitlines(keepends=True),
+                        fromfile=f"spec/{filename}",
+                        tofile=f"live/{filename}",
+                    )
+                )
+                changed = sum(
+                    line.startswith(("+", "-"))
+                    and not line.startswith(("+++", "---"))
+                    for line in diff
+                )
+                print(f"drift: {filename} ({changed} changed lines)")
+                print("".join(diff), end="")
+            if drifted:
+                print(
+                    "error: live specifications differ from committed snapshots: "
+                    + ", ".join(drifted),
+                    file=sys.stderr,
+                )
+                return 1
+            return 0
         replace_specs(documents)
     except SpecFetchError as exc:
         print(f"error: {exc}", file=sys.stderr)

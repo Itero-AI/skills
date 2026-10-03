@@ -24,7 +24,7 @@ Seven skills talk to the Itero public API; two document-preparation skills run e
 | `manage-users` | List, create, update, activate, deactivate, and delete individual users. |
 | `upload-users` | Validate and bulk-import a CSV of users. |
 | `conversations` | Search calls, read transcripts and evaluation results, tag calls, and start evaluations. |
-| `usage` | Check plan usage, remaining limits, overage, and billing history. |
+| `usage` | Read plan usage, remaining limits, billing history, and practice and evaluation activity reports. |
 | `doc-optimizer` | Turn one PDF, DOCX, or TXT file into chunk-independent Markdown for RAG. |
 | `doc-consolidator` | Collapse related documents into fewer topic-grouped Markdown files for RAG. |
 
@@ -47,7 +47,7 @@ Please install the Itero skills for me. Follow these steps in order and ask me b
    - Claude Code: `~/.claude/skills/` on Mac or `%USERPROFILE%\.claude\skills\` on Windows
    - Cursor or Codex: `~/.agents/skills/` on Mac or `%USERPROFILE%\.agents\skills\` on Windows
    - Antigravity: `~/.gemini/antigravity/skills/` on Mac or `%USERPROFILE%\.gemini\antigravity\skills\` on Windows
-4. Check `uv --version` only if I plan to use `scorecards`, `upload-users`, `doc-optimizer`, or `doc-consolidator`. If uv is missing, help me install it from https://docs.astral.sh/uv/getting-started/installation/ and verify the installation.
+4. Check `uv --version` only if I plan to use `upload-users`, `doc-optimizer`, or `doc-consolidator`. If uv is missing, help me install it from https://docs.astral.sh/uv/getting-started/installation/ and verify the installation.
 5. If it does not already exist, create `.env` in my current working directory with this line, leaving the value blank. Never ask me to paste the key into chat:
 
    ```text
@@ -77,7 +77,7 @@ test -e .env || printf 'ITERO_API_KEY=\n' > .env
 
 Use `~/.claude/skills`, `~/.agents/skills`, or `~/.gemini/antigravity/skills` as the destination on macOS, Linux, or Git Bash. Git Bash accepts paths beneath `/c/Users/<your-name>/`; PowerShell and Command Prompt do not run this block.
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/) only if you use `scorecards`, `upload-users`, `doc-optimizer`, or `doc-consolidator`. Their scripts declare dependencies inline and uv resolves them on first run.
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) only if you use `upload-users`, `doc-optimizer`, or `doc-consolidator`. Their scripts declare dependencies inline and uv resolves them on first run.
 
 Claude Code can alternatively install the plugin with `/plugin marketplace add Itero-AI/skills` followed by `/plugin install itero@itero-plugins`.
 

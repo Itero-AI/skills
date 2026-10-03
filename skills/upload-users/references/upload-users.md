@@ -64,9 +64,16 @@ User write endpoints were observed to return `403 Forbidden` for API keys that d
 
 The older duplicate user-list route was verified byte-for-byte identical to `/api/public/v1/user`, including its `role` and `isActive` query parameters and response DTO. It adds no capability. Document and call only `GET /api/public/v1/user`; do not expose the legacy route in generated guidance.
 
+<!-- fact:user-delete-permanent -->
+### Delete permanently or deactivate reversibly
+
+`DELETE /api/public/v1/user/{id}` is permanent and cannot be undone. It frees the billable seat immediately for an active Representative or Manager. The reversible alternative is `PUT /api/public/v1/user` with the complete record and `isActive: false`, preserving the record, role and groups. Reactivation consumes a seat and can fail with `NotEnoughSeats`.
+
+PUT `id` and DELETE `{id}` both take `tenantUserId`, not the global `id`. These delete semantics and identifiers are spec-documented as of 2026-10-02 and not live-tested.
+
 ### Keep the two user IDs distinct
 
-User responses can include both `id` and `tenantUserId`. Use the identifier required by the specific operation instead of assuming they are interchangeable. Learning-path assignment is the important exception that explicitly requires `tenantUserId`.
+User responses can include both `id` and `tenantUserId`. PUT `id`, DELETE `{id}` and learning-path assignment require `tenantUserId`, not the global `id`. Keep both IDs when identifying a user and use the tenant-specific ID for these writes.
 
 ### Validate bulk imports before sending them
 

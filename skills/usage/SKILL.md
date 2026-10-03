@@ -1,11 +1,11 @@
 ---
 name: usage
-description: Read Itero usage, limits, and billing history through the public API. Use when someone asks how much of their plan is left, how many units or evaluations they have used, whether they are into overage, what they were billed, or for an invoice history. Triggers include "how much usage do we have left," "are we over our limit," "what did we get billed last month," "show me our invoices," "how many voice practice minutes have we used," and "what's our current plan usage."
+description: Read Itero practice activity, evaluation counts, per-user and daily trends, limits, and billing history through the public API. Use when someone asks how much of their plan is left, how many units or evaluations they have used, whether they are into overage, what they were billed, or for an invoice history. Triggers include "how much usage do we have left," "are we over our limit," "what did we get billed last month," "show me our invoices," "how many voice practice minutes have we used," and "what's our current plan usage," "practice activity," "evaluation counts," "per-user activity," and "daily trends."
 user-invocable: true
 license: MIT
 metadata:
   author: itero
-  version: "2.2.0"
+  version: "2.3.0"
   homepage: https://iteroapp.ai
   source: https://github.com/Itero-AI/skills
 inputs:
@@ -16,15 +16,39 @@ references:
   - references/usage.md
 ---
 
-> **Read-only skill.** Both operations only read. Nothing here changes a plan, a contract, or an invoice — if the user wants a plan changed, direct them to Itero rather than attempting it through the API.
+> **Read-only skill.** All eight operations only read. Nothing here changes a plan, a contract, or an invoice — if the user wants a plan changed, direct them to Itero rather than attempting it through the API.
 
 # Usage
 
-Use `https://iterotenantapi.azurewebsites.net` — **not** the gateway — and send `X-API-Key: $ITERO_API_KEY`. Read the key from the environment; never display, log, or paste its value. Load [the generated usage reference](references/usage.md) for exact schemas and enums.
+Choose the host from the endpoint table below and send `X-API-Key: $ITERO_API_KEY`. Read the key from the environment; never display, log, or paste its value. Load [the generated usage reference](references/usage.md) for exact schemas and enums.
 
-These two endpoints are not served by `iterogatewayapi`; that host returns `404` for them. Every other Itero operation still uses the gateway.
+## Endpoint hosts
+
+All paths below begin with `/api/public/v1/usage/`. Gateway means `https://iterogatewayapi.azurewebsites.net`; Tenant host means `https://iterotenantapi.azurewebsites.net`.
+
+| Operation | Host |
+|---|---|
+| `POST get-practice-usage-summary` | Gateway |
+| `POST get-practice-usage-data-by-user` | Gateway |
+| `POST get-practice-usage-data-per-day` | Gateway |
+| `POST get-evaluation-usage-summary` | Gateway |
+| `POST get-evaluation-usage-data-by-user` | Gateway |
+| `POST get-evaluation-usage-data-per-day` | Gateway |
+| `GET current-usage` | Tenant host |
+| `POST get-usage-history` | Tenant host |
+
+The billing operations return 404 on the gateway; the six activity reports return 404 on the tenant host. (Host-verified 2026-09-29.)
 
 The key must belong to a user with the `Owner` role, and it can only ever read its own tenant's usage.
+
+## Quick start: practice activity summary
+
+```bash
+curl --fail-with-body --silent --show-error --request POST \
+  --header "X-API-Key: $ITERO_API_KEY" \
+  --header 'Content-Type: application/json' --data '{}' \
+  "https://iterogatewayapi.azurewebsites.net/api/public/v1/usage/get-practice-usage-summary"
+```
 
 ## Quick start: what's left this month
 
@@ -39,6 +63,9 @@ curl --fail-with-body --silent --show-error \
 
 | Goal | Operation | Guidance |
 |---|---|---|
+| Practice or evaluation activity totals | `POST /api/public/v1/usage/get-{practice,evaluation}-usage-summary` | Optional inclusive `from`/`to` filters; activity counts are not billing units. |
+| Activity by person | `POST /api/public/v1/usage/get-{practice,evaluation}-usage-data-by-user` | Save to file; match userId unambiguously before naming anyone. |
+| Daily activity trends | `POST /api/public/v1/usage/get-{practice,evaluation}-usage-data-per-day` | Save to file; apply the per-day rules below. |
 | Usage so far this period | `GET /api/public/v1/usage/current-usage` | Live consumption against the open period. |
 | Remaining allowance or overage | `GET /api/public/v1/usage/current-usage` | Read `remainingUnits` with `planType` — they mean different things per plan. |
 | Past bills and invoices | `POST /api/public/v1/usage/get-usage-history` | Closed, invoiced periods only. Send `{"monthsBack": N}`. |
@@ -46,13 +73,40 @@ curl --fail-with-body --silent --show-error \
 
 ## Workflow
 
-1. Pick the endpoint from the question: "how much is left" is current usage, "what were we charged" is history.
+1. Pick the endpoint and host from the question: activity uses the gateway reports, "how much is left" uses current usage, and "what were we charged" uses history.
 2. Bound the history request with `monthsBack` (1–60) when the user named a window; omit it only when they genuinely want everything.
 3. Read the operation in [the generated reference](references/usage.md) and translate every enum before reporting — `productType`, `planType`, and `invoiceStatus` are integers.
 4. Report per product, not as one total. A tenant holds one contract per metered product, and their plans differ.
 5. Give the plain answer — units used, units left, cost — rather than the raw JSON.
 
-## Reading the numbers correctly
+## Read activity reports correctly
+
+`from`/`to` are optional and inclusive. Practice reports count only call type Practice. Practice minute values were whole numbers in the saved summary, by-user and per-day responses, although the schema allows `number (double)` values. (Live-verified 2026-10-02.) By-user reports exclude unlinked sessions and return only `userId`. The spec does not identify it as global `id` or `tenantUserId`; confirm an unambiguous match in `GET /api/public/v1/user` before naming someone. Save every by-user and per-day response to a file.
+
+Practice per-day is paged, zero-based, and defaults to size 10. Rows are unordered; fetch all rows in one page with `pageSize` at least `totalCount`, or narrow the inclusive `from`/`to` window, then sort by `date`. A pageSize 1000 request returned every row on 2026-10-02. Days without practice are omitted. Returned dates have no time-zone suffix, unlike the specification's example ending in `Z`. (Live-verified 2026-10-02.)
+
+```bash
+curl --fail-with-body --silent --show-error --request POST \
+  --header "X-API-Key: $ITERO_API_KEY" \
+  --header 'Content-Type: application/json' \
+  --data '{"pageNumber":0,"pageSize":1000}' \
+  --output "practice-usage-per-day.json" \
+  "https://iterogatewayapi.azurewebsites.net/api/public/v1/usage/get-practice-usage-data-per-day"
+jq '.items | sort_by(.date)' practice-usage-per-day.json
+```
+
+Evaluation per-day is unpaged and newest first. Drop its final junk row dated `0001-01-01` before totals or charts. The evaluation summary averages are TimeSpan strings like `00:00:08.5990566`, or null, rather than objects; preserve the fractional seconds when parsing and do not report null as zero.
+
+```bash
+curl --fail-with-body --silent --show-error --request POST \
+  --header "X-API-Key: $ITERO_API_KEY" \
+  --header 'Content-Type: application/json' --data '{}' \
+  --output "evaluation-usage-per-day.json" \
+  "https://iterogatewayapi.azurewebsites.net/api/public/v1/usage/get-evaluation-usage-data-per-day"
+jq 'map(select(.date | startswith("0001-01-01") | not))' evaluation-usage-per-day.json
+```
+
+## Reading the billing numbers correctly
 
 | Field | What it means |
 |---|---|
@@ -66,7 +120,12 @@ curl --fail-with-body --silent --show-error \
 
 | Mistake | Correct approach |
 |---|---|
-| Sending usage requests to the gateway | Use `https://iterotenantapi.azurewebsites.net` for these two operations only. |
+| Sending every usage request to one host | Use the gateway for six reports and the tenant host for two billing operations. |
+| Reading usage with a non-Owner key | All eight reads require Owner; do not retry 403 unchanged. |
+| Treating the first practice page as a complete timeline | Fetch totalCount rows or narrow the date window, then sort by date. |
+| Counting the evaluation sentinel date | Drop the final 0001-01-01 row before totals or charts. |
+| Reading average durations as TimeSpan objects | Parse strings or preserve null; the wire format differs from the schema. |
+| Treating activity counts as billing units | Answer billing from current-usage. |
 | Reading `[]` as "no contract" or "no usage" | It means no invoiced periods; answer from `current-usage`. |
 | Saying "never invoiced" after a bounded request | `monthsBack` filters; `[]` there covers only that window. |
 | Counting history rows as months | Rows are per invoice; one month can appear twice. Group by `periodStart`. |
@@ -83,4 +142,7 @@ curl --fail-with-body --silent --show-error \
 | `400` | Check `monthsBack` is between 1 and 60, or omit it. |
 | `401` | Confirm the key is available and valid without printing it. |
 | `403` | The key is not an Owner-role key. Explain that and do not retry unchanged. |
-| `404` | You are almost certainly calling the gateway. Switch to the tenant host. |
+| `404` | Use the host for that operation: reports on gateway, billing on tenant. |
+| Incomplete or unordered practice days | Check page length against totalCount; fetch one complete page or narrow from/to, then sort. |
+| Evaluation date `0001-01-01` | Drop the sentinel row before calculations. |
+| Duration parsing fails | Parse the two averages as strings or null, not objects. |

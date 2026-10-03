@@ -38,7 +38,7 @@ Apply the same rule to every list operation: filter on the server when possible,
 <!-- fact:pagination-zero-indexed -->
 ### Call-search pages start at zero
 
-`pageNumber` on `POST /api/public/v1/call/get-calls` is 0-indexed. The specification prose says it is 1-based, but that prose is wrong. Pages 0, 1, and 2 returned disjoint results in live verification; starting at `pageNumber: 1` silently skips the newest page. Use `pageNumber: 0` for the first page and read `totalCount` to plan later pages.
+`pageNumber` on `POST /api/public/v1/call/get-calls` is 0-indexed. The specification now agrees. Pages 0, 1, and 2 returned disjoint results in live verification; starting at `pageNumber: 1` silently skips the newest page. Use `pageNumber: 0` for the first page and read `totalCount` to plan later pages. Omitting the defaults returned page 0 and size 10 (verified 2026-09-29).
 
 <!-- fact:evaluation-host-exception -->
 ### Use the practice host for two evaluation operations
@@ -66,6 +66,10 @@ To append instead of replace, fetch each selected call's current tags first and 
 ### Know which call-search filters are fuzzy
 
 The `callTags` filter uses case-insensitive substring matching. Prospect and company filters use exact matching. Use a precise tag fragment when broad matches would be surprising, and do not expect partial prospect or company names to match.
+
+### Read tag fields in their context
+
+Call records list tags by name only. The CallTagDto on scorecard `callTags` also carries `color` (optional nullable hex string) and `order` (tenant display position assigned at creation; no public endpoint changes it).
 
 ### Keep transcripts out of the main context
 
@@ -216,7 +220,7 @@ Status `200`:
 | `evaluations[].overallScore` | `integer (int32)` | No | Yes | — |
 | `evaluations[].scorecardTemplateId` | `integer (int32)` | No | No | — |
 | `evaluations[].scorecardTemplateName` | `string` | No | Yes | — |
-| `evaluations[].scorecardType` | `integer enum` | No | No | `0` (Qualitative), `1` (QA) |
+| `evaluations[].scorecardType` | `integer enum` | No | No | `0` (Qualitative), `1` (QA), `2` (ScreenRecording) |
 | `evaluations[].status` | `integer enum` | No | No | `0` (NotStarted), `1` (InProgress), `2` (Success), `3` (Error) |
 | `externalId` | `string` | No | Yes | — |
 | `externalUrl` | `string` | No | Yes | — |
@@ -338,7 +342,7 @@ Status `200`:
 | `evaluations[].overallScore` | `integer (int32)` | No | Yes | — |
 | `evaluations[].scorecardTemplateId` | `integer (int32)` | No | No | — |
 | `evaluations[].scorecardTemplateName` | `string` | No | Yes | — |
-| `evaluations[].scorecardType` | `integer enum` | No | No | `0` (Qualitative), `1` (QA) |
+| `evaluations[].scorecardType` | `integer enum` | No | No | `0` (Qualitative), `1` (QA), `2` (ScreenRecording) |
 | `evaluations[].status` | `integer enum` | No | No | `0` (NotStarted), `1` (InProgress), `2` (Success), `3` (Error) |
 | `externalId` | `string` | No | Yes | — |
 | `externalUrl` | `string` | No | Yes | — |
@@ -388,7 +392,7 @@ Status `200`:
 | `body: callTags` | `array<string>` | No | Yes | — |
 | `body: callType` | `integer enum` | No | No | `0` (Activity), `1` (Meeting), `2` (Practice) |
 | `body: conversationStatuses` | `array<integer enum>` | No | Yes | `0` (Informational), `2` (PositiveOutcome), `3` (NoAnswer), `4` (NegativeOutcome), `5` (FollowUpRequired), `6` (Transferred), `7` (Abandoned), `8` (InvalidData), `9` (DoNotContact) |
-| `body: evaluationType` | `integer enum` | No | No | `0` (Qualitative), `1` (QA) |
+| `body: evaluationType` | `integer enum` | No | No | `0` (Qualitative), `1` (QA), `2` (ScreenRecording) |
 | `body: from` | `string (date-time)` | No | Yes | — |
 | `body: interactionType` | `integer enum` | No | No | `0` (Voice), `1` (Chat) |
 | `body: ownerUserEmails` | `array<string>` | No | Yes | — |
@@ -449,7 +453,7 @@ Status `200`:
 | `items[].evaluations[].overallScore` | `integer (int32)` | No | Yes | — |
 | `items[].evaluations[].scorecardTemplateId` | `integer (int32)` | No | No | — |
 | `items[].evaluations[].scorecardTemplateName` | `string` | No | Yes | — |
-| `items[].evaluations[].scorecardType` | `integer enum` | No | No | `0` (Qualitative), `1` (QA) |
+| `items[].evaluations[].scorecardType` | `integer enum` | No | No | `0` (Qualitative), `1` (QA), `2` (ScreenRecording) |
 | `items[].evaluations[].status` | `integer enum` | No | No | `0` (NotStarted), `1` (InProgress), `2` (Success), `3` (Error) |
 | `items[].externalId` | `string` | No | Yes | — |
 | `items[].id` | `integer (int32)` | No | No | — |
@@ -551,7 +555,7 @@ Status `200`:
 | `overallScore` | `integer (int32)` | No | Yes | — |
 | `scorecardTemplateId` | `integer (int32)` | No | No | — |
 | `scorecardTemplateName` | `string` | No | Yes | — |
-| `scorecardType` | `integer enum` | No | No | `0` (Qualitative), `1` (QA) |
+| `scorecardType` | `integer enum` | No | No | `0` (Qualitative), `1` (QA), `2` (ScreenRecording) |
 
 #### Error responses
 

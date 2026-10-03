@@ -237,9 +237,9 @@ Then in your AI assistant you can say things like *"list scorecards on the stagi
 
 ## Step 5 — Install uv if you need a scripted skill
 
-Only four skills need **uv**: `scorecards`, `upload-users`, `doc-optimizer`, and `doc-consolidator`. If you do not plan to use any of those, skip to Step 6. The other six skills make API requests directly and do not need Python or uv.
+Only three skills need **uv**: `upload-users`, `doc-optimizer`, and `doc-consolidator`. If you do not plan to use any of those, skip to Step 6. The other seven skills make API requests directly and do not need Python or uv.
 
-The four scripted skills declare their own Python dependencies. uv installs the right Python version and dependencies automatically, and you only install uv once per machine.
+The three scripted skills declare their own Python dependencies. uv installs the right Python version and dependencies automatically, and you only install uv once per machine.
 
 ### On a Mac
 
@@ -271,7 +271,7 @@ In a fresh Terminal/PowerShell window, type:
 uv --version
 ```
 
-You should see a uv version number. If you do, Step 5 is complete — uv will fetch the required Python version and packages the first time one of the four scripted skills runs.
+You should see a uv version number. If you do, Step 5 is complete — uv will fetch the required Python version and packages the first time one of the three scripted skills runs.
 
 ---
 
@@ -309,7 +309,7 @@ Three things to check:
 
 ### "It says `uv: command not found` or `uv` is not recognized"
 
-This applies only to `scorecards`, `upload-users`, `doc-optimizer`, and `doc-consolidator`. On Mac, run `brew install uv`. On Windows, run `winget install --id=astral-sh.uv -e`. After installing, fully close any open Terminal or PowerShell windows and open a fresh one before retrying.
+This applies only to `upload-users`, `doc-optimizer`, and `doc-consolidator`. On Mac, run `brew install uv`. On Windows, run `winget install --id=astral-sh.uv -e`. After installing, fully close any open Terminal or PowerShell windows and open a fresh one before retrying.
 
 ### "Hidden folders don't show up in Finder"
 
@@ -325,11 +325,11 @@ If you'd rather scope skills to a single project (so only that project sees them
 
 ### "I get an error mentioning a missing Python package (`requests`, `dotenv`, `fitz`, etc.)"
 
-This means a scripted skill is being run with plain `python3` instead of `uv run`. The `scorecards`, `upload-users`, `doc-optimizer`, and `doc-consolidator` skills invoke their scripts with `uv run`, which installs the right packages automatically. Restart your assistant so it reloads the new skill instructions. If the error persists, check that `uv --version` works and repeat Step 5 if it does not.
+This means a scripted skill is being run with plain `python3` instead of `uv run`. The `upload-users`, `doc-optimizer`, and `doc-consolidator` skills invoke their scripts with `uv run`, which installs the right packages automatically. Restart your assistant so it reloads the new skill instructions. If the error persists, check that `uv --version` works and repeat Step 5 if it does not.
 
 ### "Do I need uv for every skill?"
 
-No. You need uv only for `scorecards`, `upload-users`, `doc-optimizer`, and `doc-consolidator`. The `personas`, `scenarios`, `learning-paths`, `manage-users`, `conversations`, and `usage` skills do not use local Python scripts.
+No. You need uv only for `upload-users`, `doc-optimizer`, and `doc-consolidator`. The `personas`, `scenarios`, `scorecards`, `learning-paths`, `manage-users`, `conversations`, and `usage` skills do not use local Python scripts.
 
 ### Still stuck?
 
@@ -351,6 +351,6 @@ If you're comfortable typing slash commands inside your AI assistant, Claude Cod
 1. Open Claude Code.
 2. In the chat, type: `/plugin marketplace add Itero-AI/skills` and press Enter.
 3. Then type: `/plugin install itero@itero-plugins` and press Enter.
-4. Continue with **Step 4** (the API key), and use **Step 5** only if you need one of the four scripted skills. The plugin install handles the rest.
+4. Continue with **Step 4** (the API key), and use **Step 5** only if you need one of the three scripted skills. The plugin install handles the rest.
 
 This path doesn't yet exist for Cursor, Codex, or Antigravity — those still use the manual download in Steps 1–3.

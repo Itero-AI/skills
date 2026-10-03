@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.3.0 — 2026-10-02
+
+Covers the October 2026 Itero API release.
+
+- Added six practice and evaluation activity reports on the gateway, requiring Owner. Documented unordered practice pages, the evaluation sentinel date, and TimeSpan strings rather than objects. Billing remains on the tenant host.
+- Added atomic `POST /api/public/v2/scorecard` draft creation with nested categories, criteria and optional complete qualitative rubrics, followed by separately confirmed publication.
+- Removed `build_scorecard.py` and its test and fixture; scorecards no longer needs uv. If you install by copying folders, delete the old `scorecards` folder before copying its replacement so the retired scripts do not remain.
+- Documented ScreenRecording, `screenRecordingAgentId`, output feedback language, and agent-type labels, including the limits of field verification.
+- Updated call-search guidance to agree with the corrected specification: zero-based pages, default page 0 and size 10.
+- Documented permanent user deletion, reversible deactivation, seat effects, and `tenantUserId` for PUT and DELETE. These semantics are spec-documented and were not live-tested.
+- Added `fetch-specs.py --check` and a weekly read-only live-spec drift workflow.
+- Refreshed public practice and tenant snapshots and regenerated references; talk-track and billing snapshots remain unchanged.
+
 ## 2.2.0 — 2026-09-16
 
 Covers the September 2026 Itero API release.
